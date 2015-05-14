@@ -1,4 +1,10 @@
-__author__ = 'TAG'
+"""
+Wrapper for interfacing with the Thorlabs Wavefront Sensor (WFS)
+"""
+
+__author__ = 'David Amrhein'
+__version__ = '0.0.1'
+# $Source$
 
 import ctypes
 from ctypes.util import find_library
