@@ -14,9 +14,7 @@ import os
 import yaml
 
 
-def setup_logging(path='logging.yaml',
-                  level=logging.INFO,
-                  env_key='LOG_CFG'):
+def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
     """Setup logging configuration
 
     """
@@ -127,30 +125,30 @@ class WFS(ViSession):
     MAX_ZERNIKE_ORDERS = 10
 
     def __init__(self):
-        self.instrumentHandle = 0
+        self.instrument_handle = 0
 
     def init(self,
-             resourceName='USB::0x1313::0x0000::1',
-             IDQuery=0,
-             resetDevice=0,
-             instrumentHandle=0):
-        self.resourceName = ViRsrc(resourceName)
-        self.IDQuery = ViBoolean(IDQuery)
-        self.resetDevice = ViBoolean(resetDevice)
-        self.instrumentHandle = ViSession(instrumentHandle)
-        status = lib_wfs.WFS_init(resourceName,
-                                  IDQuery,
-                                  resetDevice,
-                                  ctypes.byref(self.instrumentHandle))
-        logger_camera.info('Instrument Handle: {0}'.format(self.instrumentHandle.value))
+             resource_name='USB::0x1313::0x0000::1',
+             id_query=0,
+             reset_device=0,
+             instrument_handle=0):
+        self.resource_name = ViRsrc(resource_name)
+        self.id_query = ViBoolean(id_query)
+        self.reset_device = ViBoolean(reset_device)
+        self.instrument_handle = ViSession(instrument_handle)
+        status = lib_wfs.WFS_init(resource_name,
+                                  id_query,
+                                  reset_device,
+                                  ctypes.byref(self.instrument_handle))
+        logger_camera.info('Instrument Handle: {0}'.format(self.instrument_handle.value))
         return status
 
     def reset(self):
-        status = lib_wfs.WFS_reset(self.instrumentHandle)
+        status = lib_wfs.WFS_reset(self.instrument_handle)
         return status
 
     def close(self):
-        status = lib_wfs.WFS_close(self.instrumentHandle)
+        status = lib_wfs.WFS_close(self.instrument_handle)
         return status
 
     def get_instrument_info(self):
@@ -159,7 +157,7 @@ class WFS(ViSession):
         instrumentNameWFS = ViAChar(256)
         serialNumberWFS = ViAChar(256)
         serialNumberCam = ViAChar(256)
-        status = lib_wfs.WFS_GetInstrumentInfo(self.instrumentHandle,
+        status = lib_wfs.WFS_GetInstrumentInfo(self.instrument_handle,
                                                manufacturerName,
                                                instrumentNameWFS,
                                                serialNumberWFS,
@@ -172,7 +170,7 @@ class WFS(ViSession):
 
     def get_mla_count(self):
         MLACount = ViPInt32()
-        status = lib_wfs.WFS_GetMlaCount(self.instrumentHandle,
+        status = lib_wfs.WFS_GetMlaCount(self.instrument_handle,
                                          ctypes.byref(MLACount))
         logger_camera.info('Micro Lens Array: {0}'.format(MLACount.value))
         self.MLAIndex = ViInt32(MLACount.value - 1)
@@ -187,7 +185,7 @@ class WFS(ViSession):
         lensletFm = ViPReal64()
         grdCorr0 = ViPReal64()
         grdCorr45 = ViPReal64()
-        status = lib_wfs.WFS_GetMlaData(self.instrumentHandle,
+        status = lib_wfs.WFS_GetMlaData(self.instrument_handle,
                                         self.MLAIndex,
                                         MLAName,
                                         ctypes.byref(camPitchm),
@@ -219,7 +217,7 @@ class WFS(ViSession):
         grdCorr45 = ViPReal64()
         grdCorrRot = ViPReal64()
         grdCorrPitch = ViPReal64()
-        status = lib_wfs.WFS_GetMlaData2(self.instrumentHandle,
+        status = lib_wfs.WFS_GetMlaData2(self.instrument_handle,
                                         self.MLAIndex,
                                         MLAName,
                                         ctypes.byref(camPitchm),
@@ -245,7 +243,7 @@ class WFS(ViSession):
         return status
 
     def select_mla(self):
-        status = lib_wfs.WFS_SelectMla(self.instrumentHandle,
+        status = lib_wfs.WFS_SelectMla(self.instrument_handle,
                                        self.MLAIndex)
         if status ==0:
             logger_camera.info('MLA selection: {0}'.format(self.MLAIndex.value))
@@ -257,7 +255,7 @@ class WFS(ViSession):
         camResolIndex = ViInt32(0)
         self.spotsX = ViPInt32()
         self.spotsY = ViPInt32()
-        status = lib_wfs.WFS_ConfigureCam(self.instrumentHandle,
+        status = lib_wfs.WFS_ConfigureCam(self.instrument_handle,
                                               pixelFormat,
                                               camResolIndex,
                                               ctypes.byref(self.spotsX),
@@ -270,10 +268,10 @@ class WFS(ViSession):
                 instrumentHandle=0,
                 instrumentDriverRevision=256,
                 firmwareRevision=256):
-        self.instrumentHandle = ViSession.__init__(self, instrumentHandle)
+        self.instrument_handle = ViSession.__init__(self, instrumentHandle)
         self.instrumentDriverRevision = ViAChar(instrumentDriverRevision)
         self.firmwareRevision = ViAChar(firmwareRevision)
-        status = lib_wfs.WFS_revision_query(self.instrumentHandle,
+        status = lib_wfs.WFS_revision_query(self.instrument_handle,
                                             self.instrumentDriverRevision,
                                             self.firmwareRevision)
         logger_camera.info('Instrument Driver Version: {0}'.format(self.instrumentDriverRevision.value))
@@ -281,9 +279,9 @@ class WFS(ViSession):
         return status
 
     def get_instrument_list_len(self, instrumentHandle=0, instrumentCount=0):
-        self.instrumentHandle = ViSession.__init__(self, instrumentHandle)
+        self.instrument_handle = ViSession.__init__(self, instrumentHandle)
         instrumentCount = ViInt32(instrumentCount)
-        status = lib_wfs.WFS_GetInstrumentListLen(self.instrumentHandle,
+        status = lib_wfs.WFS_GetInstrumentListLen(self.instrument_handle,
                                                   ctypes.byref(instrumentCount))
         self.instrument_index = ViInt32(instrumentCount.value - 1)
         logger_camera.info('Instrument Index: {0}'.format(self.instrument_index.value))
@@ -300,24 +298,24 @@ class WFS(ViSession):
         self.in_use = ViInt32(in_use)
         self.instrument_name = ViAChar(instrument_name)
         self.serial_number_wfs = ViAChar(serial_number_wfs)
-        self.resourceName = ViAChar(resourceName)
+        self.resource_name = ViAChar(resourceName)
         status = lib_wfs.WFS_GetInstrumentListInfo(handle,
                                                    self.instrument_index,
                                                    ctypes.byref(self.device_id),
                                                    ctypes.byref(self.in_use),
                                                    self.instrument_name,
                                                    self.serial_number_wfs,
-                                                   self.resourceName)
+                                                   self.resource_name)
         logger_camera.info('Device ID: {0}'.format(self.device_id.value))
         logger_camera.info('In Use: {0}'.format(self.in_use.value))
         logger_camera.info('Instrument Name: {0}'.format(self.instrument_name.value))
         logger_camera.info('Serial Number WFS: {0}'.format(self.serial_number_wfs.value))
-        logger_camera.info('Resource Name: {0}'.format(self.resourceName.value))
+        logger_camera.info('Resource Name: {0}'.format(self.resource_name.value))
         return status
 
     def get_status(self):
         deviceStatus = ViInt32()
-        status = lib_wfs.WFS_GetStatus(self.instrumentHandle,
+        status = lib_wfs.WFS_GetStatus(self.instrument_handle,
                                    ctypes.byref(deviceStatus))
         logger_camera.info('Device Status: {0}'.format(deviceStatus.value))
         return status
@@ -353,13 +351,13 @@ class WFS(ViSession):
 
     def set_reference_place(self, reference_index=0):
         self.reference_index = ViInt32(reference_index)
-        status = lib_wfs.WFS_SetReferencePlane(self.instrumentHandle,
+        status = lib_wfs.WFS_SetReferencePlane(self.instrument_handle,
                                                self.reference_index)
         logger_camera.info('Set Reference Index: {0}'.format(self.reference_index.value))
         return status
 
     def get_reference_plane(self):
-        status = lib_wfs.WFS_GetReferencePlane(self.instrumentHandle,
+        status = lib_wfs.WFS_GetReferencePlane(self.instrument_handle,
                                                ctypes.byref(self.reference_index))
         logger_camera.info('Get Reference Index: {0}'.format(self.reference_index.value))
         return status
@@ -369,7 +367,7 @@ class WFS(ViSession):
         self.pupil_center_y_mm = ViReal64(pupil_center_y_mm)
         self.pupil_diameter_x_mm = ViReal64(pupil_diameter_x_mm)
         self.pupil_diameter_y_mm = ViReal64(pupil_diameter_y_mm)
-        status = lib_wfs.WFS_SetPupil(self.instrumentHandle,
+        status = lib_wfs.WFS_SetPupil(self.instrument_handle,
                                       self.pupil_center_x_mm,
                                       self.pupil_center_y_mm,
                                       self.pupil_diameter_x_mm,
@@ -381,7 +379,7 @@ class WFS(ViSession):
         return status
 
     def get_pupil(self):
-        status = lib_wfs.WFS_GetPupil(self.instrumentHandle,
+        status = lib_wfs.WFS_GetPupil(self.instrument_handle,
                                       ctypes.byref(self.pupil_center_x_mm),
                                       ctypes.byref(self.pupil_center_y_mm),
                                       ctypes.byref(self.pupil_diameter_x_mm),
@@ -395,7 +393,7 @@ class WFS(ViSession):
     def take_spotfield_image_auto_exposure(self):
         exposure_time_act = ViPReal64()
         master_gain_act = ViPReal64()
-        status = lib_wfs.WFS_TakeSpotfieldImageAutoExpos(self.instrumentHandle,
+        status = lib_wfs.WFS_TakeSpotfieldImageAutoExpos(self.instrument_handle,
                                                          ctypes.byref(exposure_time_act),
                                                          ctypes.byref(master_gain_act))
         logger_camera.info('Exposure Time Act: {0}'.format(exposure_time_act.value))
@@ -406,7 +404,7 @@ class WFS(ViSession):
         image_buffer = (ctypes.c_uint)()
         rows = ViInt32()
         columns = ViInt32()
-        status = lib_wfs.WFS_GetSpotfieldImage(self.instrumentHandle,
+        status = lib_wfs.WFS_GetSpotfieldImage(self.instrument_handle,
                                                ctypes.byref(image_buffer),
                                                ctypes.byref(rows),
                                                ctypes.byref(columns))
@@ -418,21 +416,21 @@ class WFS(ViSession):
     def calc_spots_centroid_diameter_intensity(self):
         dynamic_noise_cut = ViInt32(1)
         calculate_diameters = ViInt32(0)
-        status = lib_wfs.WFS_CalcSpotsCentrDiaIntens(self.instrumentHandle,
+        status = lib_wfs.WFS_CalcSpotsCentrDiaIntens(self.instrument_handle,
                                                      dynamic_noise_cut,
                                                      calculate_diameters)
         return status
 
     def calc_spot_to_reference_deviations(self):
         cancel_wavefront_tilt = ViInt32(1)
-        status = lib_wfs.WFS_CalcSpotToReferenceDeviations(self.instrumentHandle,
+        status = lib_wfs.WFS_CalcSpotToReferenceDeviations(self.instrument_handle,
                                                            cancel_wavefront_tilt)
         return status
 
     def get_spot_centroids(self):
         array_centroid_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         array_centroid_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        status = lib_wfs.WFS_GetSpotCentroids(self.instrumentHandle,
+        status = lib_wfs.WFS_GetSpotCentroids(self.instrument_handle,
                                               array_centroid_x,
                                               array_centroid_y)
         logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in array_centroid_x]))
@@ -443,7 +441,7 @@ class WFS(ViSession):
         array_wavefront = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         wavefront_type = ViInt32(0)
         limit_to_pupil = ViInt32(0)
-        status = lib_wfs.WFS_CalcWavefront(self.instrumentHandle,
+        status = lib_wfs.WFS_CalcWavefront(self.instrument_handle,
                                            wavefront_type,
                                            limit_to_pupil,
                                            array_wavefront)
@@ -457,7 +455,7 @@ class WFS(ViSession):
         mean = ViPReal64(0)
         rms = ViPReal64(0)
         weighted_rms = ViPReal64(0)
-        status = lib_wfs.WFS_CalcWavefrontStatistics(self.instrumentHandle,
+        status = lib_wfs.WFS_CalcWavefrontStatistics(self.instrument_handle,
                                                      ctypes.byref(min_),
                                                      ctypes.byref(max_),
                                                      ctypes.byref(diff),
@@ -477,7 +475,7 @@ class WFS(ViSession):
         array_zernike_um = (ctypes.c_float*(self.MAX_ZERNIKE_MODES+1))()
         array_zernike_orders_um = (ctypes.c_float*(self.MAX_ZERNIKE_ORDERS+1))()
         roc_mm = ViPReal64(0)
-        status = lib_wfs.WFS_ZernikeLsf(self.instrumentHandle,
+        status = lib_wfs.WFS_ZernikeLsf(self.instrument_handle,
                                         ctypes.byref(zernike_orders),
                                         array_zernike_um,
                                         array_zernike_orders_um,
@@ -494,7 +492,7 @@ class WFS(ViSession):
         beam_centroid_y_mm = ViPReal64()
         beam_diameter_x_mm = ViPReal64()
         beam_diameter_y_mm = ViPReal64()
-        status = lib_wfs.WFS_CalcBeamCentroidDia(self.instrumentHandle,
+        status = lib_wfs.WFS_CalcBeamCentroidDia(self.instrument_handle,
                                                  ctypes.byref(beam_centroid_x_mm),
                                                  ctypes.byref(beam_centroid_y_mm),
                                                  ctypes.byref(beam_diameter_x_mm),
@@ -508,7 +506,7 @@ class WFS(ViSession):
     def get_spot_deviations(self):
         array_deviations_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         array_deviations_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        status = lib_wfs.WFS_GetSpotDeviations(self.instrumentHandle,
+        status = lib_wfs.WFS_GetSpotDeviations(self.instrument_handle,
                                                array_deviations_x,
                                                array_deviations_y)
         logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in array_deviations_x]))
