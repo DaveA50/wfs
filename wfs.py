@@ -152,20 +152,19 @@ class WFS(ViSession):
         return status
 
     def get_instrument_info(self):
-        # instrumentHandle = self.instrumentHandle
-        manufacturerName = ViAChar(256)
-        instrumentNameWFS = ViAChar(256)
-        serialNumberWFS = ViAChar(256)
-        serialNumberCam = ViAChar(256)
+        manufacturer_name = ViAChar(256)
+        instrument_name_wfs = ViAChar(256)
+        serial_number_wfs = ViAChar(256)
+        serial_number_camera = ViAChar(256)
         status = lib_wfs.WFS_GetInstrumentInfo(self.instrument_handle,
-                                               manufacturerName,
-                                               instrumentNameWFS,
-                                               serialNumberWFS,
-                                               serialNumberCam)
-        logger_camera.info('Manufacturer Name: {0}'.format(manufacturerName.value))
-        logger_camera.info('Instrument Name WFS: {0}'.format(instrumentNameWFS.value))
-        logger_camera.info('Serial Number WFS: {0}'.format(serialNumberWFS.value))
-        logger_camera.info('Serial Number Cam: {0}'.format(serialNumberCam.value))
+                                               manufacturer_name,
+                                               instrument_name_wfs,
+                                               serial_number_wfs,
+                                               serial_number_camera)
+        logger_camera.info('Manufacturer Name: {0}'.format(manufacturer_name.value))
+        logger_camera.info('Instrument Name WFS: {0}'.format(instrument_name_wfs.value))
+        logger_camera.info('Serial Number WFS: {0}'.format(serial_number_wfs.value))
+        logger_camera.info('Serial Number Camera: {0}'.format(serial_number_camera.value))
         return status
 
     def get_mla_count(self):
@@ -173,11 +172,11 @@ class WFS(ViSession):
         status = lib_wfs.WFS_GetMlaCount(self.instrument_handle,
                                          ctypes.byref(MLACount))
         logger_camera.info('Micro Lens Array: {0}'.format(MLACount.value))
-        self.MLAIndex = ViInt32(MLACount.value - 1)
+        self.mla_index = ViInt32(MLACount.value - 1)
         return status
 
     def get_mla_data(self):
-        MLAName = ViAChar(256)
+        mla_name = ViAChar(256)
         camPitchm = ViPReal64()
         lensletPitchm = ViPReal64()
         spotOffsetX = ViPReal64()
@@ -186,8 +185,8 @@ class WFS(ViSession):
         grdCorr0 = ViPReal64()
         grdCorr45 = ViPReal64()
         status = lib_wfs.WFS_GetMlaData(self.instrument_handle,
-                                        self.MLAIndex,
-                                        MLAName,
+                                        self.mla_index,
+                                        mla_name,
                                         ctypes.byref(camPitchm),
                                         ctypes.byref(lensletPitchm),
                                         ctypes.byref(spotOffsetX),
@@ -196,7 +195,7 @@ class WFS(ViSession):
                                         ctypes.byref(grdCorr0),
                                         ctypes.byref(grdCorr45))
 
-        logger_camera.info('MLA Name: {0}'.format(MLAName.value))
+        logger_camera.info('MLA Name: {0}'.format(mla_name.value))
         logger_camera.info('MLA camPitchm: {0}'.format(camPitchm.value))
         logger_camera.info('MLA lensletPitchm: {0}'.format(lensletPitchm.value))
         logger_camera.info('MLA spotOffsetX: {0}'.format(spotOffsetX.value))
@@ -218,7 +217,7 @@ class WFS(ViSession):
         grdCorrRot = ViPReal64()
         grdCorrPitch = ViPReal64()
         status = lib_wfs.WFS_GetMlaData2(self.instrument_handle,
-                                        self.MLAIndex,
+                                        self.mla_index,
                                         MLAName,
                                         ctypes.byref(camPitchm),
                                         ctypes.byref(lensletPitchm),
@@ -244,9 +243,9 @@ class WFS(ViSession):
 
     def select_mla(self):
         status = lib_wfs.WFS_SelectMla(self.instrument_handle,
-                                       self.MLAIndex)
+                                       self.mla_index)
         if status ==0:
-            logger_camera.info('MLA selection: {0}'.format(self.MLAIndex.value))
+            logger_camera.info('MLA selection: {0}'.format(self.mla_index.value))
             pass
         return status
 
