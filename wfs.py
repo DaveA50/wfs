@@ -11,8 +11,12 @@ from ctypes.util import find_library
 import logging
 import logging.config
 import os
+import sys
+
 import yaml
 
+
+is_64bits = sys.maxsize > 2**32
 
 def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
     """Setup logging configuration
@@ -34,7 +38,10 @@ logger_camera = logging.getLogger('camera')
 logger_wfs = logging.getLogger('wfs')
 
 
-libname = 'WFS_32'
+if is_64bits:
+    libname = 'WFS_64'
+else:
+    libname = 'WFS_32'
 lib = find_library(libname)
 if lib is None:
     if os.name == 'posix':
