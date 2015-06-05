@@ -128,8 +128,8 @@ extern "C"
 /*---------------------------------------------------------------------------
  Timeout
 ---------------------------------------------------------------------------*/
-#define WFS_TRIG_TIMEOUT               (100*60*60*24) // * 10 ms = 24 hours, given to function is_SetTimeout
-																		 // after that time is_IsVideoFinish returns 'finish' without error
+#define WFS_TRIG_TIMEOUT               (100*60*60*24)	// * 10 ms = 24 hours, given to function is_SetTimeout
+														// after that time is_IsVideoFinish returns 'finish' without error
 #define WFS_TIMEOUT_CAPTURE_NORMAL     (1.0)  // in sec.
 #define WFS_TIMEOUT_CAPTURE_TRIGGER    (0.1)  // in sec., allow fast return of functions WFS_TakeSpotfieldImage...
 #define WFS10_TIMEOUT_CAPTURE_NORMAL   (4000) // in msec., allow 500 ms exposure time + reserve
@@ -226,7 +226,7 @@ extern "C"
 #define  MAX_SPOTS_Y                   (40) // WFS20: 1080*5/150 = 36
 /*
 #define  MAX_SPOTS_X                   (41) // max. for 1280x1024 with 4.65µm pixels and 150µm lenslet pitch (WFSx)
-														  // also for 640x480 with 9.9µm pixels and 150µm lenslet pitch (WFS10x)
+											// also for 640x480 with 9.9µm pixels and 150µm lenslet pitch (WFS10x)
 #define  MAX_SPOTS_Y                   (33) // determines also 3D display size
 */
 // Reference
