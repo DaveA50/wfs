@@ -466,7 +466,7 @@ class WFS(object):
             addition to the VISA error codes defined in VPP-4.3 and vendor
             specific codes, are as follows.
 
-            Completition Codes
+            Completion Codes
             ----------------------------------------------------------------
             VI_SUCCESS              Initialization successful
             VI_WARN_NSUP_ID_QUERY   Identification query not supported
