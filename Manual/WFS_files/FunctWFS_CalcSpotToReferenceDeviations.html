@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" href="htmlhelp.css" type="text/css">
+    <title>WFS_CalcSpotToReferenceDeviations</title>
+  </head>
+  <body>
+    <h1>WFS_CalcSpotToReferenceDeviations</h1>
+    <p class="syntax">
+      ViStatus WFS_CalcSpotToReferenceDeviations (ViSession instrumentHandle,
+                                            ViInt32 cancelWavefrontTilt);
+    </p>
+    <h2 class="purpose">Purpose</h2>
+    <p class="body">
+    This function calculates reference positions and deviations for all spots depending on the setting ref_idx(internal/user) set by function SetWavefrontReference.
+    <br/>
+    When option CancelWavefrontTilt is enabled the mean deviation in X and Y direction is subtracted from the deviation data arrays.
+    <br/>
+    Reference positions can be retrieved using function GetSpotReferencePositions and calculated deviations by function GetSpotDeviations.
+    </p>
+    <h2>Parameters</h2>
+    <table class="borderless" summary="Parameter help">
+      <tr>
+        <td valign="top"><em class="label">Input</em></td>
+      </tr>
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">instrumentHandle</td>
+        <td class="paramDataType">ViSession</td>
+        <td>
+    This parameter accepts the Instrument Handle returned by the Init function to select the desired instrument driver session.
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">cancelWavefrontTilt</td>
+        <td class="paramDataType">ViInt32</td>
+        <td>
+    This parameter forces the mean spot deviations to be canceled so that the average wavefront tilt will disappear when calculated with function CalcWavefront.
+    <br/>
+    Valid values:
+    <br/>
+    0&nbsp;&nbsp;&nbsp;calculate deviations normal
+    <br/>
+    1&nbsp;&nbsp;&nbsp;subtract mean deviation from all spot deviations
+        </td>
+      </tr>
+    </table>
+    <h2>Return Value</h2>
+    <table class="borderless" summary="Return value help">
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">status</td>
+        <td class="paramDataType">ViStatus</td>
+        <td>
+    This value shows the status code returned by the function call.
+    <br/>
+    For Status Codes see function ErrorMessage.
+        </td>
+      </tr>
+    </table>
+    <h2>References</h2>
+    <p class="body">
+      <a href="ClassData%20Functions.html">Data Functions</a><br/>
+      <a href="Wavefront%20Sensor.html">Wavefront Sensor</a><br/>
+      <a href="Alphabetical%20Function%20Index.html">Alphabetical Function Index</a><br/>
+      <a href="Hierarchical%20Function%20Index.html">Hierarchical Function Index</a><br/>
+    </p>
+  </body>
+</html>

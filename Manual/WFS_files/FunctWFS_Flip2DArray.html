@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" href="htmlhelp.css" type="text/css">
+    <title>WFS_Flip2DArray</title>
+  </head>
+  <body>
+    <h1>WFS_Flip2DArray</h1>
+    <p class="syntax">
+      ViStatus WFS_Flip2DArray (ViSession instrumentHandle,
+                          ViReal32 _VI_FAR arrayYX[],
+                          ViReal32 _VI_FAR arrayXY[]);
+    </p>
+    <h2 class="purpose">Purpose</h2>
+    <p class="body">
+    This function flips a 2-dimensional array of size ArrayYX[MAX_SPOTS_Y][MAX_SPOTS_X] into another array ArrayXY[MAX_SPOTS_X][MAX_SPOTS_Y] with fliped x,y index order.
+    <br/>
+    This function is helpful to convert data arrays calculated by this WFS driver into a format accepted by graphic tools for display.
+    </p>
+    <h2>Parameters</h2>
+    <table class="borderless" summary="Parameter help">
+      <tr>
+        <td valign="top"><em class="label">Input</em></td>
+      </tr>
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">instrumentHandle</td>
+        <td class="paramDataType">ViSession</td>
+        <td>
+    This parameter accepts the Instrument Handle returned by the Init function to select the desired instrument driver session.
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">arrayYX</td>
+        <td class="paramDataType">ViReal32[]</td>
+        <td>
+    This parameter accepts a two-dimensional array of float and array size [MAX_SPOTS_Y][MAX_SPOTS_X].
+        </td>
+      </tr>
+      <tr>
+        <td valign="top"><em class="label">Output</em></td>
+      </tr>
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">arrayXY</td>
+        <td class="paramDataType">ViReal32[]</td>
+        <td>
+    This parameter returns a two-dimensional array of float and array size [MAX_SPOTS_X][MAX_SPOTS_Y]. All array indices are flipped compared to input ArrayYX
+    <br/>
+    Note: Array XY must not be the same than Array YX!
+        </td>
+      </tr>
+    </table>
+    <h2>Return Value</h2>
+    <table class="borderless" summary="Return value help">
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">status</td>
+        <td class="paramDataType">ViStatus</td>
+        <td>
+    This value shows the status code returned by the function call.
+    <br/>
+    For Status Codes see function ErrorMessage.
+        </td>
+      </tr>
+    </table>
+    <h2>References</h2>
+    <p class="body">
+      <a href="ClassUtility%20Functions.html">Utility Functions</a><br/>
+      <a href="Wavefront%20Sensor.html">Wavefront Sensor</a><br/>
+      <a href="Alphabetical%20Function%20Index.html">Alphabetical Function Index</a><br/>
+      <a href="Hierarchical%20Function%20Index.html">Hierarchical Function Index</a><br/>
+    </p>
+  </body>
+</html>

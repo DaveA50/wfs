@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" href="htmlhelp.css" type="text/css">
+    <title>WFS_CalcReconstrDeviations</title>
+  </head>
+  <body>
+    <h1>WFS_CalcReconstrDeviations</h1>
+    <p class="syntax">
+      ViStatus WFS_CalcReconstrDeviations (ViSession instrumentHandle,
+                                     ViInt32 zernikeOrders,
+                                     ViInt32 _VI_FAR arrayZernikeReconstruct[],
+                                     ViInt32 doSphericalReference,
+                                     ViPReal64 fitErrMean,
+                                     ViPReal64 fitErrStdev);
+    </p>
+    <h2 class="purpose">Purpose</h2>
+    <p class="body">
+    This function calculates the reconstructed spot deviations based on the calculated Zernike coefficients.
+    <br/>
+    Note: This function needs to run prior to function WFS_CalcWavefront when the reconstructed or difference Wavefront should be calculated.
+    </p>
+    <h2>Parameters</h2>
+    <table class="borderless" summary="Parameter help">
+      <tr>
+        <td valign="top"><em class="label">Input</em></td>
+      </tr>
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">instrumentHandle</td>
+        <td class="paramDataType">ViSession</td>
+        <td>
+    This parameter accepts the Instrument Handle returned by the Init function to select the desired instrument driver session.
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">zernikeOrders</td>
+        <td class="paramDataType">ViInt32</td>
+        <td>
+    This parameter is the calculated number of Zernike orders in function WFS_ZernikeLsf. Use the value returned from this function.
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">arrayZernikeReconstruct</td>
+        <td class="paramDataType">ViInt32[]</td>
+        <td>
+    This parameter accepts a one-dimensional array of content 0 or 1 indicating if the appropriate Zernike mode is checked for reconstruction or not.
+    <br/>
+    Note: Required array dimension is [MAX_ZERNIKE_MODES+1] because valid indices are [1 .. 66] instead of [0 .. 65].
+    <br/>
+    Valid array values:
+    <br/>
+    0&nbsp;&nbsp;&nbsp;ignore this Zernike mode in reconstruction
+    <br/>
+    1&nbsp;&nbsp;&nbsp;reconstruct this Zernike mode
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">doSphericalReference</td>
+        <td class="paramDataType">ViInt32</td>
+        <td>
+    This parameter forces only Zernike mode Z[5] to be reconstructed in order to get deviations based on a pure spherical wavefront.
+    <br/>
+    Set parameter to 1 to perform a Spherical Reference calibration.
+    <br/>
+    Valid values:
+    <br/>
+    0&nbsp;&nbsp;&nbsp;use all Zernike Modes checked in ArrayZernikeReconstruct
+    <br/>
+    1&nbsp;&nbsp;&nbsp;use only Z[5] for pure spherical reconstruction
+        </td>
+      </tr>
+      <tr>
+        <td valign="top"><em class="label">Output</em></td>
+      </tr>
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">fitErrMean</td>
+        <td class="paramDataType">ViReal64 (passed by reference)</td>
+        <td>
+    This parameter returns the Mean Fit error in arcmin.
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">fitErrStdev</td>
+        <td class="paramDataType">ViReal64 (passed by reference)</td>
+        <td>
+    This parameter returns the Standard Deviation Fit error in arcmin.
+        </td>
+      </tr>
+    </table>
+    <h2>Return Value</h2>
+    <table class="borderless" summary="Return value help">
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">status</td>
+        <td class="paramDataType">ViStatus</td>
+        <td>
+    This value shows the status code returned by the function call.
+    <br/>
+    For Status Codes see function ErrorMessage.
+        </td>
+      </tr>
+    </table>
+    <h2>References</h2>
+    <p class="body">
+      <a href="ClassData%20Functions.html">Data Functions</a><br/>
+      <a href="Wavefront%20Sensor.html">Wavefront Sensor</a><br/>
+      <a href="Alphabetical%20Function%20Index.html">Alphabetical Function Index</a><br/>
+      <a href="Hierarchical%20Function%20Index.html">Hierarchical Function Index</a><br/>
+    </p>
+  </body>
+</html>

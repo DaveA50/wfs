@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" href="htmlhelp.css" type="text/css">
+    <title>WFS_SetPupil</title>
+  </head>
+  <body>
+    <h1>WFS_SetPupil</h1>
+    <p class="syntax">
+      ViStatus WFS_SetPupil (ViSession instrumentHandle, ViReal64 pupilCenterXMm,
+                       ViReal64 pupilCenterYMm, ViReal64 pupilDiameterXMm,
+                       ViReal64 pupilDiameterYMm);
+    </p>
+    <h2 class="purpose">Purpose</h2>
+    <p class="body">
+    This function defines the pupil in position and size.
+    </p>
+    <h2>Parameters</h2>
+    <table class="borderless" summary="Parameter help">
+      <tr>
+        <td valign="top"><em class="label">Input</em></td>
+      </tr>
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">instrumentHandle</td>
+        <td class="paramDataType">ViSession</td>
+        <td>
+    This parameter accepts the Instrument Handle returned by the Init function to select the desired instrument driver session.
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">pupilCenterXMm</td>
+        <td class="paramDataType">ViReal64</td>
+        <td>
+    This parameter defines the pupil center X position in mm. It needs to be within the active camera area defined by function ConfigureCam. Origin is the image center.
+    <br/>
+    Valid range: -5.0 ... +5.0 mm
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">pupilCenterYMm</td>
+        <td class="paramDataType">ViReal64</td>
+        <td>
+    This parameter defines the pupil center Y position in mm. It needs to be within the active camera area defined by function ConfigureCam. Origin is the image center.
+    <br/>
+    Valid range: -5.0 ... +5.0 mm
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">pupilDiameterXMm</td>
+        <td class="paramDataType">ViReal64</td>
+        <td>
+    This parameter defines the pupil X diameter in mm. The pupil area needs to be within the active camera area defined by function ConfigureCam.
+    <br/>
+    Valid range: 0.1 ... +10.0 mm
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">pupilDiameterYMm</td>
+        <td class="paramDataType">ViReal64</td>
+        <td>
+    This parameter defines the pupil Y diameter in mm. The pupil area needs to be within the active camera area defined by function ConfigureCam.
+    <br/>
+    Valid range: 0.1 ... +10.0 mm
+        </td>
+      </tr>
+    </table>
+    <h2>Return Value</h2>
+    <table class="borderless" summary="Return value help">
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">status</td>
+        <td class="paramDataType">ViStatus</td>
+        <td>
+    This value shows the status code returned by the function call.
+    <br/>
+    For Status Codes see function ErrorMessage.
+        </td>
+      </tr>
+    </table>
+    <h2>References</h2>
+    <p class="body">
+      <a href="ClassConfiguration%20Functions.html">Configuration Functions</a><br/>
+      <a href="Wavefront%20Sensor.html">Wavefront Sensor</a><br/>
+      <a href="Alphabetical%20Function%20Index.html">Alphabetical Function Index</a><br/>
+      <a href="Hierarchical%20Function%20Index.html">Hierarchical Function Index</a><br/>
+    </p>
+  </body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" href="htmlhelp.css" type="text/css">
+    <title>WFS_GetSpotfieldImage</title>
+  </head>
+  <body>
+    <h1>WFS_GetSpotfieldImage</h1>
+    <p class="syntax">
+      ViStatus WFS_GetSpotfieldImage (ViSession instrumentHandle,
+                                ViPAUInt8 imageBuf, ViPInt32 rows,
+                                ViPInt32 columns);
+    </p>
+    <h2 class="purpose">Purpose</h2>
+    <p class="body">
+    This function returns the reference to a spotfield image taken by functions TakeSpotfieldImage() or TakeSpotfieldImageAutoExpos().
+    <br/>
+    It returns also the image size.
+    <br/>
+    Note: This function is not available in Highspeed Mode!
+    </p>
+    <h2>Parameters</h2>
+    <table class="borderless" summary="Parameter help">
+      <tr>
+        <td valign="top"><em class="label">Input</em></td>
+      </tr>
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">instrumentHandle</td>
+        <td class="paramDataType">ViSession</td>
+        <td>
+    This parameter accepts the Instrument Handle returned by the Init function to select the desired instrument driver session.
+        </td>
+      </tr>
+      <tr>
+        <td valign="top"><em class="label">Output</em></td>
+      </tr>
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">imageBuf</td>
+        <td class="paramDataType">ViAUInt8 (passed by reference)</td>
+        <td>
+    This parameter returns a reference to the image buffer.
+    <br/>
+    Note: This buffer is allocated by the camera driver and the actual image size is Rows * Columns.
+    <br/>
+    Do not modify this buffer!
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">rows</td>
+        <td class="paramDataType">ViInt32 (passed by reference)</td>
+        <td>
+    This parameter returns the image height (rows) in pixels.
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">columns</td>
+        <td class="paramDataType">ViInt32 (passed by reference)</td>
+        <td>
+    This parameter returns the image width (columns) in pixels.
+        </td>
+      </tr>
+    </table>
+    <h2>Return Value</h2>
+    <table class="borderless" summary="Return value help">
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">status</td>
+        <td class="paramDataType">ViStatus</td>
+        <td>
+    This value shows the status code returned by the function call.
+    <br/>
+    For Status Codes see function ErrorMessage.
+        </td>
+      </tr>
+    </table>
+    <h2>References</h2>
+    <p class="body">
+      <a href="ClassData%20Functions.html">Data Functions</a><br/>
+      <a href="Wavefront%20Sensor.html">Wavefront Sensor</a><br/>
+      <a href="Alphabetical%20Function%20Index.html">Alphabetical Function Index</a><br/>
+      <a href="Hierarchical%20Function%20Index.html">Hierarchical Function Index</a><br/>
+    </p>
+  </body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" href="htmlhelp.css" type="text/css">
+    <title>WFS_ZernikeLsf</title>
+  </head>
+  <body>
+    <h1>WFS_ZernikeLsf</h1>
+    <p class="syntax">
+      ViStatus WFS_ZernikeLsf (ViSession instrumentHandle, ViPInt32 zernikeOrders,
+                         float arrayZernikeUm[], float arrayZernikeOrdersUm[],
+                         ViPReal64 roCMm);
+    </p>
+    <h2 class="purpose">Purpose</h2>
+    <p class="body">
+    This function calculates the spot deviations (centroid with respect to its reference) and performs a least square fit to the desired number of Zernike functions.
+    <br/>
+    Output results are the Zernike coefficients up to the desired number of Zernike modes and an array summarizing these coefficients to rms amplitudes for each Zernike order.
+    </p>
+    <h2>Parameters</h2>
+    <table class="borderless" summary="Parameter help">
+      <tr>
+        <td valign="top"><em class="label">Input</em></td>
+      </tr>
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">instrumentHandle</td>
+        <td class="paramDataType">ViSession</td>
+        <td>
+    This parameter accepts the Instrument Handle returned by the Init function to select the desired instrument driver session.
+        </td>
+      </tr>
+      <tr>
+        <td valign="top"><em class="label">Output</em></td>
+      </tr>
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">zernikeOrders</td>
+        <td class="paramDataType">ViInt32 (passed by reference)</td>
+        <td>
+    This parameter sets and returns the number of desired Zernike modes to fit.
+    <br/>
+    An input value 0 sets the number of calculated modes automatically, depending on the number of available spot deviations, and returns it.
+    <br/>
+    Input values in the range 2 .. 10 define the number of calculated Zernike modes according to this table:
+    <br/>
+    Input Zernike Order&nbsp;&nbsp;&nbsp;Calculated Zernike Modes
+    <br/>
+    0 = auto&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;auto
+    <br/>
+    2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6
+    <br/>
+    3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10
+    <br/>
+    4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;15
+    <br/>
+    5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;21
+    <br/>
+    6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;28
+    <br/>
+    7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;36
+    <br/>
+    8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;45
+    <br/>
+    9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;55
+    <br/>
+    10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;66
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">arrayZernikeUm</td>
+        <td class="paramDataType">float []</td>
+        <td>
+    This parameter returns a one-dimensional array of float containing the calculated Zernike coefficients.
+    <br/>
+    The required array size is [MAX_ZERNIKE_MODES+1] because indices [1..66] are used instead of [0 .. 65].
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">arrayZernikeOrdersUm</td>
+        <td class="paramDataType">float []</td>
+        <td>
+    This parameter returns a one-dimensional array of float containing the calculated Zernike coefficients summarizing these coefficients to rms amplitudes for each Zernike order.
+    <br/>
+    The required array size is [MAX_ZERNIKE_ORDERS+1] because indices [1..10] are used instead of [0 .. 9].
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">roCMm</td>
+        <td class="paramDataType">ViReal64 (passed by reference)</td>
+        <td>
+    This parameter returns the Radius of Curvature RoC for a spherical wavefront in mm, derived from Zernike coefficient Z[5].
+        </td>
+      </tr>
+    </table>
+    <h2>Return Value</h2>
+    <table class="borderless" summary="Return value help">
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">status</td>
+        <td class="paramDataType">ViStatus</td>
+        <td>
+    This value shows the status code returned by the function call.
+    <br/>
+    For Status Codes see function ErrorMessage.
+        </td>
+      </tr>
+    </table>
+    <h2>References</h2>
+    <p class="body">
+      <a href="ClassData%20Functions.html">Data Functions</a><br/>
+      <a href="Wavefront%20Sensor.html">Wavefront Sensor</a><br/>
+      <a href="Alphabetical%20Function%20Index.html">Alphabetical Function Index</a><br/>
+      <a href="Hierarchical%20Function%20Index.html">Hierarchical Function Index</a><br/>
+    </p>
+  </body>
+</html>

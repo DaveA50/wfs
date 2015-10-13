@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" href="WFS_files/htmlhelp.css" type="text/css">
+    <title>Wavefront Sensor</title>
+  </head>
+  <body>
+    <h1>Wavefront Sensor</h1>
+    <h2>Introduction</h2>
+    <p class="body">
+      This instrument driver provides programming support for <em>Wavefront Sensor</em>.
+      It contains functions for opening, configuring, taking
+      measurements from, and closing the instrument.
+    </p>
+    <h2>Assumptions</h2>
+    <p class="body">
+      To successfully use this module, the following conditions must be met:
+    </p>
+    <p class="body"><em>For GPIB instrument drivers:</em></p>
+    <ul>
+      <li>
+        the instrument is connected to the GPIB.
+      </li>
+      <li>
+        the GPIB address supplied to the initialize function
+        must match the GPIB address of the instrument.
+      </li>
+    </ul>
+    <p class="body"><em>For VXI instrument drivers:</em></p>
+    <ul>
+      <li>
+        the instrument is installed in the VXI mainframe and you are
+        using one of the following controller options:
+        <ul class="list-circle">
+          <li>Embedded controller</li>
+          <li>MXI</li>
+          <li>MXI2</li>
+          <li>GPIB-VXI</li>
+        </ul>
+      </li>
+      <li>
+         the logical address supplied to the initialize function must
+         match the logical address of the instrument.
+      </li>
+    </ul>
+    <p class="body"><em>For RS-232 instrument drivers:</em></p>
+    <ul>
+      <li>
+        the instrument is connected to the RS-232 interface.
+      </li>
+      <li>
+        the COM port, baud rate, parity, and timeout supplied to the
+        initialize function must match the settings of the instrument.
+      </li>
+    </ul>
+    <h2>Error and Status Information</h2>
+    <p class="body">
+      Each function in this instrument driver returns a status code that
+      either indicates success or describes an error or warning condition.
+      Your program should examine the status code from each call to an
+      instrument driver function to determine if an error occurred.
+      The general meaning of the status code is as follows:
+    </p>
+    <table summary="Organization of error codes">
+      <tr><td class="tablehead">Value</td><td class="tablehead">Meaning</td> </tr>
+      <tr><td>0</td>              <td>Success</td> </tr>
+      <tr><td>Positive Values</td><td>Warnings</td></tr>
+      <tr><td>Negative Values</td><td>Errors</td>  </tr>
+    </table>
+    <p class="body">
+      The description of each instrument driver function lists possible error
+      codes and their meanings.
+    </p>
+    <h2>References</h2>
+    <p class="body">
+      <a href="WFS_files/Wavefront%20Sensor.html">Wavefront Sensor</a><br/>
+      <a href="WFS_files/Alphabetical%20Function%20Index.html">Alphabetical Function Index</a><br/>
+      <a href="WFS_files/Hierarchical%20Function%20Index.html">Hierarchical Function Index</a><br/>
+    </p>
+  </body>
+</html>

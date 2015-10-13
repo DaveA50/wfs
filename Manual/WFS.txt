@@ -1,0 +1,4086 @@
+
+             Thorlabs Wavefront Sensor Instrument Driver V4.2
+________________________________________________________________________________
+
+  Introduction:
+
+  This instrument driver provides programming support for Wavefront Sensor.
+  It contains functions for opening, configuring, taking measurements from, and
+  closing the instrument.
+
+________________________________________________________________________________
+
+  Error and Status Information:
+
+  Each function in this instrument driver returns a status code that
+  either indicates success or describes an error or warning condition.
+  Your program should examine the status code from each call to an
+  instrument driver function to determine if an error occurred.
+  The general meaning of the status code is as follows:
+
+       Value                  Meaning
+       -------------------------------
+       0                      Success
+       Positive Values        Warnings
+       Negative Values        Errors
+
+  The description of each instrument driver function lists possible error
+  codes and their meanings
+
+________________________________________________________________________________
+
+  How To Use This Document:
+
+  Use this document as a programming reference manual.
+  It describes each function in the
+
+                               Wavefront Sensor
+
+  instrument.  The functions appear in alphabetical order, with a description
+  of the function and its C syntax, a description of each parameter, and a list
+  of possible error codes.
+
+________________________________________________________________________________
+
+Function Tree Layout:
+
+   Class/Panel Name:                          Function Name:
+
+      Initialize                              WFS_init
+      Configuration Functions
+         Get Instrument Info                  WFS_GetInstrumentInfo
+         Configure Cam                        WFS_ConfigureCam
+         Set Highspeed Mode                   WFS_SetHighspeedMode
+         Get Highspeed Windows                WFS_GetHighspeedWindows
+         Check Highspeed Centroids            WFS_CheckHighspeedCentroids
+         Get Exposure Time Range              WFS_GetExposureTimeRange
+         Set Exposure Time                    WFS_SetExposureTime
+         Get Exposure Time                    WFS_GetExposureTime
+         Get Master Gain Range                WFS_GetMasterGainRange
+         Set Master Gain                      WFS_SetMasterGain
+         Get Master Gain                      WFS_GetMasterGain
+         Set Black Level Offset               WFS_SetBlackLevelOffset
+         Get Black Level Offset               WFS_GetBlackLevelOffset
+         Set Trigger Mode                     WFS_SetTriggerMode
+         Get Trigger Mode                     WFS_GetTriggerMode
+         Set Trigger Delay                    WFS_SetTriggerDelay
+         Get Trigger Delay Range              WFS_GetTriggerDelayRange
+         Get Mla Count                        WFS_GetMlaCount
+         Get Mla Data                         WFS_GetMlaData
+         Get Mla Data 2                       WFS_GetMlaData2
+         Select Mla                           WFS_SelectMla
+         Set Aoi                              WFS_SetAoi
+         Get Aoi                              WFS_GetAoi
+         Set Pupil                            WFS_SetPupil
+         Get Pupil                            WFS_GetPupil
+         Set Reference Plane                  WFS_SetReferencePlane
+         Get Reference Plane                  WFS_GetReferencePlane
+      Action/Status Functions
+         Get Status                           WFS_GetStatus
+      Data Functions
+         Take Spotfield Image                 WFS_TakeSpotfieldImage
+         Take Spotfield Image Auto Expos      WFS_TakeSpotfieldImageAutoExpos
+         Get Spotfield Image                  WFS_GetSpotfieldImage
+         Get Spotfield Image Copy             WFS_GetSpotfieldImageCopy
+         Average Image                        WFS_AverageImage
+         Average Image Rolling                WFS_AverageImageRolling
+         Cut Image Noise Floor                WFS_CutImageNoiseFloor
+         Calc Image Min Max                   WFS_CalcImageMinMax
+         Calc Mean Rms Noise                  WFS_CalcMeanRmsNoise
+         Get Line                             WFS_GetLine
+         Get Line View                        WFS_GetLineView
+         Calc Beam Centroid Dia               WFS_CalcBeamCentroidDia
+         Calc Spots Centr Dia Intens          WFS_CalcSpotsCentrDiaIntens
+         Get Spot Centroids                   WFS_GetSpotCentroids
+         Get Spot Diameters                   WFS_GetSpotDiameters
+         Get Spot Dia Statistics              WFS_GetSpotDiaStatistics
+         Get Spot Intensities                 WFS_GetSpotIntensities
+         Calc Spot To Reference Deviations    WFS_CalcSpotToReferenceDeviations
+         Get Spot Reference Positions         WFS_GetSpotReferencePositions
+         Get Spot Deviations                  WFS_GetSpotDeviations
+         Zernike Lsf                          WFS_ZernikeLsf
+         Calc Fourier Optometric              WFS_CalcFourierOptometric
+         Calc Reconstr Deviations             WFS_CalcReconstrDeviations
+         Calc Wavefront                       WFS_CalcWavefront
+         Calc Wavefront Statistics            WFS_CalcWavefrontStatistics
+      Utility Functions
+         Self-Test                            WFS_self_test
+         Reset                                WFS_reset
+         Revision Query                       WFS_revision_query
+         Error Query                          WFS_error_query
+         Error Message                        WFS_error_message
+         Get Instrument List Len              WFS_GetInstrumentListLen
+         Get Instrument List Info             WFS_GetInstrumentListInfo
+         Get XY Scale                         WFS_GetXYScale
+         Convert Wavefront Waves              WFS_ConvertWavefrontWaves
+         Flip 2D Array                        WFS_Flip2DArray
+      Calibration Functions
+         Set Spots To User Reference          WFS_SetSpotsToUserReference
+         Set Calc Spots To User Reference     WFS_SetCalcSpotsToUserReference
+         Create Default User Reference        WFS_CreateDefaultUserReference
+         Save User Ref File                   WFS_SaveUserRefFile
+         Load User Ref File                   WFS_LoadUserRefFile
+         Do Spherical Ref                     WFS_DoSphericalRef
+      close                                   WFS_close
+________________________________________________________________________________
+
+  Wavefront Sensor
+
+      This instrument driver module provides programming support for the
+      Thorlabs WFS Wavefront Sensor instruments.
+      
+________________________________________________________________________________
+
+              The following functions are in alphabetical order.
+
+________________________________________________________________________________
+
+  WFS_AverageImage
+
+      ViStatus WFS_AverageImage (ViSession instrumentHandle,
+                                 ViInt32 averageCount,
+                                 ViPInt32 averagedDataReady);
+
+  Purpose
+
+      This function generates an averaged image from a number of input camera
+      images in ImageBuf. The function returns after each call and the
+      summarized image is stored in ImageBufAveraged.
+      
+      As soon as the desired number of averages in AverageCount is reached
+      ImageBuf and ImageBufAveraged return both the averaged image data and
+      AverageDataReady returns 1 instead of 0.
+      
+      Note:
+      As soon as the image size is changed by function ConfigureCam the
+      averaging process is re-started.
+      This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      averageCount
+
+          Variable Type       ViInt32
+
+          This parameter defines the number of averages.
+          
+          Valid range: 1 ... 256
+
+      averagedDataReady
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns 0 if the averaging process is going on and 1
+          when the target average count is reached.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_AverageImageRolling
+
+      ViStatus WFS_AverageImageRolling (ViSession instrumentHandle,
+                                        ViInt32 averageCount, ViInt32 reset);
+
+  Purpose
+
+      This function generates a rolling averaged image based on all previously
+      entered camera images in ImageBuf. The function returns after each call
+      and the averaged image is returned in ImageBuf and also stored in
+      ImageBufAveraged.
+      
+      The new rolling averaged image is calculated pixel by pixel according to
+      the formula:
+      (AverageCount - 1) * ImageBufAvg + ImageBuf) / AverageCount
+      
+      Note:
+      As soon as the image size is changed by function ConfigureCam the
+      averaging process is re-started.
+      This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      averageCount
+
+          Variable Type       ViInt32
+
+          This parameter defines the number of rolling averages.
+          
+          Valid range: 1 ... 256
+
+      reset
+
+          Variable Type       ViInt32
+
+          This parameter resets the rolling averaging process for Reset != 0.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_CalcBeamCentroidDia
+
+      ViStatus WFS_CalcBeamCentroidDia (ViSession instrumentHandle,
+                                        ViPReal64 beamCentroidXMm,
+                                        ViPReal64 beamCentroidYMm,
+                                        ViPReal64 beamDiameterXMm,
+                                        ViPReal64 beamDiameterYMm);
+
+  Purpose
+
+      This function calculates and returns the beam centroid and diameter data
+      based on the intensity distribution of the WFS camera image in mm.
+      
+      Note:
+      The beam centroid is highly sensitive to an increased black level of the
+      camera image. For good accuracy it is recommended to set it as low as
+      needed using function SetBlackLevelOffset.
+      
+      The beam diameter is calculated by the second moment formula.
+      
+      The initial beam is split into many spots by the lenslets which reduces
+      accuracy also.
+      
+      This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      beamCentroidXMm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the beam centroid X in mm.
+          
+
+      beamCentroidYMm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the beam centroid Y in mm.
+          
+
+      beamDiameterXMm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the beam diameter X in mm.
+          
+
+      beamDiameterYMm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the beam diameter Y in mm.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_CalcFourierOptometric
+
+      ViStatus WFS_CalcFourierOptometric (ViSession instrumentHandle,
+                                          ViInt32 zernikeOrders,
+                                          ViInt32 fourierOrder,
+                                          ViPReal64 fourierM,
+                                          ViPReal64 fourierJ0,
+                                          ViPReal64 fourierJ45,
+                                          ViPReal64 optoSphere,
+                                          ViPReal64 optoCylinder,
+                                          ViPReal64 optoAxisDeg);
+
+  Purpose
+
+      This function calculates the Fourier and Optometric notations from the
+      Zernike coefficients calculated in function WFS_ZernikeLsf.
+      
+      Note: Function WFS_ZernikeLsf is required to run prior to this function.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      zernikeOrders
+
+          Variable Type       ViInt32
+
+          This parameter is the calculated number of Zernike orders in function
+          WFS_ZernikeLsf. Use the value returned from this function.
+
+      fourierOrder
+
+          Variable Type       ViInt32
+
+          This parameter defines the highest Zernike order considered for
+          calculating Fourier coefficients M, J0 and J45 as well as the
+          Optometric parameters Sphere, Cylinder and Axis.
+          
+          Valid settings: 2, 4 or 6
+
+      fourierM
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns Fourier coefficient M.
+
+      fourierJ0
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns Fourier coefficient J0.
+
+      fourierJ45
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns Fourier coefficient J45.
+
+      optoSphere
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns Optometric parameter Sphere in diopters.
+
+      optoCylinder
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns Optometric parameter Cylinder in diopters.
+
+      optoAxisDeg
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns Optometric parameter Axis in deg.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_CalcImageMinMax
+
+      ViStatus WFS_CalcImageMinMax (ViSession instrumentHandle,
+                                    ViPInt32 imageMin, ViPInt32 imageMax,
+                                    ViPReal64 saturatedPixelsPercent);
+
+  Purpose
+
+      This function returns minimum and maximum pixel intensities in ImageBuf
+      as well as the number of saturated pixels in percent.
+      
+      Note: This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      imageMin
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the minimum pixel intensity within ImageBuf.
+          
+
+      imageMax
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the maximum pixel intensity within ImageBuf.
+          
+
+      saturatedPixelsPercent
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the percentage of saturated pixels within
+          ImageBuf.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_CalcMeanRmsNoise
+
+      ViStatus WFS_CalcMeanRmsNoise (ViSession instrumentHandle,
+                                     ViPReal64 mean, ViPReal64 rms);
+
+  Purpose
+
+      This function returns the mean average and rms variations of the pixel
+      intensities in ImageBuf.
+      
+      Note: This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      mean
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the mean average of the pixel intensities in
+          ImageBuf.
+          
+
+      rms
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the rms variations of the pixel intensities in
+          ImageBuf.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_CalcReconstrDeviations
+
+      ViStatus WFS_CalcReconstrDeviations (ViSession instrumentHandle,
+                                           ViInt32 zernikeOrders,
+                                           ViInt32 _VI_FAR arrayZernikeReconstruct[],
+                                           ViInt32 doSphericalReference,
+                                           ViPReal64 fitErrMean,
+                                           ViPReal64 fitErrStdev);
+
+  Purpose
+
+      This function calculates the reconstructed spot deviations based on the
+      calculated Zernike coefficients.
+      
+      Note: This function needs to run prior to function WFS_CalcWavefront when
+      the reconstructed or difference Wavefront should be calculated.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      zernikeOrders
+
+          Variable Type       ViInt32
+
+          This parameter is the calculated number of Zernike orders in function
+          WFS_ZernikeLsf. Use the value returned from this function.
+
+      arrayZernikeReconstruct
+
+          Variable Type       ViInt32[]
+
+          This parameter accepts a one-dimensional array of content 0 or 1
+          indicating if the appropriate Zernike mode is checked for
+          reconstruction or not.
+          
+          Note: Required array dimension is [MAX_ZERNIKE_MODES+1] because valid
+          indices are [1 .. 66] instead of [0 .. 65].
+          
+          Valid array values:
+            0   ignore this Zernike mode in reconstruction
+            1   reconstruct this Zernike mode
+          
+
+      doSphericalReference
+
+          Variable Type       ViInt32
+
+          This parameter forces only Zernike mode Z[5] to be reconstructed in
+          order to get deviations based on a pure spherical wavefront.
+          
+          Set parameter to 1 to perform a Spherical Reference calibration.
+          
+          Valid values:
+             0   use all Zernike Modes checked in ArrayZernikeReconstruct
+             1   use only Z[5] for pure spherical reconstruction
+
+      fitErrMean
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the Mean Fit error in arcmin.
+
+      fitErrStdev
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the Standard Deviation Fit error in arcmin.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_CalcSpotsCentrDiaIntens
+
+      ViStatus WFS_CalcSpotsCentrDiaIntens (ViSession instrumentHandle,
+                                            ViInt32 dynamicNoiseCut,
+                                            ViInt32 calculateDiameters);
+
+  Purpose
+
+      This function calculates the centroids, diameters (optional) and
+      intensities of all spots generated by the lenslets.
+      
+      Data arrays are returned by separate functions:
+      GetSpotCentroids
+      GetSpotDiameters
+      GetSpotIntensities
+      
+      Note: This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      dynamicNoiseCut
+
+          Variable Type       ViInt32
+
+          This parameter activates the dynamic noise cut function if
+          DynamicNoiseCut = 1. In this case each detected spot is analyzed
+          using an individual optimized minimum intensity limit.
+          
+          If DynamicNoiseCut is not used (=0) it is recommended to use function
+          CutImageNoiseFloor prior to this function in order to clear lower
+          intensity pixels at a fixed level.
+
+      calculateDiameters
+
+          Variable Type       ViInt32
+
+          This parameter activates (=1) or deactivates (=0) the calculation of
+          the spot diameters. Only when activated the function GetSpotDiameters
+          can susequently return valid spot diameters.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_CalcSpotToReferenceDeviations
+
+      ViStatus WFS_CalcSpotToReferenceDeviations (ViSession instrumentHandle,
+                                                  ViInt32 cancelWavefrontTilt);
+
+  Purpose
+
+      This function calculates reference positions and deviations for all spots
+      depending on the setting ref_idx(internal/user) set by function
+      SetWavefrontReference.
+      When option CancelWavefrontTilt is enabled the mean deviation in X and Y
+      direction is subtracted from the deviation data arrays.
+      
+      Reference positions can be retrieved using function
+      GetSpotReferencePositions and calculated deviations by function
+      GetSpotDeviations.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      cancelWavefrontTilt
+
+          Variable Type       ViInt32
+
+          This parameter forces the mean spot deviations to be canceled so that
+          the average wavefront tilt will disappear when calculated with
+          function CalcWavefront.
+          
+          Valid values:
+             0   calculate deviations normal
+             1   subtract mean deviation from all spot deviations
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_CalcWavefront
+
+      ViStatus WFS_CalcWavefront (ViSession instrumentHandle,
+                                  ViInt32 wavefrontType, ViInt32 limitToPupil,
+                                  float arrayWavefront[]);
+
+  Purpose
+
+      This function calculates the wavefront based on the spot deviations.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      wavefrontType
+
+          Variable Type       ViInt32
+
+          This parameter defines the type of wavefront to calculate.
+          
+          Valid settings:
+            0   Measured Wavefront
+            1   Reconstructed Wavefront based on Zernike coefficients
+            2   Difference between measured and reconstructed Wavefront
+          
+          Note: Function WFS_CalcReconstrDeviations needs to be called prior to
+          this function in case of Wavefront type 1 and 2.
+
+      limitToPupil
+
+          Variable Type       ViInt32
+
+          This parameter defines if the Wavefront should be calculated based on
+          all detected spots or only within the defined pupil.
+          
+          Valid settings:
+             0   Calculate Wavefront for all spots
+             1   Limit Wavefront to pupil interior
+
+      arrayWavefront
+
+          Variable Type       float []
+
+          This parameter returns a two-dimensional array of float containing
+          the wavefront data in µm.
+          
+          The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+          
+          Note: First array index is the spot number in Y, second index the
+          spot number in X direction. You may used function Flip2DArray() to
+          flip the index order prior to display by a graphical tool.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_CalcWavefrontStatistics
+
+      ViStatus WFS_CalcWavefrontStatistics (ViSession instrumentHandle,
+                                            ViPReal64 min, ViPReal64 max,
+                                            ViPReal64 diff, ViPReal64 mean,
+                                            ViPReal64 RMS,
+                                            ViPReal64 weightedRMS);
+
+  Purpose
+
+      This function returns statistic parameters of the wavefront in µm
+      calculated by function WFS_CalcWavefront.
+      
+      Note: Function WFS_CalcWavefront is required to run prior to this
+      function.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      min
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the Minimum value of the wavefront.
+
+      max
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the Maximum value of the wavefront.
+
+      diff
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the Difference between Maximum and Minimum of
+          the wavefront.
+
+      mean
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the Mean value of the wavefront.
+
+      RMS
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the RMS value of the wavefront.
+
+      weightedRMS
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the weighted RMS value of the wavefront. The
+          weighting is based on the individual spot intensity.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_CheckHighspeedCentroids
+
+      ViStatus WFS_CheckHighspeedCentroids (ViSession instrumentHandle);
+
+  Purpose
+
+      This function checks if the actual measured spot centroid positions are
+      within the calculation windows in Highspeed Mode.
+      
+      Possible error: WFS_ERROR_HIGHSPEED_WINDOW_MISMATCH
+      
+      If this error occures, measured centroids are not reliable for wavefront
+      interrogation because the appropriated spots are truncated.
+      
+      Note: This function is only available when Highspeed Mode is activated!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_close
+
+      ViStatus WFS_close (ViSession instrumentHandle);
+
+  Purpose
+
+      This function closes the instrument driver session.
+      
+      Note: The instrument must be reinitialized to use it again.
+      
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the
+          Initialize function to select the desired instrument driver session.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_ConfigureCam
+
+      ViStatus WFS_ConfigureCam (ViSession instrumentHandle,
+                                 ViInt32 pixelFormat, ViInt32 camResolIndex,
+                                 ViPInt32 spotsX, ViPInt32 spotsY);
+
+  Purpose
+
+      This function configures the WFS instrument's camera resolution and
+      returns the max. number of detectable spots in X and Y direction.
+      
+      The result depends on the selected microlens array in function
+      WFS_SelectMla().
+      
+      Note: This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      pixelFormat
+
+          Variable Type       ViInt32
+
+          This parameter selects the bit width per pixel of the returned camera
+          image. Thorlabs WFS instruments currently support only 8 bit format.
+
+      camResolIndex
+
+          Variable Type       ViInt32
+
+          This parameter selects the camera resolution in pixels. Only the
+          following pre-defined settings are supported:
+          
+          For WFS instruments:
+           Index  Resolution
+             0    1280x1024
+             1    1024x1024
+             2     768x768
+             3     512x512
+             4     320x320
+          
+          For WFS10 instruments:
+           Index  Resolution
+             0     640x480
+             1     480x480
+             2     360x360
+             3     260x260
+             4     180x180
+          
+          For WFS20 instruments:
+           Index  Resolution
+             0    1440x1080
+             1    1080x1080
+             2     768x768
+             3     512x512
+             4     360x360
+             5     720x540, bin2
+             6     540x540, bin2
+             7     384x384, bin2
+             8     256x256, bin2
+             9     180x180, bin2
+          
+
+      spotsX
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter retuns the number of spots which can be detected in X
+          direction, based on the selected camera resolution and Microlens
+          Array in function SetMlaIdx.
+
+      spotsY
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter retuns the number of spots which can be detected in Y
+          direction, based on the selected camera resolution and Microlens
+          Array in function SetMlaIdx.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_ConvertWavefrontWaves
+
+      ViStatus WFS_ConvertWavefrontWaves (ViSession instrumentHandle,
+                                          ViReal64 wavelength,
+                                          ViReal32 _VI_FAR arrayWavefrontIn[],
+                                          ViReal32 _VI_FAR arrayWavefrontOut[]);
+
+  Purpose
+
+      This function converts the wavefront data array calculated by function
+      CalcWavefront() from µm into waves unit depending on the actual
+      wavelength.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      wavelength
+
+          Variable Type       ViReal64
+
+          This parameter accepts the actual wavelength in nm.
+          
+          Valid range: 300 ... 1100 nm.
+
+      arrayWavefrontIn
+
+          Variable Type       ViReal32[]
+
+          This parameter accepts a two-dimensional array of float containing
+          the wavefront data in µm.
+          
+          The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+          
+
+      arrayWavefrontOut
+
+          Variable Type       ViReal32[]
+
+          This parameter returns a two-dimensional array of float containing
+          the wavefront data in waves.
+          
+          The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_CreateDefaultUserReference
+
+      ViStatus WFS_CreateDefaultUserReference (ViSession instrumentHandle);
+
+  Purpose
+
+      This function generates a default User Reference which is identical to
+      the Internal Reference. Use function GetSpotReferencePositions to get the
+      data arrays.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_CutImageNoiseFloor
+
+      ViStatus WFS_CutImageNoiseFloor (ViSession instrumentHandle,
+                                       ViInt32 limit);
+
+  Purpose
+
+      This function sets all pixels with intensities < Limit to zero which cuts
+      the noise floor of the camera.
+      
+      Note: This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      limit
+
+          Variable Type       ViInt32
+
+          This parameter defines the intensity limit. All image pixels with
+          intensities < Limit are set to zero.
+          
+          Valid range: 1 ... 256
+          
+          Note: The Limit must not set too high to clear the spots within the
+          WFS camera image.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_DoSphericalRef
+
+      ViStatus WFS_DoSphericalRef (ViSession instrumentHandle);
+
+  Purpose
+
+      This function calculates User Reference spot positions based on an
+      already performed measurement of a pure sherical wavefront.
+      
+      It supposes an already performed measurement including
+      - calculation of Zernike coefficients with function ZernikeLsf
+      - already calculated reconstructed deviations using function
+        CalcReconstrDeviations with option do_spherical_reference
+        set to 1.
+      
+      Use function SetReferenceType to activate the performed spherical User
+      Reference calibration.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_error_message
+
+      ViStatus WFS_error_message (ViSession instrumentHandle,
+                                  ViStatus errorCode,
+                                  ViChar _VI_FAR errorMessage[]);
+
+  Purpose
+
+      This function translates the error return value from a VXIplug&play
+      instrument driver function to a user-readable string.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the
+          Initialize function to select the desired instrument driver session.
+
+      errorCode
+
+          Variable Type       ViStatus
+
+          Instrument driver error code.
+
+      errorMessage
+
+          Variable Type       ViChar[]
+
+          VISA or instrument driver Error message.
+          The message buffer has to be initalized with 256 bytes.
+
+  Return Value
+
+          Operational return status. Contains either a completion code or an
+          error code. Instrument driver specific codes that may be returned in
+          addition to the VISA error codes defined in VPP-4.3 and vendor
+          specific codes, are as follows.
+          
+          Completition Codes
+          ----------------------------------------------------------------
+          VI_SUCCESS                Error query operation successful
+          VI_WARN_UNKNOWN_STATUS    The Error Code cannot be interpreted.
+________________________________________________________________________________
+
+  WFS_error_query
+
+      ViStatus WFS_error_query (ViSession instrumentHandle,
+                                ViPInt32 errorCode,
+                                ViChar _VI_FAR errorMessage[]);
+
+  Purpose
+
+      This function queries the instrument and returns instrument-specific
+      error information.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the
+          Initialize function to select the desired instrument driver session.
+
+      errorCode
+
+          Variable Type       ViInt32 (passed by reference)
+
+          Instrument error code returned by driver functions.
+
+      errorMessage
+
+          Variable Type       ViChar[]
+
+          Error message.
+          The message buffer has to be intialized with 256 bytes.
+
+  Return Value
+
+          Operational return status. Contains either a completion code or an
+          error code. Instrument driver specific codes that may be returned in
+          addition to the VISA error codes defined in VPP-4.3 and vendor
+          specific codes, are as follows.
+          
+          Completition Codes
+          ----------------------------------------------------------------
+          VI_SUCCESS                Error query operation successful
+          VI_WARN_NSUP_ERROR_QUERY  Error query not supported
+          
+          
+          Vendor Specific Codes
+          ----------------------------------------------------------------
+          For error codes and descriptions see <Error Message>.
+________________________________________________________________________________
+
+  WFS_Flip2DArray
+
+      ViStatus WFS_Flip2DArray (ViSession instrumentHandle,
+                                ViReal32 _VI_FAR arrayYX[],
+                                ViReal32 _VI_FAR arrayXY[]);
+
+  Purpose
+
+      This function flips a 2-dimensional array of size
+      ArrayYX[MAX_SPOTS_Y][MAX_SPOTS_X] into another array
+      ArrayXY[MAX_SPOTS_X][MAX_SPOTS_Y] with fliped x,y index order.
+      
+      This function is helpful to convert data arrays calculated by this WFS
+      driver into a format accepted by graphic tools for display.
+      
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      arrayYX
+
+          Variable Type       ViReal32[]
+
+          This parameter accepts a two-dimensional array of float and array
+          size [MAX_SPOTS_Y][MAX_SPOTS_X].
+          
+
+      arrayXY
+
+          Variable Type       ViReal32[]
+
+          This parameter returns a two-dimensional array of float and array
+          size [MAX_SPOTS_X][MAX_SPOTS_Y]. All array indices are flipped
+          compared to input ArrayYX
+          
+          Note: Array XY must not be the same than Array YX!
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetAoi
+
+      ViStatus WFS_GetAoi (ViSession instrumentHandle, ViPReal64 AOICenterXMm,
+                           ViPReal64 AOICenterYMm, ViPReal64 AOISizeXMm,
+                           ViPReal64 AOISizeYMm);
+
+  Purpose
+
+      This function returns the actual the area of interest (AOI) position and
+      size. All spots outside this area are ignored for BeamView display as
+      well as for Zernike and wavefront calculations.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      AOICenterXMm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the AOI center X position in mm.
+          
+
+      AOICenterYMm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the pupil center Y position in mm.
+          
+
+      AOISizeXMm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the AOI X size in mm.
+          
+
+      AOISizeYMm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the AOI Y size in mm.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetBlackLevelOffset
+
+      ViStatus WFS_GetBlackLevelOffset (ViSession instrumentHandle,
+                                        ViPInt32 blackLevelOffsetAct);
+
+  Purpose
+
+      This function returns the black offset level of the WFS camera.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      blackLevelOffsetAct
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the black offset value of the WFS camera.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetExposureTime
+
+      ViStatus WFS_GetExposureTime (ViSession instrumentHandle,
+                                    ViPReal64 exposureTimeAct);
+
+  Purpose
+
+      This function returns the actual exposure time of the WFS camera in ms.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      exposureTimeAct
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the actual exposure time of the WFS camera in
+          ms.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetExposureTimeRange
+
+      ViStatus WFS_GetExposureTimeRange (ViSession instrumentHandle,
+                                         ViPReal64 exposureTimeMin,
+                                         ViPReal64 exposureTimeMax,
+                                         ViPReal64 exposureTimeIncr);
+
+  Purpose
+
+      This function returns the available exposure range of the WFS camera in
+      ms. The range may depend on the camera resolution set by function
+      ConfigureCam.
+      
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      exposureTimeMin
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the minimal exposure time of the WFS camera in
+          ms.
+
+      exposureTimeMax
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the maximal exposure time of the WFS camera in
+          ms.
+
+      exposureTimeIncr
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the smallest possible increment of the
+          exposure time in ms.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetHighspeedWindows
+
+      ViStatus WFS_GetHighspeedWindows (ViSession instrumentHandle,
+                                        ViPInt32 windowCountX,
+                                        ViPInt32 windowCountY,
+                                        ViPInt32 windowSizeX,
+                                        ViPInt32 windowSizeY,
+                                        ViInt32 _VI_FAR windowStartposX[],
+                                        ViInt32 _VI_FAR windowStartposY[]);
+
+  Purpose
+
+      This function returns data of the spot detection windows valid in
+      Highspeed Mode. Window size and positions depend on options passed to
+      function WFS_SetHighspeedMode().
+      
+      Note: This function is only available when Highspeed Mode is activated!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      windowCountX
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the number of spot windows in X direction.
+
+      windowCountY
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the number of spot windows in Y direction.
+
+      windowSizeX
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the size in pixels of spot windows in X
+          direction.
+
+      windowSizeY
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the size in pixels of spot windows in Y
+          direction.
+
+      windowStartposX
+
+          Variable Type       ViInt32[]
+
+          This parameter returns a one-dimensional array containing the start
+          positions in pixels for spot windows in X direction.
+          
+          The required array size is MAX_SPOTS_X.
+          
+          Note: Window Stoppos X = Windows Startpos X + Windows Size X
+
+      windowStartposY
+
+          Variable Type       ViInt32[]
+
+          This parameter returns a one-dimensional array containing the start
+          positions in pixels for spot windows in Y direction.
+          
+          The required array size is MAX_SPOTS_Y.
+          
+          Note: Window Stoppos Y = Windows Startpos Y + Windows Size Y
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetInstrumentInfo
+
+      ViStatus WFS_GetInstrumentInfo (ViSession instrumentHandle,
+                                      ViChar _VI_FAR manufacturerName[],
+                                      ViChar _VI_FAR instrumentNameWFS[],
+                                      ViChar _VI_FAR serialNumberWFS[],
+                                      ViChar _VI_FAR serialNumberCam[]);
+
+  Purpose
+
+      This function returns the following information about the opened
+      instrument:
+      - Driver Manufacturer Name
+      - Instrument Name
+      - Instrument Serial Number
+      - Camera Serial Number
+      
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      manufacturerName
+
+          Variable Type       ViChar[]
+
+          This parameter returns the Manufacturer Name of this instrument
+          driver.
+          
+          Note: The string must contain at least WFS_BUFFER_SIZE (256) elements
+          (char[WFS_BUFFER_SIZE]).
+
+      instrumentNameWFS
+
+          Variable Type       ViChar[]
+
+          This parameter returns the Instrument Name of the WFS.
+          
+          Note: The string must contain at least WFS_BUFFER_SIZE (256) elements
+          (char[WFS_BUFFER_SIZE]).
+
+      serialNumberWFS
+
+          Variable Type       ViChar[]
+
+          This parameter returns the Serial Number of the WFS.
+          
+          Note: The string must contain at least WFS_BUFFER_SIZE (256) elements
+          (char[WFS_BUFFER_SIZE]).
+
+      serialNumberCam
+
+          Variable Type       ViChar[]
+
+          This parameter returns the Serial Number of the camera body the WFS
+          is based on.
+          
+          Note: The string must contain at least WFS_BUFFER_SIZE (256) elements
+          (char[WFS_BUFFER_SIZE]).
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetInstrumentListInfo
+
+      ViStatus WFS_GetInstrumentListInfo (ViSession instrumentHandle,
+                                          ViInt32 instrumentListIndex,
+                                          ViPInt32 deviceID, ViPInt32 inUse,
+                                          ViChar _VI_FAR instrumentName[],
+                                          ViChar _VI_FAR instrumentSN[],
+                                          ViChar _VI_FAR resourceName[]);
+
+  Purpose
+
+      This function returns information about one connected WFS instrument
+      selected by Instrument Index.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter is necessary to be VXIpnp compliant.
+          Set the parameter to VI_NULL as this parameter is ignored.
+          
+
+      instrumentListIndex
+
+          Variable Type       ViInt32
+
+          This parameter accepts the index of a WFS instrument of the
+          instrument list generated by function GetInstrumentListLen.
+          
+          Valid range: 0 .. InstrumentCount-1
+          
+          Note: The first instrument has index 0.
+          
+          
+
+      deviceID
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the Device ID required to open the WFS
+          instrument in function init.
+          
+
+      inUse
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the information if the instrument is already
+          used by another application or driver session.
+          
+            0   not in use, free to open
+            1   already in use
+          
+          Note: An instrument already in use will fails to open in function
+          init.
+
+      instrumentName
+
+          Variable Type       ViChar[]
+
+          This parameter returns the Instrument Name of the selected
+          instrument.
+          
+          Note: The string must contain at least WFS_BUFFER_SIZE (256) elements
+          (char[WFS_BUFFER_SIZE]).
+
+      instrumentSN
+
+          Variable Type       ViChar[]
+
+          This parameter returns the Serial Number of the selected instrument.
+          
+          Note: The string must contain at least WFS_BUFFER_SIZE (256) elements
+          (char[WFS_BUFFER_SIZE]).
+
+      resourceName
+
+          Variable Type       ViChar[]
+
+          This resoruce name can be used for the Initialize function.
+          The string has the format: "USB::0x1313::0x0000::" followed by the
+          device ID.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetInstrumentListLen
+
+      ViStatus WFS_GetInstrumentListLen (ViSession instrumentHandle,
+                                         ViPInt32 instrumentCount);
+
+  Purpose
+
+      This function reads all Wavefront Sensor devices connected to the PC and
+      returns the number of it.
+      
+      Use function GetInstrumentListInfo to retrieve information about each WFS
+      instrument.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter is necessary to be VXIpnp compliant.
+          Set the parameter to VI_NULL as this parameter is ignored.
+
+      instrumentCount
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the number of WFS instruments connected to the
+          PC.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetLine
+
+      ViStatus WFS_GetLine (ViSession instrumentHandle, ViInt32 line,
+                            float lineSelected[]);
+
+  Purpose
+
+      This function returns a single horizontal line of the image in a linear
+      array.
+      
+      Note: This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      line
+
+          Variable Type       ViInt32
+
+          This parameter defines the horizontal line to be selected within
+          ImageBuf.
+          
+          Valid range: 0 .. rows-1
+
+      lineSelected
+
+          Variable Type       float []
+
+          This parameter returns a linear array of floats containing the pixel
+          intensities along the selected line in ImageBuf.
+          
+          The required array size corresponds to the selected image width in
+          function ConfigureCam and is
+             max. 1280 for WFS150/WFS300
+             max   640 for WFS10
+             max. 1440 for WFS20
+          instruments.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetLineView
+
+      ViStatus WFS_GetLineView (ViSession instrumentHandle, float lineMin[],
+                                float lineMax[]);
+
+  Purpose
+
+      This function returns two linear arrays containing the minimum and
+      maximum intensities within the image columns, respectively.
+      
+      Note: This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      lineMin
+
+          Variable Type       float []
+
+          This parameter returns a linear array of floats containing the
+          minimum pixel intensities within all columns of ImageBuf.
+          
+          The required array size corresponds to the selected image width in
+          function ConfigureCam and is
+             max. 1280 for WFS150/WFS300
+             max   640 for WFS10
+             max. 1440 for WFS20
+          instruments.
+
+      lineMax
+
+          Variable Type       float []
+
+          This parameter returns a linear array of floats containing the
+          maximum pixel intensities within all columns of ImageBuf.
+          
+          The required array size corresponds to the selected image width in
+          function ConfigureCam and is
+             max. 1280 for WFS150/WFS300
+             max   640 for WFS10
+             max. 1440 for WFS20
+          instruments.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetMasterGain
+
+      ViStatus WFS_GetMasterGain (ViSession instrumentHandle,
+                                  ViPReal64 masterGainAct);
+
+  Purpose
+
+      This function returns the actual set linear master gain.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      masterGainAct
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the actual linear master gain of the WFS
+          camera.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetMasterGainRange
+
+      ViStatus WFS_GetMasterGainRange (ViSession instrumentHandle,
+                                       ViPReal64 masterGainMin,
+                                       ViPReal64 masterGainMax);
+
+  Purpose
+
+      This function returns the available linear master gain range of the WFS
+      camera.
+      
+      Note: Master gain increases image noise! Use higher exposure time to set
+      the WFS camera more sensitive.
+      Lowest master gain of WFS10 camera is 1.5.
+      Master gain of WFS20 camera is fixed to 1.0.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      masterGainMin
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the minimal linear master gain value of the
+          WFS camera.
+
+      masterGainMax
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the maximal linear master gain value of the
+          WFS camera.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetMlaCount
+
+      ViStatus WFS_GetMlaCount (ViSession instrumentHandle,
+                                ViPInt32 MLACount);
+
+  Purpose
+
+      This function returns the number of calibrated Microlens Arrays.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      MLACount
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the number of calibrated Microlens Arrays.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetMlaData
+
+      ViStatus WFS_GetMlaData (ViSession instrumentHandle, ViInt32 MLAIndex,
+                               ViChar _VI_FAR MLAName[], ViPReal64 camPitchm,
+                               ViPReal64 lensletPitchm, ViPReal64 spotOffsetX,
+                               ViPReal64 spotOffsetY, ViPReal64 lensletFm,
+                               ViPReal64 grdCorr0, ViPReal64 grdCorr45);
+
+  Purpose
+
+      This function returns calibration data of the desired Microlens Array
+      index. The number of calibrated lenslet arrays can be derived by function
+      GetMlaCals.
+      
+      Note: The calibration data are not automatically set active.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      MLAIndex
+
+          Variable Type       ViInt32
+
+          This parameter defines the index of a removable microlens array.
+          
+          Valid range: 0 ... MLACount-1
+          
+
+      MLAName
+
+          Variable Type       ViChar[]
+
+          This parameter returns the name of the Microlens Array.
+          
+          Note: The string must contain at least WFS_BUFFER_SIZE (256) elements
+          (char[WFS_BUFFER_SIZE]).
+
+      camPitchm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the camera pixel pitch in µm.
+          
+
+      lensletPitchm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the Microlens Array pitch in µm.
+          
+
+      spotOffsetX
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the X Offset of the central MLA lenslet.
+
+      spotOffsetY
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the Y Offset of the central MLA lenslet.
+          
+
+      lensletFm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the calibrated distance (focal length) of  the
+          Microlens Array in µm.
+          
+
+      grdCorr0
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the calibrated correction value for
+          astigmatism 0° of the Microlens Array in ppm.
+          
+
+      grdCorr45
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the calibrated correction value for
+          astigmatism 45° of the Microlens Array in ppm.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetMlaData2
+
+      ViStatus WFS_GetMlaData2 (ViSession instrumentHandle, ViInt32 MLAIndex,
+                                ViChar _VI_FAR MLAName[], ViPReal64 camPitchm,
+                                ViPReal64 lensletPitchm,
+                                ViPReal64 spotOffsetX, ViPReal64 spotOffsetY,
+                                ViPReal64 lensletFm, ViPReal64 grdCorr0,
+                                ViPReal64 grdCorr45, ViPReal64 grdCorrRot,
+                                ViPReal64 grdCorrPitch);
+
+  Purpose
+
+      This function returns calibration data of the desired Microlens Array
+      index. The number of calibrated lenslet arrays can be derived by function
+      GetMlaCals.
+      
+      Note: The calibration data are not automatically set active.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      MLAIndex
+
+          Variable Type       ViInt32
+
+          This parameter defines the index of a removable microlens array.
+          
+          Valid range: 0 ... MLACount-1
+          
+
+      MLAName
+
+          Variable Type       ViChar[]
+
+          This parameter returns the name of the Microlens Array.
+          
+          Note: The string must contain at least WFS_BUFFER_SIZE (256) elements
+          (char[WFS_BUFFER_SIZE]).
+
+      camPitchm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the camera pixel pitch in µm.
+          
+
+      lensletPitchm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the Microlens Array pitch in µm.
+          
+
+      spotOffsetX
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the X Offset of the central MLA lenslet.
+
+      spotOffsetY
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the Y Offset of the central MLA lenslet.
+          
+
+      lensletFm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the calibrated distance (focal length) of  the
+          Microlens Array in µm.
+          
+
+      grdCorr0
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the calibrated correction value for
+          astigmatism 0° of the Microlens Array in ppm.
+          
+
+      grdCorr45
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the calibrated correction value for
+          astigmatism 45° of the Microlens Array in ppm.
+          
+
+      grdCorrRot
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the calibrated correction value for rotation
+          of the Microlens Array in 10^-3 deg.
+          
+
+      grdCorrPitch
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the calibrated correction value for pitch  of
+          the Microlens Array in ppm.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetPupil
+
+      ViStatus WFS_GetPupil (ViSession instrumentHandle,
+                             ViPReal64 pupilCenterXMm,
+                             ViPReal64 pupilCenterYMm,
+                             ViPReal64 pupilDiameterXMm,
+                             ViPReal64 pupilDiameterYMm);
+
+  Purpose
+
+      This function returns the actual the pupil position and size.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      pupilCenterXMm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the pupil center X position in mm.
+          
+
+      pupilCenterYMm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the pupil center Y position in mm.
+
+      pupilDiameterXMm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the pupil X diameter in mm.
+
+      pupilDiameterYMm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the pupil Y diameter in mm.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetReferencePlane
+
+      ViStatus WFS_GetReferencePlane (ViSession instrumentHandle,
+                                      ViPInt32 referenceIndex);
+
+  Purpose
+
+      This function returns the Reference Plane setting of the WFS instrument.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      referenceIndex
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the actual Reference Plane of the WFS
+          instrument.
+          
+          Valid return values:
+            0   WFS_REF_INTERNAL
+            1   WFS_REF_USER
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetSpotCentroids
+
+      ViStatus WFS_GetSpotCentroids (ViSession instrumentHandle,
+                                     float arrayCentroidX[],
+                                     float arrayCentroidY[]);
+
+  Purpose
+
+      This function returns two two-dimensional arrays containing the centroid
+      X and Y positions in pixels calculated by function
+      WFS_CalcSpotsCentrDiaIntens.
+      
+      Note: Function WFS_CalcSpotsCentrDiaIntens is required to run
+      successfully before calculated data can be retrieved.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      arrayCentroidX
+
+          Variable Type       float []
+
+          This parameter returns a two-dimensional array of float containing
+          the centroid X spot positions in pixels.
+          
+          The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+          
+          Note: First array index is the spot number in Y, second index the
+          spot number in X direction.
+
+      arrayCentroidY
+
+          Variable Type       float []
+
+          This parameter returns a two-dimensional array of float containing
+          the centroid Y spot positions in pixels.
+          
+          The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+          
+          Note: First array index is the spot number in Y, second index the
+          spot number in X direction.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetSpotDeviations
+
+      ViStatus WFS_GetSpotDeviations (ViSession instrumentHandle,
+                                      float arrayDeviationsX[],
+                                      float arrayDeviationsY[]);
+
+  Purpose
+
+      This function returns two two-dimensional arrays containing the actual X
+      and Y spot deviations between centroid and reference spot positions in
+      pixels calculated by function CalcSpotToReferenceDeviations.
+      
+      Note: Function CalcSpotToReferenceDeviations needs to run prior to this
+      function.
+      
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      arrayDeviationsX
+
+          Variable Type       float []
+
+          This parameter returns a two-dimensional array of float containing
+          the deviation in X direction between centroid and reference spot
+          positions in pixels calculated by function
+          CalcSpotToReferenceDeviations.
+          
+          The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+          
+          Note: First array index is the spot number in Y, second index the
+          spot number in X direction.
+
+      arrayDeviationsY
+
+          Variable Type       float []
+
+          This parameter returns a two-dimensional array of float containing
+          the deviation in Y direction between centroid and reference spot
+          positions in pixels calculated by function
+          CalcSpotToReferenceDeviations.
+          
+          The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+          
+          Note: First array index is the spot number in Y, second index the
+          spot number in X direction.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetSpotDiameters
+
+      ViStatus WFS_GetSpotDiameters (ViSession instrumentHandle,
+                                     float arrayDiameterX[],
+                                     float arrayDiameterY[]);
+
+  Purpose
+
+      This function returns two two-dimensional arrays containing the spot
+      diameters in X and Y direction in pixels calculated by function
+      WFS_CalcSpotsCentrDiaIntens.
+      
+      Note: Function WFS_CalcSpotsCentrDiaIntens is required to run
+      successfully with option CalcDias = 1 before calculated data can be
+      retrieved.
+      This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      arrayDiameterX
+
+          Variable Type       float []
+
+          This parameter returns a two-dimensional array of float containing
+          the spot diameters in X direction in pixels.
+          
+          The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+          
+          Note: First array index is the spot number in Y, second index the
+          spot number in X direction.
+
+      arrayDiameterY
+
+          Variable Type       float []
+
+          This parameter returns a two-dimensional array of float containing
+          the spot diameters in Y direction in pixels.
+          
+          The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+          
+          Note: First array index is the spot number in Y, second index the
+          spot number in X direction.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetSpotDiaStatistics
+
+      ViStatus WFS_GetSpotDiaStatistics (ViSession instrumentHandle,
+                                         ViPReal64 min, ViPReal64 max,
+                                         ViPReal64 mean);
+
+  Purpose
+
+      This function calculates statistic parameters of the wavefront calculated
+      in function WFS_CalcWavefront.
+      
+      Note: Function WFS_CalcWavefront is required to run prior to this
+      function.
+      This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      min
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the Minimum spot diameter.
+
+      max
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the Maximum spot diameter.
+
+      mean
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the Mean average of spot diameters.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetSpotfieldImage
+
+      ViStatus WFS_GetSpotfieldImage (ViSession instrumentHandle,
+                                      ViPAUInt8 imageBuf, ViPInt32 rows,
+                                      ViPInt32 columns);
+
+  Purpose
+
+      This function returns the reference to a spotfield image taken by
+      functions TakeSpotfieldImage() or TakeSpotfieldImageAutoExpos().
+      It returns also the image size.
+      
+      Note: This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      imageBuf
+
+          Variable Type       ViAUInt8 (passed by reference)
+
+          This parameter returns a reference to the image buffer.
+          
+          Note: This buffer is allocated by the camera driver and the actual
+          image size is Rows * Columns.
+          Do not modify this buffer!
+          
+
+      rows
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the image height (rows) in pixels.
+
+      columns
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the image width (columns) in pixels.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetSpotfieldImageCopy
+
+      ViStatus WFS_GetSpotfieldImageCopy (ViSession instrumentHandle,
+                                          ViUInt8 _VI_FAR imageBuf[],
+                                          ViPInt32 rows, ViPInt32 columns);
+
+  Purpose
+
+      This function returns a copy of the spotfield image taken by functions
+      TakeSpotfieldImage() or TakeSpotfieldImageAutoExpos() into the user
+      provided buffer ImageBuf.
+      It returns also the image size.
+      
+      Note: This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      imageBuf
+
+          Variable Type       ViUInt8[]
+
+          This parameter accepts an user provided image buffer.
+          
+          Note: This buffer needs to be allocated by the user. The required
+          size is CAM_MAXPIX_X * CAM_MAXPIX_Y bytes.
+          
+
+      rows
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the image height (rows) in pixels.
+
+      columns
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the image width (columns) in pixels.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetSpotIntensities
+
+      ViStatus WFS_GetSpotIntensities (ViSession instrumentHandle,
+                                       float arrayIntensity[]);
+
+  Purpose
+
+      This function returns a two-dimensional array containing the spot
+      intensities in arbitrary unit calculated by function
+      WFS_CalcSpotsCentrDiaIntens.
+      
+      Note: Function WFS_CalcSpotsCentrDiaIntens is required to run
+      successfully before calculated data can be retrieved.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      arrayIntensity
+
+          Variable Type       float []
+
+          This parameter returns a two-dimensional array of float containing
+          the spot intensities in arbitrary unit.
+          
+          The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+          
+          Note: First array index is the spot number in Y, second index the
+          spot number in X direction.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetSpotReferencePositions
+
+      ViStatus WFS_GetSpotReferencePositions (ViSession instrumentHandle,
+                                              float arrayRefPosX[],
+                                              float arrayRefPosY[]);
+
+  Purpose
+
+      This function returns two two-dimensional arrays containing the actual X
+      and Y reference spot positions in pixels.
+      
+      A prior call to function WFS_SetReferencePlane() determines whether the
+      internal or user defined reference positions are returned.
+      
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      arrayRefPosX
+
+          Variable Type       float []
+
+          This parameter returns a two-dimensional array of float containing
+          the actual reference X spot positions in pixels.
+          
+          The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+          
+          Note: First array index is the spot number in Y, second index the
+          spot number in X direction.
+
+      arrayRefPosY
+
+          Variable Type       float []
+
+          This parameter returns a two-dimensional array of float containing
+          the actual reference Y spot positions in pixels.
+          
+          The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+          
+          Note: First array index is the spot number in Y, second index the
+          spot number in X direction.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetStatus
+
+      ViStatus WFS_GetStatus (ViSession instrumentHandle,
+                              ViPInt32 deviceStatus);
+
+  Purpose
+
+      This function returns the device status of the Wavefront Sensor
+      instrument.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the
+          Initialize function to select the desired instrument driver session.
+          
+
+      deviceStatus
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the device status of the Wavefront Sensor
+          instrument. Lower 24 bits are used.
+          
+          Bit         Name             Meaning if bit is set
+          
+          0x00000001  WFS_STATBIT_CON  USB CONnection to device lost
+          0x00000002  WFS_STATBIT_PTH  Power Too High (cam saturated)
+          0x00000004  WFS_STATBIT_PTL  Power Too Low (low cam digits)
+          0x00000008  WFS_STATBIT_HAL  High Ambient Light
+          0x00000010  WFS_STATBIT_SCL  Spot Contrast too Low
+          0x00000020  WFS_STATBIT_ZFL  Zernike fit Failed, Low spots no.
+          0x00000040  WFS_STATBIT_ZFH  Zernike fit Failed, High spots no.
+          0x00000080  WFS_STATBIT_ATR  Camera is still Awaiting a TRigger
+          
+          0x00000100  WFS_STATBIT_CFG  Camera is ConFiGured
+          0x00000200  WFS_STATBIT_PUD  PUpil is Defined
+          0x00000400  WFS_STATBIT_SPC  No. of Spots or Pupil Changed
+          0x00000800  WFS_STATBIT_RDA  Reconstr. spot Deviation Available
+          0x00001000  WFS_STATBIT_URF  No User ReFerence available
+          
+          0x00002000  WFS_STATBIT_HSP  Camera is in HighSPeed Mode
+          0x00004000  WFS_STATBIT_MIS  MISmatched centroids in Highspeed
+                                       Mode
+          0x00008000  WFS_STATBIT_LOS  LOw Spot count within pupil,
+                                       reduces Zernike accuracy
+          0x00010000  WFS_STATBIT_FIL, Pupil badly FILled with spots,
+                                       reduces Zernike accuracy
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetTriggerDelayRange
+
+      ViStatus WFS_GetTriggerDelayRange (ViSession instrumentHandle,
+                                         ViPInt32 triggerDelayMin,
+                                         ViPInt32 triggerDelayMax,
+                                         ViPInt32 triggerDelayIncr);
+
+  Purpose
+
+      This function returns the allowed range for the trigger delay setting in
+      function SetTriggerDelay().
+      
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      triggerDelayMin
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the minimum adjustable trigger delay in µs.
+
+      triggerDelayMax
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the maximum adjustable trigger delay in µs.
+          
+
+      triggerDelayIncr
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the accepted minimum increment of the trigger
+          delay in µs.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetTriggerMode
+
+      ViStatus WFS_GetTriggerMode (ViSession instrumentHandle,
+                                   ViPInt32 triggerMode);
+
+  Purpose
+
+      This function returns the actual hardware trigger mode.
+      
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      triggerMode
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the actual trigger mode.
+          
+          Valid trigger modes:
+             WFS_HW_TRIGGER_OFF  Trigger input disabled
+             WFS_HW_TRIGGER_HL   Trigger on high->low edge
+             WFS_HW_TRIGGER_LH   Trigger on low->high edge
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_GetXYScale
+
+      ViStatus WFS_GetXYScale (ViSession instrumentHandle,
+                               float arrayScaleX[], float arrayScaleY[]);
+
+  Purpose
+
+      This function returns two one-dimensional arrays containing the X and Y
+      axis scales in mm for spot intensity and wavefront arrays. The center
+      spot in the image center is denoted (0.0, 0.0) mm.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      arrayScaleX
+
+          Variable Type       float []
+
+          This parameter returns a one-dimensional array containing the X scale
+          in mm.
+          
+          The required array size is MAX_SPOTS_X.
+
+      arrayScaleY
+
+          Variable Type       float []
+
+          This parameter returns a one-dimensional array containing the Y scale
+          in mm.
+          
+          The required array size is MAX_SPOTS_Y.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_init
+
+      ViStatus WFS_init (ViRsrc resourceName, ViBoolean IDQuery,
+                         ViBoolean resetDevice, ViPSession instrumentHandle);
+
+  Purpose
+
+      This function initializes the instrument driver session and performs the
+      following initialization actions:
+      
+      (1) Opens a session to the Default Resource Manager resource and a
+      session to the selected device using the Resource Name.
+      (2) Performs an identification query on the Instrument.
+      (3) Resets the instrument to a known state.
+      (4) Sends initialization commands to the instrument.
+      (5) Returns an instrument handle which is used to differentiate between
+      different sessions of this instrument driver.
+      
+      Notes:
+      (1) Each time this function is invoked an unique session is opened.
+
+  Parameter List
+
+      resourceName
+
+          Variable Type       ViRsrc
+
+          This parameter specifies the interface of the device that is to be
+          initialized.The resource name has to follow the syntax:
+          
+          "USB::0x1313::0x0000::" followed by the Device ID.
+          
+          The Device ID can be get with the function
+          "WFS_GetInstrumentListInfo". E.g. "USB::0x1313::0x0000::1"
+          
+          
+
+      IDQuery
+
+          Variable Type       ViBoolean
+
+          Performs an In-System Verification.
+          Checks if the resource matches the vendor and product id.
+
+      resetDevice
+
+          Variable Type       ViBoolean
+
+          Performs Reset operation and places the instrument in a pre-defined
+          reset state.
+
+      instrumentHandle
+
+          Variable Type       ViSession (passed by reference)
+
+          This parameter returns an instrument handle that is used in all
+          subsequent calls to distinguish between different sessions of this
+          instrument driver.
+
+  Return Value
+
+          Operational return status. Contains either a completion code or an
+          error code. Instrument driver specific codes that may be returned in
+          addition to the VISA error codes defined in VPP-4.3 and vendor
+          specific codes, are as follows.
+          
+          Completition Codes
+          ----------------------------------------------------------------
+          VI_SUCCESS              Initialization successful
+          VI_WARN_NSUP_ID_QUERY   Identification query not supported
+          VI_WARN_NSUP_RESET      Reset not supported
+          
+          
+          Error Codes
+          ----------------------------------------------------------------
+          VI_ERROR_FAIL_ID_QUERY  Instrument identification query failed
+          
+          
+          Vendor Specific Codes
+          ----------------------------------------------------------------
+          For error codes and descriptions see <Error Message>.
+________________________________________________________________________________
+
+  WFS_LoadUserRefFile
+
+      ViStatus WFS_LoadUserRefFile (ViSession instrumentHandle);
+
+  Purpose
+
+      This function loads a User Reference spotfield file for the actual
+      selected Microlens Array and image resolution from folder
+      C:\Users\<user_name>\Documents\Thorlabs\Wavefront Sensor\Reference
+      
+      The file name is automatically set to:
+      WFS_<serial_number_wfs>_<mla_name>_<cam_resol_idx>.ref
+      or
+      WFS10_<serial_number_wfs>_<mla_name>_<cam_resol_idx>.ref
+      or
+      WFS20_<serial_number_wfs>_<mla_name>_<cam_resol_idx>.ref
+      
+      Example: "WFS_M00224955_MLA150M-5C_0.ref"
+      
+      Note: Centroid positions stored as 0.0 are converted to NaN in the
+      reference spotfield array because they denote undetected spots.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_reset
+
+      ViStatus WFS_reset (ViSession instrumentHandle);
+
+  Purpose
+
+      Places the instrument in a default state.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the
+          Initialize function to select the desired instrument driver session.
+
+  Return Value
+
+          Operational return status. Contains either a completion code or an
+          error code. Instrument driver specific codes that may be returned in
+          addition to the VISA error codes defined in VPP-4.3 and vendor
+          specific codes, are as follows.
+          
+          Completition Codes
+          ----------------------------------------------------------------
+          VI_SUCCESS              Reset operation successful.
+          VI_WARN_NSUP_RESET      Reset not supported.
+          
+          Vendor Specific Codes
+          ----------------------------------------------------------------
+          For error codes and descriptions see <Error Message>.
+________________________________________________________________________________
+
+  WFS_revision_query
+
+      ViStatus WFS_revision_query (ViSession instrumentHandle,
+                                   ViChar _VI_FAR instrumentDriverRevision[],
+                                   ViChar _VI_FAR firmwareRevision[]);
+
+  Purpose
+
+      This function returns the revision of the instrument driver and the
+      firmware revision of the instrument being used.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the
+          Initialize function to select the desired instrument driver session.
+
+      instrumentDriverRevision
+
+          Variable Type       ViChar[]
+
+          Instrument driver revision.
+
+      firmwareRevision
+
+          Variable Type       ViChar[]
+
+          Instrument firmware revision.
+
+  Return Value
+
+          Operational return status. Contains either a completion code or an
+          error code. Instrument driver specific codes that may be returned in
+          addition to the VISA error codes defined in VPP-4.3 and vendor
+          specific codes, are as follows.
+          
+          Completition Codes
+          ----------------------------------------------------------------
+          VI_SUCCESS               Revision query successful
+          VI_WARN_NSUP_REV_QUERY   Instrument revision query not supported
+          
+          
+          Vendor Specific Codes
+          ----------------------------------------------------------------
+          For error codes and descriptions see <Error Message>.
+________________________________________________________________________________
+
+  WFS_SaveUserRefFile
+
+      ViStatus WFS_SaveUserRefFile (ViSession instrumentHandle);
+
+  Purpose
+
+      This function saves a User Reference spotfield file for the actual
+      selected Microlens Array and image resolution into the folder
+      C:\Users\<user_name>\Documents\Thorlabs\Wavefront Sensor\Reference
+      
+      The file name is automatically set to:
+      WFS_<serial_number_wfs>_<mla_name>_<cam_resol_idx>.ref
+      or
+      WFS10_<serial_number_wfs>_<mla_name>_<cam_resol_idx>.ref
+      or
+      WFS20_<serial_number_wfs>_<mla_name>_<cam_resol_idx>.ref
+      
+      Example: "WFS_M00224955_MLA150M-5C_0.ref"
+      
+      Note: Centroid positions of undetected spots are stored as 0.0 instead of
+      NaN.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_SelectMla
+
+      ViStatus WFS_SelectMla (ViSession instrumentHandle, ViInt32 MLAIndex);
+
+  Purpose
+
+      This function selects one of the removable microlens arrays by its index.
+      Appropriate calibration values are read out of the instrument and set
+      active.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      MLAIndex
+
+          Variable Type       ViInt32
+
+          This parameter defines the index of a removable microlens array to be
+          selected.
+          
+          Valid range: 0 ... Number of calibrated MLAs-1
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_self_test
+
+      ViStatus WFS_self_test (ViSession instrumentHandle,
+                              ViPInt16 selfTestResult,
+                              ViChar _VI_FAR selfTestMessage[]);
+
+  Purpose
+
+      This function causes the instrument to perform a self-test and returns
+      the result of that self-test.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the
+          Initialize function to select the desired instrument driver session.
+
+      selfTestResult
+
+          Variable Type       ViInt16 (passed by reference)
+
+          Numeric result from self-test operation
+          0 = no error (test passed).
+
+      selfTestMessage
+
+          Variable Type       ViChar[]
+
+          Self-test status message.
+
+  Return Value
+
+          Operational return status. Contains either a completion code or an
+          error code. Instrument driver specific codes that may be returned in
+          addition to the VISA error codes defined in VPP-4.3 and vendor
+          specific codes, are as follows.
+          
+          Completition Codes
+          ----------------------------------------------------------------
+          VI_SUCCESS              Self-test operation successful
+          VI_WARN_NSUP_SELF_TEST  Self-test not supported
+          
+          
+          Vendor Specific Codes
+          ----------------------------------------------------------------
+          For error codes and descriptions see <Error Message>.
+________________________________________________________________________________
+
+  WFS_SetAoi
+
+      ViStatus WFS_SetAoi (ViSession instrumentHandle, ViReal64 AOICenterXMm,
+                           ViReal64 AOICenterYMm, ViReal64 AOISizeXMm,
+                           ViReal64 AOISizeYMm);
+
+  Purpose
+
+      This function defines the area of interest (AOI) within the camera image
+      in position and size. All spots outside this area are ignored for Zernike
+      and wavefront calculations.
+      
+      In order to set the max. available area set all 4 input values to 0.0.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      AOICenterXMm
+
+          Variable Type       ViReal64
+
+          This parameter defines the AOI center X position in mm. It needs to
+          be within the active camera area defined by function ConfigureCam.
+          Origin is the image center.
+          
+          Note: The parameter must fit to the selected camera area.
+
+      AOICenterYMm
+
+          Variable Type       ViReal64
+
+          This parameter defines the AOI center Y position in mm. It needs to
+          be within the active camera area defined by function ConfigureCam.
+          Origin is the image center.
+          
+          Note: The parameter must fit to the selected camera area.
+          
+
+      AOISizeXMm
+
+          Variable Type       ViReal64
+
+          This parameter defines the AOI width in mm. The area needs to be
+          within the active camera area defined by function ConfigureCam.
+          
+          
+          Note: The parameter must fit to the selected camera area.
+
+      AOISizeYMm
+
+          Variable Type       ViReal64
+
+          This parameter defines the AOI height in mm. The area needs to be
+          within the active camera area defined by function ConfigureCam.
+          
+          
+          Note: The parameter must fit to the selected camera area.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_SetBlackLevelOffset
+
+      ViStatus WFS_SetBlackLevelOffset (ViSession instrumentHandle,
+                                        ViInt32 blackLevelOffsetSet);
+
+  Purpose
+
+      This function sets the black offset level of the WFS camera. A higher
+      black level will increase the intensity level of a dark camera image.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      blackLevelOffsetSet
+
+          Variable Type       ViInt32
+
+          This parameter sets the black offset value of the WFS camera. A
+          higher black level will increase the intensity level of a dark camera
+          image.
+          
+          Valid range: 0 ... 255
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_SetCalcSpotsToUserReference
+
+      ViStatus WFS_SetCalcSpotsToUserReference (ViSession instrumentHandle,
+                                                ViInt32 referenceType,
+                                                float arrayRefPosX[MAX_SPOTS_Y][MAX_SPOTS_X],
+                                                float arrayRefPosY[MAX_SPOTS_Y][MAX_SPOTS_X]);
+
+  Purpose
+
+      This function sets the X and Y user reference spot positions in pixels to
+      calculated spot positions given by two two-dimensional arrays.
+      
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      referenceType
+
+          Variable Type       ViInt32
+
+          This parameter defines the reference type to either relative or or
+          absolute.
+          
+          Valid values:
+            0   WFS_REF_TYPE_REL
+            1   WFS_REF_TYPE_ABS
+          
+          Relative reference type means that the given spot positions are
+          relative (+/- pixels) to the internal factory calibration data
+          whereas absolute reference type denotes absolute spot position data
+          (0 ... max. camera pixels).
+          
+
+      arrayRefPosX
+
+          Variable Type       float[MAX_SPOTS_Y][MAX_SPOTS_X]
+
+          This parameter accepts a two-dimensional array of float containing
+          user calculated reference X spot positions in pixels.
+          
+          The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+          
+          Note: First array index is the spot number in Y, second index the
+          spot number in X direction.
+
+      arrayRefPosY
+
+          Variable Type       float[MAX_SPOTS_Y][MAX_SPOTS_X]
+
+          This parameter accepts a two-dimensional array of float containing
+          user calculated reference Y spot positions in pixels.
+          
+          The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+          
+          Note: First array index is the spot number in Y, second index the
+          spot number in X direction.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_SetExposureTime
+
+      ViStatus WFS_SetExposureTime (ViSession instrumentHandle,
+                                    ViReal64 exposureTimeSet,
+                                    ViPReal64 exposureTimeAct);
+
+  Purpose
+
+      This function sets the target exposure time for the WFS camera and
+      returns the actual set value.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      exposureTimeSet
+
+          Variable Type       ViReal64
+
+          This parameter sets the target exposure time for the WFS camera in
+          ms.
+          
+
+      exposureTimeAct
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the actual exposure time of the WFS camera in
+          ms.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_SetHighspeedMode
+
+      ViStatus WFS_SetHighspeedMode (ViSession instrumentHandle,
+                                     ViInt32 highspeedMode,
+                                     ViInt32 adaptCentroids,
+                                     ViInt32 substractOffset,
+                                     ViInt32 allowAutoExposure);
+
+  Purpose
+
+      This function activates/deactivates the camera's Highspeed Mode for
+      WFS10/WFS20 instruments.
+      
+      When activated, the camera calculates the spot centroid positions
+      internally and sends the result to the WFS driver instead of sending raw
+      spotfield images.
+      
+      Note:
+      There is no camera image available when Highspeed Mode is activated!
+      Highspeed Mode is not available for WFS150/WFS300 instruments!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      highspeedMode
+
+          Variable Type       ViInt32
+
+          This parameter determines if the camera's Highspeed Mode is switched
+          on or off.
+
+      adaptCentroids
+
+          Variable Type       ViInt32
+
+          When Highspeed Mode is selected, this parameter determines if the
+          centroid positions measured in Normal Mode should be used to adapt
+          the spot search windows for Highspeed Mode.
+          Otherwise, a rigid grid based on reference spot positions is used in
+          Highspeed Mode.
+
+      substractOffset
+
+          Variable Type       ViInt32
+
+          This parameter defines an offset level for Highspeed Mode only. All
+          camera pixels will be subtracted by this level before the centroids
+          are being calculated, which increases accuracy.
+          
+          Valid range: 0 ... 255
+          
+          Note: The offset is only valid in Highspeed Mode and must not set too
+          high to clear the spots within the camera image!
+
+      allowAutoExposure
+
+          Variable Type       ViInt32
+
+          When Highspeed Mode is selected, this parameter determines if the
+          camera should also calculate the image saturation in order enable the
+          auto exposure feature using function
+          WFS_TakeSpotfieldImageAutoExpos() instead of
+          WFS_TakeSpotfieldImage().
+          This option leads to a somewhat reduced measurement speed when
+          enabled.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_SetMasterGain
+
+      ViStatus WFS_SetMasterGain (ViSession instrumentHandle,
+                                  ViReal64 masterGainSet,
+                                  ViPReal64 masterGainAct);
+
+  Purpose
+
+      This function sets the target linear master gain for the WFS camera and
+      returns the actual set master gain.
+      
+      Note: MasterGain of WFS20 is fixed to 1
+      
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      masterGainSet
+
+          Variable Type       ViReal64
+
+          This parameter sets the target linear master gain for the WFS camera.
+          
+          Note: MasterGain of WFS20 is fixed to 1
+
+      masterGainAct
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the actual linear master gain of the WFS
+          camera.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_SetPupil
+
+      ViStatus WFS_SetPupil (ViSession instrumentHandle,
+                             ViReal64 pupilCenterXMm, ViReal64 pupilCenterYMm,
+                             ViReal64 pupilDiameterXMm,
+                             ViReal64 pupilDiameterYMm);
+
+  Purpose
+
+      This function defines the pupil in position and size.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      pupilCenterXMm
+
+          Variable Type       ViReal64
+
+          This parameter defines the pupil center X position in mm. It needs to
+          be within the active camera area defined by function ConfigureCam.
+          Origin is the image center.
+          
+          Valid range: -5.0 ... +5.0 mm
+
+      pupilCenterYMm
+
+          Variable Type       ViReal64
+
+          This parameter defines the pupil center Y position in mm. It needs to
+          be within the active camera area defined by function ConfigureCam.
+          Origin is the image center.
+          
+          Valid range: -5.0 ... +5.0 mm
+
+      pupilDiameterXMm
+
+          Variable Type       ViReal64
+
+          This parameter defines the pupil X diameter in mm. The pupil area
+          needs to be within the active camera area defined by function
+          ConfigureCam.
+          
+          Valid range: 0.1 ... +10.0 mm
+
+      pupilDiameterYMm
+
+          Variable Type       ViReal64
+
+          This parameter defines the pupil Y diameter in mm. The pupil area
+          needs to be within the active camera area defined by function
+          ConfigureCam.
+          
+          Valid range: 0.1 ... +10.0 mm
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_SetReferencePlane
+
+      ViStatus WFS_SetReferencePlane (ViSession instrumentHandle,
+                                      ViInt32 referenceIndex);
+
+  Purpose
+
+      This function defines the WFS Reference Plane to either Internal or User
+      (external).
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      referenceIndex
+
+          Variable Type       ViInt32
+
+          This parameter sets the Reference Plane to either Internal or User
+          (external).
+          
+          Valid values:
+            0   WFS_REF_INTERNAL
+            1   WFS_REF_USER
+          
+          User reference is based on a file .ref containing spot reference
+          positions which can be loaded and saved by functions LoadUserRefFile
+          and SaveUserRefFile. It's name is specific to the WFS serial number,
+          MLA name and actual camera resolution.
+          
+          A default User Refrence file containing a copy of internal reference
+          data can be created by function CreateDefaultUserReference.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_SetSpotsToUserReference
+
+      ViStatus WFS_SetSpotsToUserReference (ViSession instrumentHandle);
+
+  Purpose
+
+      This function copies the measured spot centroid positions to the User
+      Reference spot positions. Consequently spot deviations become zero
+      resulting in a plane wavefront.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_SetTriggerDelay
+
+      ViStatus WFS_SetTriggerDelay (ViSession instrumentHandle,
+                                    ViInt32 triggerDelaySet,
+                                    ViPInt32 triggerDelayAct);
+
+  Purpose
+
+      This function sets an additional trigger delay for a hardware trigger
+      mode set by function SetTriggerMode().
+      
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      triggerDelaySet
+
+          Variable Type       ViInt32
+
+          This parameter accepts the target trigger delay in µs. Use function
+          GetTriggerDelayRange() to read out the accepted limits.
+          
+
+      triggerDelayAct
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter returns the actual trigger delay in µs which may
+          differ from the target value.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_SetTriggerMode
+
+      ViStatus WFS_SetTriggerMode (ViSession instrumentHandle,
+                                   ViInt32 triggerMode);
+
+  Purpose
+
+      This function sets the hardware trigger mode.
+      When the trigger capability is activated, functions TakeSpotfieldImage()
+      and TakeSpotfieldImageAutoExpos() will wait for a trigger event for a
+      short period of time (WFS_TIMEOUT_CAPTURE_TRIGGER = 0.1 sec.) prior to
+      start exposure and will return with error WFS_ERROR_AWAITING_TRIGGER if
+      no trigger event occured.
+      
+      Use function SetTriggerDelay() to define an extra trigger delay time.
+      
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      triggerMode
+
+          Variable Type       ViInt32
+
+          This parameter defines and activates the trigger mode.
+          
+          Valid settings:
+             WFS_HW_TRIGGER_OFF  Trigger input disabled
+             WFS_HW_TRIGGER_HL   Trigger on high->low edge
+             WFS_HW_TRIGGER_LH   Trigger on low->high edge
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_TakeSpotfieldImage
+
+      ViStatus WFS_TakeSpotfieldImage (ViSession instrumentHandle);
+
+  Purpose
+
+      This function receives a spotfield image from the WFS camera into a
+      driver buffer. The reference to this buffer is provided by function
+      GetSpotfieldImage() and an image copy is returned by function
+      GetSpotfieldImageCopy().
+      
+      In case of unsuited image exposure the function sets the appropriate
+      status bits. Use function GetStatus() to check the reason.
+      
+      Bit         Name             Meaning if bit is set
+      
+      0x00000002  WFS_STATBIT_PTH  Power Too High (cam saturated)
+      0x00000004  WFS_STATBIT_PTL  Power Too Low (low cam digits)
+      0x00000008  WFS_STATBIT_HAL  High Ambient Light
+      
+      You need to set optimized exposure and gain settings by functions
+      SetExposureTime() and SetMasterGain() and repeate calling the function
+      until these status bits are cleared.
+      
+      Alternatively, you may use function GetImageAutoExpos().
+      
+      
+      When the trigger capability is activated by function SetTriggerMode()
+      this function will wait for a trigger event for a short period of time
+      (WFS_TIMEOUT_CAPTURE_TRIGGER = 0.1 sec.) prior to start exposure and will
+      return with error WFS_ERROR_AWAITING_TRIGGER if no trigger event occured.
+      You need to repeate calling this function until this error and status bit
+      WFS_STATBIT_ATR disappear.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_TakeSpotfieldImageAutoExpos
+
+      ViStatus WFS_TakeSpotfieldImageAutoExpos (ViSession instrumentHandle,
+                                                ViPReal64 exposureTimeAct,
+                                                ViPReal64 masterGainAct);
+
+  Purpose
+
+      This function tries to find optimal exposure and gain settings and then
+      it receives a spotfield image from the WFS camera into a driver buffer.
+      The reference to this buffer is provided by function GetSpotfieldImage()
+      and an image copy is returned by function GetSpotfieldImageCopy().
+      
+      The exposure and gain settings used for this image are returned.
+      
+      In case of still unsuited image exposure the function sets the
+      appropriate status bits. Use function GetStatus() to check the reason.
+      
+      Bit         Name             Meaning if bit is set
+      
+      0x00000002  WFS_STATBIT_PTH  Power Too High (cam saturated)
+      0x00000004  WFS_STATBIT_PTL  Power Too Low (low cam digits)
+      0x00000008  WFS_STATBIT_HAL  High Ambient Light
+      
+      You may repeate calling the function until these status bits are cleared.
+      
+      
+      When the trigger capability is activated by function SetTriggerMode()
+      this function will wait for a trigger event for a short period of time
+      (WFS_TIMEOUT_CAPTURE_TRIGGER = 0.1 sec.) prior to start exposure and will
+      return with error WFS_ERROR_AWAITING_TRIGGER if no trigger event occured.
+      You need to repeate calling this function until this error and status bit
+      WFS_STATBIT_ATR disappear.
+      
+      Note: This function is not available in Highspeed Mode!
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      exposureTimeAct
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the automatically selected actual exposure
+          time the camera image was taken with.
+
+      masterGainAct
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the automatically selected actual master gain
+          the camera image was taken with.
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+________________________________________________________________________________
+
+  WFS_ZernikeLsf
+
+      ViStatus WFS_ZernikeLsf (ViSession instrumentHandle,
+                               ViPInt32 zernikeOrders, float arrayZernikeUm[],
+                               float arrayZernikeOrdersUm[], ViPReal64 roCMm);
+
+  Purpose
+
+      This function calculates the spot deviations (centroid with respect to
+      its reference) and performs a least square fit to the desired number of
+      Zernike functions.
+      
+      Output results are the Zernike coefficients up to the desired number of
+      Zernike modes and an array summarizing these coefficients to rms
+      amplitudes for each Zernike order.
+
+  Parameter List
+
+      instrumentHandle
+
+          Variable Type       ViSession
+
+          This parameter accepts the Instrument Handle returned by the Init
+          function to select the desired instrument driver session.
+          
+
+      zernikeOrders
+
+          Variable Type       ViInt32 (passed by reference)
+
+          This parameter sets and returns the number of desired Zernike modes
+          to fit.
+          An input value 0 sets the number of calculated modes automatically,
+          depending on the number of available spot deviations, and returns it.
+          Input values in the range 2 .. 10 define the number of calculated
+          Zernike modes according to this table:
+          
+          Input Zernike Order   Calculated Zernike Modes
+                  0 = auto             auto
+                  2                      6
+                  3                     10
+                  4                     15
+                  5                     21
+                  6                     28
+                  7                     36
+                  8                     45
+                  9                     55
+                 10                     66
+          
+
+      arrayZernikeUm
+
+          Variable Type       float []
+
+          This parameter returns a one-dimensional array of float containing
+          the calculated Zernike coefficients.
+          
+          The required array size is [MAX_ZERNIKE_MODES+1] because indices
+          [1..66] are used instead of [0 .. 65].
+
+      arrayZernikeOrdersUm
+
+          Variable Type       float []
+
+          This parameter returns a one-dimensional array of float containing
+          the calculated Zernike coefficients summarizing these coefficients to
+          rms amplitudes for each Zernike order.
+          
+          The required array size is [MAX_ZERNIKE_ORDERS+1] because indices
+          [1..10] are used instead of [0 .. 9].
+
+      roCMm
+
+          Variable Type       ViReal64 (passed by reference)
+
+          This parameter returns the Radius of Curvature RoC for a spherical
+          wavefront in mm, derived from Zernike coefficient Z[5].
+          
+
+  Return Value
+
+          This value shows the status code returned by the function call.
+          
+          For Status Codes see function ErrorMessage.
+          
+

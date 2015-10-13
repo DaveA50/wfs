@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" href="htmlhelp.css" type="text/css">
+    <title>WFS_init</title>
+  </head>
+  <body>
+    <h1>WFS_init</h1>
+    <p class="syntax">
+      ViStatus WFS_init (ViRsrc resourceName, ViBoolean IDQuery,
+                   ViBoolean resetDevice, ViPSession instrumentHandle);
+    </p>
+    <h2 class="purpose">Purpose</h2>
+    <p class="body">
+    This function initializes the instrument driver session and performs the following initialization actions:
+    <br/>
+    (1) Opens a session to the Default Resource Manager resource and a session to the selected device using the Resource Name.
+    <br/>
+    (2) Performs an identification query on the Instrument.
+    <br/>
+    (3) Resets the instrument to a known state.
+    <br/>
+    (4) Sends initialization commands to the instrument.
+    <br/>
+    (5) Returns an instrument handle which is used to differentiate between different sessions of this instrument driver.
+    <br/>
+    Notes:
+    <br/>
+    (1) Each time this function is invoked an unique session is opened.&nbsp;&nbsp;
+    </p>
+    <h2>Parameters</h2>
+    <table class="borderless" summary="Parameter help">
+      <tr>
+        <td valign="top"><em class="label">Input</em></td>
+      </tr>
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">resourceName</td>
+        <td class="paramDataType">ViRsrc</td>
+        <td>
+    This parameter specifies the interface of the device that is to be initialized.The resource name has to follow the syntax:
+    <br/>
+    &quot;USB::0x1313::0x0000::&quot; followed by the Device ID.
+    <br/>
+    The Device ID can be get with the function &quot;WFS_GetInstrumentListInfo&quot;. E.g. &quot;USB::0x1313::0x0000::1&quot;
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">IDQuery</td>
+        <td class="paramDataType">ViBoolean</td>
+        <td>
+    Performs an In-System Verification.
+    <br/>
+    Checks if the resource matches the vendor and product id.
+        </td>
+      </tr>
+      <tr>
+        <td class="paramName">resetDevice</td>
+        <td class="paramDataType">ViBoolean</td>
+        <td>
+    Performs Reset operation and places the instrument in a pre-defined reset state.
+        </td>
+      </tr>
+      <tr>
+        <td valign="top"><em class="label">Output</em></td>
+      </tr>
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">instrumentHandle</td>
+        <td class="paramDataType">ViSession (passed by reference)</td>
+        <td>
+    This parameter returns an instrument handle that is used in all subsequent calls to distinguish between different sessions of this instrument driver.
+        </td>
+      </tr>
+    </table>
+    <h2>Return Value</h2>
+    <table class="borderless" summary="Return value help">
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">status</td>
+        <td class="paramDataType">ViStatus</td>
+        <td>
+    Operational return status. Contains either a completion code or an error code. Instrument driver specific codes that may be returned in addition to the VISA error codes defined in VPP-4.3 and vendor specific codes, are as follows.
+    <br/>
+    Completition Codes
+    <br/>
+    ----------------------------------------------------------------
+    <br/>
+    VI_SUCCESS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initialization successful
+    <br/>
+    VI_WARN_NSUP_ID_QUERY&nbsp;&nbsp;&nbsp;Identification query not supported
+    <br/>
+    VI_WARN_NSUP_RESET&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reset not supported
+    <br/>
+    Error Codes
+    <br/>
+    ----------------------------------------------------------------
+    <br/>
+    VI_ERROR_FAIL_ID_QUERY&nbsp;&nbsp;Instrument identification query failed
+    <br/>
+    Vendor Specific Codes
+    <br/>
+    ----------------------------------------------------------------
+    <br/>
+    For error codes and descriptions see &lt;Error Message&gt;.
+        </td>
+      </tr>
+    </table>
+    <h2>References</h2>
+    <p class="body">
+      <a href="Wavefront%20Sensor.html">Wavefront Sensor</a><br/>
+      <a href="Alphabetical%20Function%20Index.html">Alphabetical Function Index</a><br/>
+      <a href="Hierarchical%20Function%20Index.html">Hierarchical Function Index</a><br/>
+    </p>
+  </body>
+</html>

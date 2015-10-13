@@ -1,0 +1,229 @@
+[ALIAS]
+IDH_WFS_init=WFS_files\FunctWFS_init.html
+IDH_WFS_GetInstrumentInfo=WFS_files\FunctWFS_GetInstrumentInfo.html
+IDH_WFS_ConfigureCam=WFS_files\FunctWFS_ConfigureCam.html
+IDH_WFS_SetHighspeedMode=WFS_files\FunctWFS_SetHighspeedMode.html
+IDH_WFS_GetHighspeedWindows=WFS_files\FunctWFS_GetHighspeedWindows.html
+IDH_WFS_CheckHighspeedCentroids=WFS_files\FunctWFS_CheckHighspeedCentroids.html
+IDH_WFS_GetExposureTimeRange=WFS_files\FunctWFS_GetExposureTimeRange.html
+IDH_WFS_SetExposureTime=WFS_files\FunctWFS_SetExposureTime.html
+IDH_WFS_GetExposureTime=WFS_files\FunctWFS_GetExposureTime.html
+IDH_WFS_GetMasterGainRange=WFS_files\FunctWFS_GetMasterGainRange.html
+IDH_WFS_SetMasterGain=WFS_files\FunctWFS_SetMasterGain.html
+IDH_WFS_GetMasterGain=WFS_files\FunctWFS_GetMasterGain.html
+IDH_WFS_SetBlackLevelOffset=WFS_files\FunctWFS_SetBlackLevelOffset.html
+IDH_WFS_GetBlackLevelOffset=WFS_files\FunctWFS_GetBlackLevelOffset.html
+IDH_WFS_SetTriggerMode=WFS_files\FunctWFS_SetTriggerMode.html
+IDH_WFS_GetTriggerMode=WFS_files\FunctWFS_GetTriggerMode.html
+IDH_WFS_SetTriggerDelay=WFS_files\FunctWFS_SetTriggerDelay.html
+IDH_WFS_GetTriggerDelayRange=WFS_files\FunctWFS_GetTriggerDelayRange.html
+IDH_WFS_GetMlaCount=WFS_files\FunctWFS_GetMlaCount.html
+IDH_WFS_GetMlaData=WFS_files\FunctWFS_GetMlaData.html
+IDH_WFS_GetMlaData2=WFS_files\FunctWFS_GetMlaData2.html
+IDH_WFS_SelectMla=WFS_files\FunctWFS_SelectMla.html
+IDH_WFS_SetAoi=WFS_files\FunctWFS_SetAoi.html
+IDH_WFS_GetAoi=WFS_files\FunctWFS_GetAoi.html
+IDH_WFS_SetPupil=WFS_files\FunctWFS_SetPupil.html
+IDH_WFS_GetPupil=WFS_files\FunctWFS_GetPupil.html
+IDH_WFS_SetReferencePlane=WFS_files\FunctWFS_SetReferencePlane.html
+IDH_WFS_GetReferencePlane=WFS_files\FunctWFS_GetReferencePlane.html
+IDH_WFS_GetStatus=WFS_files\FunctWFS_GetStatus.html
+IDH_WFS_TakeSpotfieldImage=WFS_files\FunctWFS_TakeSpotfieldImage.html
+IDH_WFS_TakeSpotfieldImageAutoExpos=WFS_files\FunctWFS_TakeSpotfieldImageAutoExpos.html
+IDH_WFS_GetSpotfieldImage=WFS_files\FunctWFS_GetSpotfieldImage.html
+IDH_WFS_GetSpotfieldImageCopy=WFS_files\FunctWFS_GetSpotfieldImageCopy.html
+IDH_WFS_AverageImage=WFS_files\FunctWFS_AverageImage.html
+IDH_WFS_AverageImageRolling=WFS_files\FunctWFS_AverageImageRolling.html
+IDH_WFS_CutImageNoiseFloor=WFS_files\FunctWFS_CutImageNoiseFloor.html
+IDH_WFS_CalcImageMinMax=WFS_files\FunctWFS_CalcImageMinMax.html
+IDH_WFS_CalcMeanRmsNoise=WFS_files\FunctWFS_CalcMeanRmsNoise.html
+IDH_WFS_GetLine=WFS_files\FunctWFS_GetLine.html
+IDH_WFS_GetLineView=WFS_files\FunctWFS_GetLineView.html
+IDH_WFS_CalcBeamCentroidDia=WFS_files\FunctWFS_CalcBeamCentroidDia.html
+IDH_WFS_CalcSpotsCentrDiaIntens=WFS_files\FunctWFS_CalcSpotsCentrDiaIntens.html
+IDH_WFS_GetSpotCentroids=WFS_files\FunctWFS_GetSpotCentroids.html
+IDH_WFS_GetSpotDiameters=WFS_files\FunctWFS_GetSpotDiameters.html
+IDH_WFS_GetSpotDiaStatistics=WFS_files\FunctWFS_GetSpotDiaStatistics.html
+IDH_WFS_GetSpotIntensities=WFS_files\FunctWFS_GetSpotIntensities.html
+IDH_WFS_CalcSpotToReferenceDeviations=WFS_files\FunctWFS_CalcSpotToReferenceDeviations.html
+IDH_WFS_GetSpotReferencePositions=WFS_files\FunctWFS_GetSpotReferencePositions.html
+IDH_WFS_GetSpotDeviations=WFS_files\FunctWFS_GetSpotDeviations.html
+IDH_WFS_ZernikeLsf=WFS_files\FunctWFS_ZernikeLsf.html
+IDH_WFS_CalcFourierOptometric=WFS_files\FunctWFS_CalcFourierOptometric.html
+IDH_WFS_CalcReconstrDeviations=WFS_files\FunctWFS_CalcReconstrDeviations.html
+IDH_WFS_CalcWavefront=WFS_files\FunctWFS_CalcWavefront.html
+IDH_WFS_CalcWavefrontStatistics=WFS_files\FunctWFS_CalcWavefrontStatistics.html
+IDH_WFS_self_test=WFS_files\FunctWFS_self_test.html
+IDH_WFS_reset=WFS_files\FunctWFS_reset.html
+IDH_WFS_revision_query=WFS_files\FunctWFS_revision_query.html
+IDH_WFS_error_query=WFS_files\FunctWFS_error_query.html
+IDH_WFS_error_message=WFS_files\FunctWFS_error_message.html
+IDH_WFS_GetInstrumentListLen=WFS_files\FunctWFS_GetInstrumentListLen.html
+IDH_WFS_GetInstrumentListInfo=WFS_files\FunctWFS_GetInstrumentListInfo.html
+IDH_WFS_GetXYScale=WFS_files\FunctWFS_GetXYScale.html
+IDH_WFS_ConvertWavefrontWaves=WFS_files\FunctWFS_ConvertWavefrontWaves.html
+IDH_WFS_Flip2DArray=WFS_files\FunctWFS_Flip2DArray.html
+IDH_WFS_SetSpotsToUserReference=WFS_files\FunctWFS_SetSpotsToUserReference.html
+IDH_WFS_SetCalcSpotsToUserReference=WFS_files\FunctWFS_SetCalcSpotsToUserReference.html
+IDH_WFS_CreateDefaultUserReference=WFS_files\FunctWFS_CreateDefaultUserReference.html
+IDH_WFS_SaveUserRefFile=WFS_files\FunctWFS_SaveUserRefFile.html
+IDH_WFS_LoadUserRefFile=WFS_files\FunctWFS_LoadUserRefFile.html
+IDH_WFS_DoSphericalRef=WFS_files\FunctWFS_DoSphericalRef.html
+IDH_WFS_close=WFS_files\FunctWFS_close.html
+IDH_WFS_html_main_file=WFS.html
+
+[MAP]
+#define IDH_WFS_init 1
+#define IDH_WFS_GetInstrumentInfo 2
+#define IDH_WFS_ConfigureCam 3
+#define IDH_WFS_SetHighspeedMode 4
+#define IDH_WFS_GetHighspeedWindows 5
+#define IDH_WFS_CheckHighspeedCentroids 6
+#define IDH_WFS_GetExposureTimeRange 7
+#define IDH_WFS_SetExposureTime 8
+#define IDH_WFS_GetExposureTime 9
+#define IDH_WFS_GetMasterGainRange 10
+#define IDH_WFS_SetMasterGain 11
+#define IDH_WFS_GetMasterGain 12
+#define IDH_WFS_SetBlackLevelOffset 13
+#define IDH_WFS_GetBlackLevelOffset 14
+#define IDH_WFS_SetTriggerMode 15
+#define IDH_WFS_GetTriggerMode 16
+#define IDH_WFS_SetTriggerDelay 17
+#define IDH_WFS_GetTriggerDelayRange 18
+#define IDH_WFS_GetMlaCount 19
+#define IDH_WFS_GetMlaData 20
+#define IDH_WFS_GetMlaData2 21
+#define IDH_WFS_SelectMla 22
+#define IDH_WFS_SetAoi 23
+#define IDH_WFS_GetAoi 24
+#define IDH_WFS_SetPupil 25
+#define IDH_WFS_GetPupil 26
+#define IDH_WFS_SetReferencePlane 27
+#define IDH_WFS_GetReferencePlane 28
+#define IDH_WFS_GetStatus 29
+#define IDH_WFS_TakeSpotfieldImage 30
+#define IDH_WFS_TakeSpotfieldImageAutoExpos 31
+#define IDH_WFS_GetSpotfieldImage 32
+#define IDH_WFS_GetSpotfieldImageCopy 33
+#define IDH_WFS_AverageImage 34
+#define IDH_WFS_AverageImageRolling 35
+#define IDH_WFS_CutImageNoiseFloor 36
+#define IDH_WFS_CalcImageMinMax 37
+#define IDH_WFS_CalcMeanRmsNoise 38
+#define IDH_WFS_GetLine 39
+#define IDH_WFS_GetLineView 40
+#define IDH_WFS_CalcBeamCentroidDia 41
+#define IDH_WFS_CalcSpotsCentrDiaIntens 42
+#define IDH_WFS_GetSpotCentroids 43
+#define IDH_WFS_GetSpotDiameters 44
+#define IDH_WFS_GetSpotDiaStatistics 45
+#define IDH_WFS_GetSpotIntensities 46
+#define IDH_WFS_CalcSpotToReferenceDeviations 47
+#define IDH_WFS_GetSpotReferencePositions 48
+#define IDH_WFS_GetSpotDeviations 49
+#define IDH_WFS_ZernikeLsf 50
+#define IDH_WFS_CalcFourierOptometric 51
+#define IDH_WFS_CalcReconstrDeviations 52
+#define IDH_WFS_CalcWavefront 53
+#define IDH_WFS_CalcWavefrontStatistics 54
+#define IDH_WFS_self_test 55
+#define IDH_WFS_reset 56
+#define IDH_WFS_revision_query 57
+#define IDH_WFS_error_query 58
+#define IDH_WFS_error_message 59
+#define IDH_WFS_GetInstrumentListLen 60
+#define IDH_WFS_GetInstrumentListInfo 61
+#define IDH_WFS_GetXYScale 62
+#define IDH_WFS_ConvertWavefrontWaves 63
+#define IDH_WFS_Flip2DArray 64
+#define IDH_WFS_SetSpotsToUserReference 65
+#define IDH_WFS_SetCalcSpotsToUserReference 66
+#define IDH_WFS_CreateDefaultUserReference 67
+#define IDH_WFS_SaveUserRefFile 68
+#define IDH_WFS_LoadUserRefFile 69
+#define IDH_WFS_DoSphericalRef 70
+#define IDH_WFS_close 71
+#define IDH_WFS_html_main_file 72
+
+[FILES]
+WFS.html
+WFS_files\Alphabetical Function Index.html
+WFS_files\Hierarchical Function Index.html
+WFS_files\ClassConfiguration Functions.html
+WFS_files\ClassAction/Status Functions.html
+WFS_files\ClassData Functions.html
+WFS_files\ClassUtility Functions.html
+WFS_files\ClassCalibration Functions.html
+WFS_files\FunctWFS_init.html
+WFS_files\FunctWFS_GetInstrumentInfo.html
+WFS_files\FunctWFS_ConfigureCam.html
+WFS_files\FunctWFS_SetHighspeedMode.html
+WFS_files\FunctWFS_GetHighspeedWindows.html
+WFS_files\FunctWFS_CheckHighspeedCentroids.html
+WFS_files\FunctWFS_GetExposureTimeRange.html
+WFS_files\FunctWFS_SetExposureTime.html
+WFS_files\FunctWFS_GetExposureTime.html
+WFS_files\FunctWFS_GetMasterGainRange.html
+WFS_files\FunctWFS_SetMasterGain.html
+WFS_files\FunctWFS_GetMasterGain.html
+WFS_files\FunctWFS_SetBlackLevelOffset.html
+WFS_files\FunctWFS_GetBlackLevelOffset.html
+WFS_files\FunctWFS_SetTriggerMode.html
+WFS_files\FunctWFS_GetTriggerMode.html
+WFS_files\FunctWFS_SetTriggerDelay.html
+WFS_files\FunctWFS_GetTriggerDelayRange.html
+WFS_files\FunctWFS_GetMlaCount.html
+WFS_files\FunctWFS_GetMlaData.html
+WFS_files\FunctWFS_GetMlaData2.html
+WFS_files\FunctWFS_SelectMla.html
+WFS_files\FunctWFS_SetAoi.html
+WFS_files\FunctWFS_GetAoi.html
+WFS_files\FunctWFS_SetPupil.html
+WFS_files\FunctWFS_GetPupil.html
+WFS_files\FunctWFS_SetReferencePlane.html
+WFS_files\FunctWFS_GetReferencePlane.html
+WFS_files\FunctWFS_GetStatus.html
+WFS_files\FunctWFS_TakeSpotfieldImage.html
+WFS_files\FunctWFS_TakeSpotfieldImageAutoExpos.html
+WFS_files\FunctWFS_GetSpotfieldImage.html
+WFS_files\FunctWFS_GetSpotfieldImageCopy.html
+WFS_files\FunctWFS_AverageImage.html
+WFS_files\FunctWFS_AverageImageRolling.html
+WFS_files\FunctWFS_CutImageNoiseFloor.html
+WFS_files\FunctWFS_CalcImageMinMax.html
+WFS_files\FunctWFS_CalcMeanRmsNoise.html
+WFS_files\FunctWFS_GetLine.html
+WFS_files\FunctWFS_GetLineView.html
+WFS_files\FunctWFS_CalcBeamCentroidDia.html
+WFS_files\FunctWFS_CalcSpotsCentrDiaIntens.html
+WFS_files\FunctWFS_GetSpotCentroids.html
+WFS_files\FunctWFS_GetSpotDiameters.html
+WFS_files\FunctWFS_GetSpotDiaStatistics.html
+WFS_files\FunctWFS_GetSpotIntensities.html
+WFS_files\FunctWFS_CalcSpotToReferenceDeviations.html
+WFS_files\FunctWFS_GetSpotReferencePositions.html
+WFS_files\FunctWFS_GetSpotDeviations.html
+WFS_files\FunctWFS_ZernikeLsf.html
+WFS_files\FunctWFS_CalcFourierOptometric.html
+WFS_files\FunctWFS_CalcReconstrDeviations.html
+WFS_files\FunctWFS_CalcWavefront.html
+WFS_files\FunctWFS_CalcWavefrontStatistics.html
+WFS_files\FunctWFS_self_test.html
+WFS_files\FunctWFS_reset.html
+WFS_files\FunctWFS_revision_query.html
+WFS_files\FunctWFS_error_query.html
+WFS_files\FunctWFS_error_message.html
+WFS_files\FunctWFS_GetInstrumentListLen.html
+WFS_files\FunctWFS_GetInstrumentListInfo.html
+WFS_files\FunctWFS_GetXYScale.html
+WFS_files\FunctWFS_ConvertWavefrontWaves.html
+WFS_files\FunctWFS_Flip2DArray.html
+WFS_files\FunctWFS_SetSpotsToUserReference.html
+WFS_files\FunctWFS_SetCalcSpotsToUserReference.html
+WFS_files\FunctWFS_CreateDefaultUserReference.html
+WFS_files\FunctWFS_SaveUserRefFile.html
+WFS_files\FunctWFS_LoadUserRefFile.html
+WFS_files\FunctWFS_DoSphericalRef.html
+WFS_files\FunctWFS_close.html
+WFS_files\htmlhelp.css

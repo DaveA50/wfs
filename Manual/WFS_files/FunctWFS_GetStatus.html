@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <link rel="stylesheet" href="htmlhelp.css" type="text/css">
+    <title>WFS_GetStatus</title>
+  </head>
+  <body>
+    <h1>WFS_GetStatus</h1>
+    <p class="syntax">
+      ViStatus WFS_GetStatus (ViSession instrumentHandle, ViPInt32 deviceStatus);
+    </p>
+    <h2 class="purpose">Purpose</h2>
+    <p class="body">
+    This function returns the device status of the Wavefront Sensor instrument.
+    </p>
+    <h2>Parameters</h2>
+    <table class="borderless" summary="Parameter help">
+      <tr>
+        <td valign="top"><em class="label">Input</em></td>
+      </tr>
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">instrumentHandle</td>
+        <td class="paramDataType">ViSession</td>
+        <td>
+    This parameter accepts the Instrument Handle returned by the Initialize function to select the desired instrument driver session.
+        </td>
+      </tr>
+      <tr>
+        <td valign="top"><em class="label">Output</em></td>
+      </tr>
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">deviceStatus</td>
+        <td class="paramDataType">ViInt32 (passed by reference)</td>
+        <td>
+    This parameter returns the device status of the Wavefront Sensor
+    <br/>
+    instrument. Lower 24 bits are used.
+    <br/>
+    Bit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Meaning if bit is set
+    <br/>
+    0x00000001&nbsp;&nbsp;WFS_STATBIT_CON&nbsp;&nbsp;USB CONnection to device lost
+    <br/>
+    0x00000002&nbsp;&nbsp;WFS_STATBIT_PTH&nbsp;&nbsp;Power Too High (cam saturated)
+    <br/>
+    0x00000004&nbsp;&nbsp;WFS_STATBIT_PTL&nbsp;&nbsp;Power Too Low (low cam digits)
+    <br/>
+    0x00000008&nbsp;&nbsp;WFS_STATBIT_HAL&nbsp;&nbsp;High Ambient Light
+    <br/>
+    0x00000010&nbsp;&nbsp;WFS_STATBIT_SCL&nbsp;&nbsp;Spot Contrast too Low
+    <br/>
+    0x00000020&nbsp;&nbsp;WFS_STATBIT_ZFL&nbsp;&nbsp;Zernike fit Failed, Low spots no.
+    <br/>
+    0x00000040&nbsp;&nbsp;WFS_STATBIT_ZFH&nbsp;&nbsp;Zernike fit Failed, High spots no.
+    <br/>
+    0x00000080&nbsp;&nbsp;WFS_STATBIT_ATR&nbsp;&nbsp;Camera is still Awaiting a TRigger
+    <br/>
+    0x00000100&nbsp;&nbsp;WFS_STATBIT_CFG&nbsp;&nbsp;Camera is ConFiGured
+    <br/>
+    0x00000200&nbsp;&nbsp;WFS_STATBIT_PUD&nbsp;&nbsp;PUpil is Defined
+    <br/>
+    0x00000400&nbsp;&nbsp;WFS_STATBIT_SPC&nbsp;&nbsp;No. of Spots or Pupil Changed
+    <br/>
+    0x00000800&nbsp;&nbsp;WFS_STATBIT_RDA&nbsp;&nbsp;Reconstr. spot Deviation Available
+    <br/>
+    0x00001000&nbsp;&nbsp;WFS_STATBIT_URF&nbsp;&nbsp;No User ReFerence available
+    <br/>
+    0x00002000&nbsp;&nbsp;WFS_STATBIT_HSP&nbsp;&nbsp;Camera is in HighSPeed Mode
+    <br/>
+    0x00004000&nbsp;&nbsp;WFS_STATBIT_MIS&nbsp;&nbsp;MISmatched centroids in Highspeed
+    <br/>
+    Mode
+    <br/>
+    0x00008000&nbsp;&nbsp;WFS_STATBIT_LOS&nbsp;&nbsp;LOw Spot count within pupil,
+    <br/>
+    reduces Zernike accuracy
+    <br/>
+    0x00010000&nbsp;&nbsp;WFS_STATBIT_FIL, Pupil badly FILled with spots,
+    <br/>
+    reduces Zernike accuracy
+        </td>
+      </tr>
+    </table>
+    <h2>Return Value</h2>
+    <table class="borderless" summary="Return value help">
+      <tr>
+        <td class="tablehead">Name</td>
+        <td class="tablehead">Type</td>
+        <td class="tablehead">Description</td>
+      </tr>
+      <tr>
+        <td class="paramName">status</td>
+        <td class="paramDataType">ViStatus</td>
+        <td>
+    This value shows the status code returned by the function call.
+    <br/>
+    For Status Codes see function ErrorMessage.
+        </td>
+      </tr>
+    </table>
+    <h2>References</h2>
+    <p class="body">
+      <a href="ClassAction,Status%20Functions.html">Action/Status Functions</a><br/>
+      <a href="Wavefront%20Sensor.html">Wavefront Sensor</a><br/>
+      <a href="Alphabetical%20Function%20Index.html">Alphabetical Function Index</a><br/>
+      <a href="Hierarchical%20Function%20Index.html">Hierarchical Function Index</a><br/>
+    </p>
+  </body>
+</html>
