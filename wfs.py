@@ -20,6 +20,11 @@ def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
     """
     Setup logging configuration
     uses logging.yaml for the default configuration
+
+    Args:
+        env_key:
+        level:
+        path:
     """
     path = path
     value = os.getenv(env_key, None)
@@ -1006,9 +1011,6 @@ class WFS(object):
         pass
 
     def _do_spherical_reference(self):
-        pass
-
-    def test(self):
         pass
 
 
