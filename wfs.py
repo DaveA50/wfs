@@ -164,63 +164,6 @@ class Vi:
         return ctypes.create_string_buffer(n)
 
 
-# class ViSession(ctypes.c_ulong):
-#     pass  # long unsigned int
-#
-#
-# class ViBoolean(ctypes.c_ushort):
-#     pass  # short unsigned int
-#
-#
-# class ViRsrc(ctypes.c_char_p):
-#     pass  # char*
-#
-#
-# class ViReal64(ctypes.c_double):
-#     pass  # double
-#     pass  # char*
-#
-#
-# class ViPReal64(ctypes.c_double):
-#     pass  # double Pointer
-#
-#
-# class ViStatus(ctypes.c_long):
-#     pass  # long int
-#
-#
-# class ViUInt8(ctypes.c_ubyte):
-#     pass  # Binary8 unsigned char
-#
-#
-# class ViAUInt8(ctypes.c_ubyte):
-#     pass  # Binary8 unsigned char
-#
-#
-# class ViInt16(ctypes.c_int):
-#     pass  # Binary16 short int
-#
-#
-# class vi_int_32(ctypes.c_long):
-#     pass  # Binary32 long int
-# def vi_int_32(n):
-#     return ctypes.c_long(n)
-#
-#
-# class vi_point_int_32(ctypes.c_long):
-#     pass  # Binary32 long int Pointer
-#
-#
-# def ViAChar(n):
-#     """
-#     Create a ctypes char array of size n
-#
-#     :param n: size of char array
-#     :rtype: ctypes char array
-#     """
-#     return ctypes.create_string_buffer(n)
-
-
 class WFS(object):
     # Constants declared in WFS.h header file
     # Buffers
@@ -499,7 +442,6 @@ class WFS(object):
         self.array_deviations_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_centroid_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_centroid_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-
 
     # WFS Functions
     def _init(self, **kwargs):
@@ -815,17 +757,6 @@ class WFS(object):
         return status
 
     def _get_spotfield_image_copy(self):
-        # image_buffer = (ctypes.c_uint)()
-        # rows = ViInt32()
-        # columns = ViInt32()
-        # status = lib_wfs.WFS_GetSpotfieldImage(self.instrument_handle,
-        #                                           ctypes.byref(image_buffer),
-        #                                           ctypes.byref(rows),
-        #                                           ctypes.byref(columns))
-        # logger_camera.info('Image Buffer: {0}'.format(image_buffer.value))
-        # logger_camera.info('Rows: {0}'.format(rows.value))
-        # logger_camera.info('Columns: {0}'.format(columns.value))
-        # return status
         pass
 
     def _average_image(self):
@@ -955,14 +886,6 @@ class WFS(object):
 
     # Utility Functions
     def _self_test(self):
-        # selfTestResult = ViInt16()
-        # selfTestMessage = ViAChar(256)
-        # status = lib_wfs.WFS_self_test(self.instrumentHandle,
-        #                                   ctypes.byref(selfTestResult),
-        #                                   selfTestMessage)
-        # logger.info('Self Test Result: {0}'.format(selfTestResult.value))
-        # logger.info('Self Test Message: {0}'.format(selfTestMessage.value))
-        # return status
         pass
 
     def _reset(self):
@@ -984,21 +907,9 @@ class WFS(object):
         return status
 
     def _error_query(self):
-        # error_code = Vi.int_32(0)
-        # error_message = Vi.array_char(256)
-        # status = lib_wfs.WFS_error_query(self.instrument_handle,
-        #                                  ctypes.byref(error_code),
-        #                                  error_message)
-        # return status
         pass
 
     def _error_message(self):
-        # error_code = Vi.status(0)
-        # error_message = Vi.array_char(256)
-        # status = lib_wfs.WFS_error_message(self.instrument_handle,
-        #                                    error_code,
-        #                                    error_message)
-        # return status
         pass
 
     def _get_instrument_list_len(self,
