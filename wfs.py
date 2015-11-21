@@ -873,8 +873,10 @@ class WFS(object):
         status = lib_wfs.WFS_GetSpotCentroids(self.instrument_handle,
                                               self.array_centroid_x,
                                               self.array_centroid_y)
-        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_centroid_x]))
-        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_centroid_y]))
+        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row])
+                                       for row in self.array_centroid_x]))
+        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row])
+                                       for row in self.array_centroid_y]))
         return status
 
     def _get_spot_diameters(self):
@@ -899,8 +901,10 @@ class WFS(object):
         status = lib_wfs.WFS_GetSpotDeviations(self.instrument_handle,
                                                self.array_deviations_x,
                                                self.array_deviations_y)
-        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_deviations_x]))
-        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_deviations_y]))
+        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row])
+                                       for row in self.array_deviations_x]))
+        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row])
+                                       for row in self.array_deviations_y]))
         return status
 
     def _zernike_lsf(self):
@@ -910,7 +914,8 @@ class WFS(object):
                                         self.array_zernike_orders_um,
                                         ctypes.byref(self.roc_mm))
         logger_camera.info('Zernike Um:' + ''.join(['{:18}'.format(item) for item in self.array_zernike_um]))
-        logger_camera.info('Zernike Orders Um:' + ''.join(['{:18}'.format(item) for item in self.array_zernike_orders_um]))
+        logger_camera.info('Zernike Orders Um:' + ''.join(['{:18}'.format(item)
+                                                           for item in self.array_zernike_orders_um]))
         logger_camera.info('Zernike Orders: {0}'.format(self.zernike_orders.value))
         logger_camera.info('RoC [mm]: {0}'.format(self.roc_mm.value))
         return status
@@ -926,7 +931,8 @@ class WFS(object):
                                            self.wavefront_type,
                                            self.limit_to_pupil,
                                            self.array_wavefront)
-        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_wavefront]))
+        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row])
+                                       for row in self.array_wavefront]))
         logger_camera.info('Wavefront Type: {0}'.format(self.wavefront_type.value))
         logger_camera.info('Limit to Pupil: {0}'.format(self.limit_to_pupil.value))
         return status
