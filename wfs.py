@@ -154,6 +154,14 @@ class Vi:
         return ctypes.c_long(n)
 
     @staticmethod
+    def array_int_32(n):
+        """
+        Args:
+            n: Binary32 long int array
+        """
+        return ctypes.c_long(n)
+
+    @staticmethod
     def array_char(n):
         """
         Create a ctypes char array of size n
@@ -439,6 +447,8 @@ class WFS(object):
     CENTERED = 1
 
     def __init__(self):
+        self.adapt_centroids = Vi.int_32(0)
+        self.allow_auto_exposure = Vi.int_32(0)
         self.array_centroid_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_centroid_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_deviations_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
@@ -461,6 +471,7 @@ class WFS(object):
         self.grid_correction_45 = Vi.real_64_pointer(0)
         self.grid_correction_pitch = Vi.real_64_pointer(0)
         self.grid_correction_rotation = Vi.real_64_pointer(0)
+        self.highspeed_mode = Vi.int_32(0)
         self.id_query = Vi.boolean(0)
         self.image_buffer = ctypes.c_uint(0)
         self.instrument_handle = Vi.session(0)
@@ -490,6 +501,7 @@ class WFS(object):
         self.spotfield_rows = Vi.int_32(0)
         self.spots_x = Vi.int_32_pointer(0)
         self.spots_y = Vi.int_32_pointer(0)
+        self.subtract_offset = Vi.int_32(0)
         self.wavefront_diff = Vi.real_64_pointer(0)
         self.wavefront_max = Vi.real_64_pointer(0)
         self.wavefront_mean = Vi.real_64_pointer(0)
@@ -498,6 +510,12 @@ class WFS(object):
         self.wavefront_type = Vi.int_32(0)
         self.wavefront_weighted_rms = Vi.real_64_pointer(0)
         self.zernike_orders = Vi.int_32_pointer(4)
+        self.window_count_x = Vi.int_32_pointer(0)
+        self.window_count_y = Vi.int_32_pointer(0)
+        self.window_size_x = Vi.int_32_pointer(0)
+        self.window_size_y = Vi.int_32_pointer(0)
+        self.window_start_position_x = Vi.array_int_32(0)
+        self.window_start_position_y = Vi.array_int_32(0)
 
 
     # WFS Functions
@@ -631,13 +649,36 @@ class WFS(object):
         return status
 
     def _set_highspeed_mode(self):
-        pass
+        status = lib_wfs.WFS_SetHighspeedMode(self.instrument_handle,
+                                          self.highspeed_mode,
+                                          self.adapt_centroids,
+                                          self.subtract_offset,
+                                          self.allow_auto_exposure)
+        logger_camera.info('Highspeed Mode: {0}'.format(self.highspeed_mode.value))
+        logger_camera.info('Adapt Centroids: {0}'.format(self.adapt_centroids.value))
+        logger_camera.info('Subtract Offset: {0}'.format(self.subtract_offset.value))
+        logger_camera.info('Allow Auto Exposure: {0}'.format(self.allow_auto_exposure.value))
+        return status
 
     def _get_highspeed_windows(self):
-        pass
+        status = lib_wfs.WFS_GetHighspeedWindows(self.instrument_handle,
+                                          ctypes.byref(self.window_count_x),
+                                          ctypes.byref(self.window_count_y),
+                                          ctypes.byref(self.window_size_x),
+                                          ctypes.byref(self.window_size_y),
+                                          self.window_start_position_x,
+                                          self.window_start_position_y)
+        logger_camera.info('Window Count X: {0}'.format(self.window_count_x.value))
+        logger_camera.info('Window Count Y: {0}'.format(self.window_count_y.value))
+        logger_camera.info('Window Size X: {0}'.format(self.window_size_x.value))
+        logger_camera.info('Window Size Y: {0}'.format(self.window_size_y.value))
+        logger_camera.info('Window Start Position X: {0}'.format(self.window_start_position_x.value))
+        logger_camera.info('Window Start Position Y: {0}'.format(self.window_start_position_y.value))
+        return status
 
     def _check_highspeed_centroids(self):
-        pass
+        status = lib_wfs.WFS_CheckHighspeedCentroids(self.instrument_handle)
+        return status
 
     def _get_exposure_time_range(self):
         pass
