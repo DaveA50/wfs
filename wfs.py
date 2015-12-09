@@ -517,7 +517,6 @@ class WFS(object):
         self.window_start_position_x = Vi.array_int_32(0)
         self.window_start_position_y = Vi.array_int_32(0)
 
-
     # WFS Functions
     def _init(self, **kwargs):
         """
@@ -650,10 +649,10 @@ class WFS(object):
 
     def _set_highspeed_mode(self):
         status = lib_wfs.WFS_SetHighspeedMode(self.instrument_handle,
-                                          self.highspeed_mode,
-                                          self.adapt_centroids,
-                                          self.subtract_offset,
-                                          self.allow_auto_exposure)
+                                              self.highspeed_mode,
+                                              self.adapt_centroids,
+                                              self.subtract_offset,
+                                              self.allow_auto_exposure)
         logger_camera.info('Highspeed Mode: {0}'.format(self.highspeed_mode.value))
         logger_camera.info('Adapt Centroids: {0}'.format(self.adapt_centroids.value))
         logger_camera.info('Subtract Offset: {0}'.format(self.subtract_offset.value))
@@ -662,12 +661,12 @@ class WFS(object):
 
     def _get_highspeed_windows(self):
         status = lib_wfs.WFS_GetHighspeedWindows(self.instrument_handle,
-                                          ctypes.byref(self.window_count_x),
-                                          ctypes.byref(self.window_count_y),
-                                          ctypes.byref(self.window_size_x),
-                                          ctypes.byref(self.window_size_y),
-                                          self.window_start_position_x,
-                                          self.window_start_position_y)
+                                                 ctypes.byref(self.window_count_x),
+                                                 ctypes.byref(self.window_count_y),
+                                                 ctypes.byref(self.window_size_x),
+                                                 ctypes.byref(self.window_size_y),
+                                                 self.window_start_position_x,
+                                                 self.window_start_position_y)
         logger_camera.info('Window Count X: {0}'.format(self.window_count_x.value))
         logger_camera.info('Window Count Y: {0}'.format(self.window_count_y.value))
         logger_camera.info('Window Size X: {0}'.format(self.window_size_x.value))
@@ -913,8 +912,10 @@ class WFS(object):
         status = lib_wfs.WFS_GetSpotCentroids(self.instrument_handle,
                                               self.array_centroid_x,
                                               self.array_centroid_y)
-        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_centroid_x]))
-        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_centroid_y]))
+        logger_camera.debug(
+            '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_centroid_x]))
+        logger_camera.debug(
+            '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_centroid_y]))
         return status
 
     def _get_spot_diameters(self):
@@ -939,8 +940,10 @@ class WFS(object):
         status = lib_wfs.WFS_GetSpotDeviations(self.instrument_handle,
                                                self.array_deviations_x,
                                                self.array_deviations_y)
-        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_deviations_x]))
-        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_deviations_y]))
+        logger_camera.debug(
+            '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_deviations_x]))
+        logger_camera.debug(
+            '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_deviations_y]))
         return status
 
     def _zernike_lsf(self):
@@ -950,7 +953,8 @@ class WFS(object):
                                         self.array_zernike_orders_um,
                                         ctypes.byref(self.roc_mm))
         logger_camera.info('Zernike Um:' + ''.join(['{:18}'.format(item) for item in self.array_zernike_um]))
-        logger_camera.info('Zernike Orders Um:' + ''.join(['{:18}'.format(item) for item in self.array_zernike_orders_um]))
+        logger_camera.info(
+            'Zernike Orders Um:' + ''.join(['{:18}'.format(item) for item in self.array_zernike_orders_um]))
         logger_camera.info('Zernike Orders: {0}'.format(self.zernike_orders.value))
         logger_camera.info('RoC [mm]: {0}'.format(self.roc_mm.value))
         return status
@@ -966,7 +970,8 @@ class WFS(object):
                                            self.wavefront_type,
                                            self.limit_to_pupil,
                                            self.array_wavefront)
-        logger_camera.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_wavefront]))
+        logger_camera.debug(
+            '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_wavefront]))
         logger_camera.info('Wavefront Type: {0}'.format(self.wavefront_type.value))
         logger_camera.info('Limit to Pupil: {0}'.format(self.limit_to_pupil.value))
         return status

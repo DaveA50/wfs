@@ -59,18 +59,21 @@ def test_get_status(wfs):
     assert wfs._get_status() == 0
 
 
-# def test_set_highspeed_mode(wfs):
-#     assert wfs._set_highspeed_mode() == 0
-#
-#
-# def test_get_highspeed_windows(wfs):
-#     assert wfs._get_highspeed_windows() == 0
-#
-#
-# def test_check_highspeed_centroids(wfs):
-#     assert wfs._check_highspeed_centroids() == 0
-#
-#
+def test_set_highspeed_mode(wfs):
+    # assert wfs._set_highspeed_mode() == 0
+    pass  # Not able to test on WFS150
+
+
+def test_get_highspeed_windows(wfs):
+    # assert wfs._get_highspeed_windows() == 0
+    pass  # Not able to test on WFS150
+
+
+def test_check_highspeed_centroids(wfs):
+    # assert wfs._check_highspeed_centroids() == 0
+    pass  # Not able to test on WFS150
+
+
 # def test_get_exposure_time_range(wfs):
 #     assert wfs._get_exposure_time_range() == 0
 #
