@@ -59,18 +59,21 @@ def test_get_status(wfs):
     assert wfs._get_status() == 0
 
 
-# def test_set_highspeed_mode(wfs):
-#     assert wfs._set_highspeed_mode() == 0
-#
-#
-# def test_get_highspeed_windows(wfs):
-#     assert wfs._get_highspeed_windows() == 0
-#
-#
-# def test_check_highspeed_centroids(wfs):
-#     assert wfs._check_highspeed_centroids() == 0
-#
-#
+def test_set_highspeed_mode(wfs):
+    # assert wfs._set_highspeed_mode() == 0
+    pass  # Not able to test on WFS150
+
+
+def test_get_highspeed_windows(wfs):
+    # assert wfs._get_highspeed_windows() == 0
+    pass  # Not able to test on WFS150
+
+
+def test_check_highspeed_centroids(wfs):
+    # assert wfs._check_highspeed_centroids() == 0
+    pass  # Not able to test on WFS150
+
+
 # def test_get_exposure_time_range(wfs):
 #     assert wfs._get_exposure_time_range() == 0
 #
@@ -251,12 +254,42 @@ def test_calc_wavefront_statistics(wfs):
 #     assert wfs._reset() == 0
 #
 #
-# def test_error_query(wfs):
-#     assert wfs._error_query() == 0
-#
-#
-# def test_error_message(wfs):
-#     assert wfs._error_message() == 0
+def test_error_query(wfs):
+    assert wfs._error_query() == 0
+
+
+def test_error_message(wfs):
+    assert wfs._error_message(wfs.WFS_ERROR_NO_SENSOR_CONNECTED) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_OUT_OF_MEMORY) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_INVALID_HANDLE) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_CAM_NOT_CONFIGURED) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_PIXEL_FORMAT) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_EEPROM_CHECKSUM) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_EEPROM_CAL_DATA) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_OLD_REF_FILE) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_NO_REF_FILE) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_CORRUPT_REF_FILE) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_WRITE_FILE) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_INSUFF_SPOTS_FOR_ZERNFIT) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_TOO_MANY_SPOTS_FOR_ZERNFIT) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_FOURIER_ORDER) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_NO_RECON_DEVIATIONS) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_NO_PUPIL_DEFINED) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_WRONG_PUPIL_DIA) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_WRONG_PUPIL_CTR) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_INVALID_CAL_DATA) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_INTERNAL_REQUIRED) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_ROC_RANGE) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_NO_USER_REFERENCE) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_AWAITING_TRIGGER) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_NO_HIGHSPEED) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_HIGHSPEED_ACTIVE) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_HIGHSPEED_NOT_ACTIVE) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_HIGHSPEED_WINDOW_MISMATCH) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_NOT_SUPPORTED) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_SPOT_TRUNCATED) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_NO_SPOT_DETECTED) == 0
+    assert wfs._error_message(wfs.WFS_ERROR_TILT_CALCULATION) == 0
 #
 #
 # def test_get_xy_scale(wfs):
@@ -271,28 +304,28 @@ def test_calc_wavefront_statistics(wfs):
 #     assert wfs._flip_2d_array() == 0
 #
 #
-# def test_set_spots_to_user_reference(wfs):
-#     assert wfs._set_spots_to_user_reference() == 0
-#
-#
-# def test_set_calc_spots_to_user_reference(wfs):
-#     assert wfs._set_calc_spots_to_user_reference() == 0
-#
-#
-# def test_create_default_user_reference(wfs):
-#     assert wfs._create_default_user_reference() == 0
-#
-#
-# def test_save_user_reference_file(wfs):
-#     assert wfs._save_user_reference_file() == 0
-#
-#
-# def test_load_user_reference_file(wfs):
-#     assert wfs._load_user_reference_file() == 0
-#
-#
-# def test_do_spherical_reference(wfs):
-#     assert wfs._do_spherical_reference() == 0
+def test_set_spots_to_user_reference(wfs):
+    assert wfs._set_spots_to_user_reference() == 0
+
+
+def test_set_calc_spots_to_user_reference(wfs):
+    assert wfs._set_calc_spots_to_user_reference() == 0
+
+
+def test_create_default_user_reference(wfs):
+    assert wfs._create_default_user_reference() == 0
+
+
+def test_save_user_reference_file(wfs):
+    assert wfs._save_user_reference_file() == 0
+
+
+def test_load_user_reference_file(wfs):
+    assert wfs._load_user_reference_file() == 0
+
+
+def test_do_spherical_reference(wfs):
+    assert wfs._do_spherical_reference() == 0
 
 
 def test_close(wfs):
