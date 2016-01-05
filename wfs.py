@@ -463,11 +463,11 @@ class WFS(object):
         self.lenslet_pitch_um = Vi.real64(0)
         self.limit_to_pupil = Vi.int32(0)
         self.line = Vi.int32(0)
-        self.line_max = Vi.real32(0)  # TODO Float Array
+        # self.line_max = Vi.real32(0)  # TODO Float Array
         self.line_max = (ctypes.c_float * 1280)()
-        self.line_min = Vi.real32(0)  # TODO Float Array
+        # self.line_min = Vi.real32(0)  # TODO Float Array
         self.line_min = (ctypes.c_float * 1280)()
-        self.line_selected = Vi.real32(0)  # TODO Float Array
+        # self.line_selected = Vi.real32(0)  # TODO Float Array
         self.line_selected = (ctypes.c_float * 1280)()
         self.manufacturer_name = Vi.char(self.WFS_BUFFER_SIZE)
         self.master_gain_actual = Vi.real64(0)
@@ -1205,7 +1205,8 @@ class WFS(object):
                                                     ctypes.byref(self.fit_error_stdev))
         log_wfs.debug('Calc Reconstructed Deviations: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Zernike Orders: {0}'.format(self.zernike_orders.value))
-        log_wfs.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_zernike_reconstructed]))
+        log_wfs.debug('\n'.join([''.join(['{:16}'.format(item) for item in row])
+                                 for row in self.array_zernike_reconstructed]))
         log_wfs.info('Do Spherical Reference: {0}'.format(self.do_spherical_reference.value))
         log_wfs.info('Fit Error Mean: {0}'.format(self.fit_error_mean.value))
         log_wfs.info('Fit Error Standard Deviation: {0}'.format(self.fit_error_stdev.value))
