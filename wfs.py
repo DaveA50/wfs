@@ -62,107 +62,16 @@ if os.name == 'nt':
 
 
 class Vi:
+    true = 1
+    false = 0
+    null = 0
+    success = 0L
+
     def __init__(self):
         pass
 
     @staticmethod
-    def status(n):
-        """
-        Args:
-            n: long unsigned int
-        """
-        return ctypes.c_long(n)
-
-    @staticmethod
-    def session(n):
-        """
-        Args:
-            n: long unsigned int
-        """
-        return ctypes.c_ulong(n)
-
-    @staticmethod
-    def boolean(n):
-        """
-        Args:
-            n: short unsigned int
-        """
-        return ctypes.c_ushort(n)
-
-    @staticmethod
-    def resource(n):
-        """
-        Args:
-            n: char*
-        """
-        return ctypes.c_char_p(n)
-
-    @staticmethod
-    def real_64(n):
-        """
-        Args:
-            n: double, char*
-        """
-        return ctypes.c_double(n)
-
-    @staticmethod
-    def real_64_pointer(n):
-        """
-        Args:
-            n: double, char*
-        """
-        return ctypes.c_double(n)
-
-    @staticmethod
-    def unsigned_int_8(n):
-        """
-        Args:
-            n: Binary8 unsigned char
-        """
-        return ctypes.c_ubyte(n)
-
-    @staticmethod
-    def array_unsigned_int_8(n):
-        """
-        Args:
-            n: Binary8 unsigned char array
-        """
-        return ctypes.c_ubyte(n)
-
-    @staticmethod
-    def int_16(n):
-        """
-        Args:
-            n: Binary16 short int
-        """
-        return ctypes.c_int(n)
-
-    @staticmethod
-    def int_32(n):
-        """
-        Args:
-            n: Binary32 long int
-        """
-        return ctypes.c_long(n)
-
-    @staticmethod
-    def int_32_pointer(n):
-        """
-        Args:
-            n: Binary32 long int Pointer
-        """
-        return ctypes.c_long(n)
-
-    @staticmethod
-    def array_int_32(n):
-        """
-        Args:
-            n: Binary32 long int array
-        """
-        return ctypes.c_long(n)
-
-    @staticmethod
-    def array_char(n):
+    def char(n):
         """
         Create a ctypes char array of size n
 
@@ -172,25 +81,93 @@ class Vi:
         return ctypes.create_string_buffer(n)
 
     @staticmethod
-    def null():
+    def int8(n):
         """
-        Create a null value of 0
+        Args:
+            n: Binary8 char
         """
-        return 0
+        return ctypes.c_byte(n)
 
     @staticmethod
-    def true():
+    def uint8(n):
         """
-        Create a true value of 1
+        Args:
+            n: Binary8 unsigned char
         """
-        return 1
+        return ctypes.c_ubyte(n)
 
     @staticmethod
-    def false():
+    def int16(n):
         """
-        Create a false value of 0
+        Args:
+            n: Binary16 short int
         """
-        return 0
+        return ctypes.c_short(n)
+
+    @staticmethod
+    def uint16(n):
+        """
+        Args:
+            n: Binary16 unsigned short int
+        """
+        return ctypes.c_ushort(n)
+
+    @staticmethod
+    def int32(n):
+        """
+        Args:
+            n: Binary32 long int
+        """
+        return ctypes.c_long(n)
+
+    @staticmethod
+    def uint32(n):
+        """
+        Args:
+            n: Binary32 long int
+        """
+        return ctypes.c_ulong(n)
+
+    @staticmethod
+    def real32(n):
+        """
+        Args:
+            n: float, char*
+        """
+        return ctypes.c_float(n)
+
+    @staticmethod
+    def real64(n):
+        """
+        Args:
+            n: double, char*
+        """
+        return ctypes.c_double(n)
+
+    @staticmethod
+    def boolean(n):
+        return Vi.uint16(n)
+
+    @staticmethod
+    def object(n):
+        return Vi.uint32(n)
+
+    @staticmethod
+    def rsrc(s):
+        return Vi.string(s)
+
+    @staticmethod
+    def session(n):
+        return Vi.object(n)
+
+    @staticmethod
+    def status(n):
+        return Vi.int32(n)
+
+    @staticmethod
+    def string(s):
+        # return Vi.char(n)
+        return ctypes.c_char_p(s)
 
 
 class WFS(object):
@@ -411,85 +388,109 @@ class WFS(object):
     CENTERED = 1
 
     def __init__(self):
-        self.adapt_centroids = Vi.int_32(0)
-        self.allow_auto_exposure = Vi.int_32(0)
+        self.do_spherical_reference = Vi.int32(0)
+        self.adapt_centroids = Vi.int32(0)
+        self.allow_auto_exposure = Vi.int32(0)
         self.array_centroid_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_centroid_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_deviations_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_deviations_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_ref_pos_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_ref_pos_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        self.array_scale_x = (ctypes.c_float * self.MAX_SPOTS_X)()
+        self.array_scale_y = (ctypes.c_float * self.MAX_SPOTS_Y)()
         self.array_wavefront = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_wavefront_in = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_wavefront_out = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_wavefront_xy = ((ctypes.c_float * self.MAX_SPOTS_Y) * self.MAX_SPOTS_X)()
         self.array_wavefront_yx = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_zernike_orders_um = (ctypes.c_float * (self.MAX_ZERNIKE_ORDERS + 1))()
+        self.array_zernike_reconstructed = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_zernike_um = (ctypes.c_float * (self.MAX_ZERNIKE_MODES + 1))()
-        self.beam_centroid_x_mm = Vi.real_64_pointer(0)
-        self.beam_centroid_y_mm = Vi.real_64_pointer(0)
-        self.beam_diameter_x_mm = Vi.real_64_pointer(0)
-        self.beam_diameter_y_mm = Vi.real_64_pointer(0)
-        self.calculate_diameters = Vi.int_32(0)
-        self.cam_pitch_um = Vi.real_64_pointer(0)
-        self.cam_resolution_index = Vi.int_32(0)
-        self.cancel_wavefront_tilt = Vi.int_32(1)
-        self.device_status = Vi.int_32_pointer(0)
-        self.dynamic_noise_cut = Vi.int_32(1)
-        self.error_code = Vi.int_32(0)
-        self.error_message = Vi.array_char(self.WFS_ERR_DESCR_BUFFER_SIZE)
-        self.exposure_time_act = Vi.real_64_pointer(0)
-        self.grid_correction_0 = Vi.real_64_pointer(0)
-        self.grid_correction_45 = Vi.real_64_pointer(0)
-        self.grid_correction_pitch = Vi.real_64_pointer(0)
-        self.grid_correction_rotation = Vi.real_64_pointer(0)
-        self.highspeed_mode = Vi.int_32(0)
+        self.beam_centroid_x_mm = Vi.real64(0)
+        self.beam_centroid_y_mm = Vi.real64(0)
+        self.beam_diameter_x_mm = Vi.real64(0)
+        self.beam_diameter_y_mm = Vi.real64(0)
+        self.black_level_offset_actual = Vi.int32(0)
+        self.black_level_offset_set = Vi.int32(0)
+        self.calculate_diameters = Vi.int32(0)
+        self.cam_pitch_um = Vi.real64(0)
+        self.cam_resolution_index = Vi.int32(0)
+        self.cancel_wavefront_tilt = Vi.int32(1)
+        self.device_status = Vi.int32(0)
+        self.dynamic_noise_cut = Vi.int32(1)
+        self.error_code = Vi.int32(0)
+        self.error_message = Vi.char(self.WFS_ERR_DESCR_BUFFER_SIZE)
+        self.exposure_time_actual = Vi.real64(0)
+        self.exposure_time_increment = Vi.real64(0)
+        self.exposure_time_max = Vi.real64(0)
+        self.exposure_time_min = Vi.real64(0)
+        self.exposure_time_set = Vi.real64(0)
+        self.fit_error_mean = Vi.real64(0)
+        self.fit_error_stdev = Vi.real64(0)
+        self.grid_correction_0 = Vi.real64(0)
+        self.grid_correction_45 = Vi.real64(0)
+        self.grid_correction_pitch = Vi.real64(0)
+        self.grid_correction_rotation = Vi.real64(0)
+        self.highspeed_mode = Vi.int32(0)
         self.id_query = Vi.boolean(0)
-        self.image_buffer = ctypes.c_uint(0)
+        # self.image_buffer = ctypes.c_uint(0)
+        self.image_buffer = Vi.uint8(0)
         self.instrument_handle = Vi.session(0)
-        self.instrument_name_wfs = Vi.array_char(self.WFS_BUFFER_SIZE)
-        self.lenslet_focal_length_um = Vi.real_64_pointer(0)
-        self.lenslet_pitch_um = Vi.real_64_pointer(0)
-        self.limit_to_pupil = Vi.int_32(0)
-        self.manufacturer_name = Vi.array_char(self.WFS_BUFFER_SIZE)
-        self.master_gain_act = Vi.real_64_pointer(0)
-        self.mla_count = Vi.int_32_pointer(0)
-        self.mla_index = Vi.int_32(0)
-        self.mla_name = Vi.array_char(self.WFS_BUFFER_SIZE)
-        self.pixel_format = Vi.int_32(0)
-        self.pupil_center_x_mm = Vi.real_64(0)
-        self.pupil_center_y_mm = Vi.real_64(0)
-        self.pupil_diameter_x_mm = Vi.real_64(0)
-        self.pupil_diameter_y_mm = Vi.real_64(0)
-        self.reference_index = Vi.int_32(0)
+        self.instrument_name_wfs = Vi.char(self.WFS_BUFFER_SIZE)
+        self.lenslet_focal_length_um = Vi.real64(0)
+        self.lenslet_pitch_um = Vi.real64(0)
+        self.limit_to_pupil = Vi.int32(0)
+        self.manufacturer_name = Vi.char(self.WFS_BUFFER_SIZE)
+        self.master_gain_actual = Vi.real64(0)
+        self.master_gain_max = Vi.real64(0)
+        self.master_gain_min = Vi.real64(0)
+        self.master_gain_set = Vi.real64(0)
+        self.mla_count = Vi.int32(0)
+        self.mla_index = Vi.int32(0)
+        self.mla_name = Vi.char(self.WFS_BUFFER_SIZE)
+        self.pixel_format = Vi.int32(0)
+        self.pupil_center_x_mm = Vi.real64(0)
+        self.pupil_center_y_mm = Vi.real64(0)
+        self.pupil_diameter_x_mm = Vi.real64(0)
+        self.pupil_diameter_y_mm = Vi.real64(0)
+        self.reference_index = Vi.int32(0)
         self.reset_device = Vi.boolean(0)
-        self.resource_name = Vi.resource('')  # resource_name='USB::0x1313::0x0000::1'
-        self.roc_mm = Vi.real_64_pointer(0)
-        self.serial_number_camera = Vi.array_char(self.WFS_BUFFER_SIZE)
-        self.serial_number_wfs = Vi.array_char(self.WFS_BUFFER_SIZE)
-        self.spot_offset_x = Vi.real_64_pointer(0)
-        self.spot_offset_y = Vi.real_64_pointer(0)
-        self.spot_ref_type = Vi.int_32(0)
-        self.spotfield_columns = Vi.int_32(0)
-        self.spotfield_rows = Vi.int_32(0)
-        self.spots_x = Vi.int_32_pointer(0)
-        self.spots_y = Vi.int_32_pointer(0)
-        self.subtract_offset = Vi.int_32(0)
-        self.wavefront_diff = Vi.real_64_pointer(0)
-        self.wavefront_max = Vi.real_64_pointer(0)
-        self.wavefront_mean = Vi.real_64_pointer(0)
-        self.wavefront_min = Vi.real_64_pointer(0)
-        self.wavefront_rms = Vi.real_64_pointer(0)
-        self.wavefront_type = Vi.int_32(0)
-        self.wavefront_weighted_rms = Vi.real_64_pointer(0)
-        self.wavelength = Vi.real_64(0)
-        self.zernike_orders = Vi.int_32_pointer(4)
-        self.window_count_x = Vi.int_32_pointer(0)
-        self.window_count_y = Vi.int_32_pointer(0)
-        self.window_size_x = Vi.int_32_pointer(0)
-        self.window_size_y = Vi.int_32_pointer(0)
-        self.window_start_position_x = Vi.array_int_32(0)
-        self.window_start_position_y = Vi.array_int_32(0)
+        self.resource_name = Vi.rsrc('')  # resource_name='USB::0x1313::0x0000::1'
+        self.roc_mm = Vi.real64(0)
+        self.serial_number_camera = Vi.char(self.WFS_BUFFER_SIZE)
+        self.serial_number_wfs = Vi.char(self.WFS_BUFFER_SIZE)
+        self.spot_offset_x = Vi.real64(0)
+        self.spot_offset_y = Vi.real64(0)
+        self.spot_ref_type = Vi.int32(0)
+        self.spotfield_columns = Vi.int32(0)
+        self.spotfield_rows = Vi.int32(0)
+        self.spots_x = Vi.int32(0)
+        self.spots_y = Vi.int32(0)
+        self.subtract_offset = Vi.int32(0)
+        self.test_message = Vi.int16(0)
+        self.test_result = Vi.char(self.WFS_BUFFER_SIZE)
+        self.trigger_delay_actual = Vi.int32(0)
+        self.trigger_delay_increment = Vi.int32(0)
+        self.trigger_delay_max = Vi.int32(0)
+        self.trigger_delay_min = Vi.int32(0)
+        self.trigger_delay_set = Vi.int32(0)
+        self.trigger_mode = Vi.int32(0)
+        self.wavefront_diff = Vi.real64(0)
+        self.wavefront_max = Vi.real64(0)
+        self.wavefront_mean = Vi.real64(0)
+        self.wavefront_min = Vi.real64(0)
+        self.wavefront_rms = Vi.real64(0)
+        self.wavefront_type = Vi.int32(0)
+        self.wavefront_weighted_rms = Vi.real64(0)
+        self.wavelength = Vi.real64(0)
+        self.zernike_orders = Vi.int32(4)
+        self.window_count_x = Vi.int32(0)
+        self.window_count_y = Vi.int32(0)
+        self.window_size_x = Vi.int32(0)
+        self.window_size_y = Vi.int32(0)
+        self.window_start_position_x = Vi.int32(0)
+        self.window_start_position_y = Vi.int32(0)
 
     # WFS Functions
     def _init(self, **kwargs):
@@ -578,7 +579,7 @@ class WFS(object):
         :return status:
         """
         if 'resource_name' in kwargs:
-            self.resource_name = Vi.resource(kwargs['resource_name'])
+            self.resource_name = Vi.rsrc(kwargs['resource_name'])
         if 'id_query' in kwargs:
             self.resource_name = Vi.boolean(kwargs['id_query'])
         if 'reset_device' in kwargs:
@@ -590,7 +591,10 @@ class WFS(object):
                                   self.id_query,
                                   self.reset_device,
                                   ctypes.byref(self.instrument_handle))
-        log_wfs.info('Instrument Handle: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Init: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Resource Name: {0}'.format(self.resource_name.value))
+        log_wfs.info('ID Query: {0}'.format(self.id_query.value))
+        log_wfs.debug('Reset Device: {0}'.format(self.reset_device.value))
         return status
 
     def _close(self):
@@ -605,6 +609,7 @@ class WFS(object):
                                                self.instrument_name_wfs,
                                                self.serial_number_wfs,
                                                self.serial_number_camera)
+        log_wfs.debug('Get Instrument Info: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Manufacturer Name: {0}'.format(self.manufacturer_name.value))
         log_wfs.info('Instrument Name WFS: {0}'.format(self.instrument_name_wfs.value))
         log_wfs.info('Serial Number WFS: {0}'.format(self.serial_number_wfs.value))
@@ -617,6 +622,9 @@ class WFS(object):
                                           self.cam_resolution_index,
                                           ctypes.byref(self.spots_x),
                                           ctypes.byref(self.spots_y))
+        log_wfs.debug('Configure Cam: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Pixel Format: {0}'.format(self.pixel_format.value))
+        log_wfs.info('Camera Resolution Index: {0}'.format(self.cam_resolution_index.value))
         log_wfs.info('Spots X: {0}'.format(self.spots_x.value))
         log_wfs.info('Spots Y: {0}'.format(self.spots_y.value))
         return status
@@ -627,6 +635,7 @@ class WFS(object):
                                               self.adapt_centroids,
                                               self.subtract_offset,
                                               self.allow_auto_exposure)
+        log_wfs.debug('Set Highspeed Mode: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Highspeed Mode: {0}'.format(self.highspeed_mode.value))
         log_wfs.info('Adapt Centroids: {0}'.format(self.adapt_centroids.value))
         log_wfs.info('Subtract Offset: {0}'.format(self.subtract_offset.value))
@@ -641,6 +650,7 @@ class WFS(object):
                                                  ctypes.byref(self.window_size_y),
                                                  self.window_start_position_x,
                                                  self.window_start_position_y)
+        log_wfs.debug('Get Highspeed Windows: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Window Count X: {0}'.format(self.window_count_x.value))
         log_wfs.info('Window Count Y: {0}'.format(self.window_count_y.value))
         log_wfs.info('Window Size X: {0}'.format(self.window_size_x.value))
@@ -651,49 +661,116 @@ class WFS(object):
 
     def _check_highspeed_centroids(self):
         status = lib_wfs.WFS_CheckHighspeedCentroids(self.instrument_handle)
+        log_wfs.debug('Check Highspeed Centroids: {0}'.format(self.instrument_handle.value))
         return status
 
     def _get_exposure_time_range(self):
-        pass
+        status = lib_wfs.WFS_GetExposureTimeRange(self.instrument_handle,
+                                                  ctypes.byref(self.exposure_time_min),
+                                                  ctypes.byref(self.exposure_time_max),
+                                                  ctypes.byref(self.exposure_time_increment))
+        log_wfs.debug('Get Exposure Time Range: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Exposure Time Minimum (ms): {0}'.format(self.exposure_time_min.value))
+        log_wfs.info('Exposure Time Maximum (ms): {0}'.format(self.exposure_time_max.value))
+        log_wfs.info('Exposure Time Increment (ms): {0}'.format(self.exposure_time_increment.value))
+        return status
 
     def _set_exposure_time(self):
-        pass
+        status = lib_wfs.WFS_SetExposureTime(self.instrument_handle,
+                                             self.exposure_time_set,
+                                             ctypes.byref(self.exposure_time_actual))
+        log_wfs.debug('Set Exposure Time: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Exposure Time Set (ms): {0}'.format(self.exposure_time_set.value))
+        log_wfs.info('Exposure Time Actual (ms): {0}'.format(self.exposure_time_actual.value))
+        return status
 
     def _get_exposure_time(self):
-        pass
+        status = lib_wfs.WFS_GetExposureTime(self.instrument_handle,
+                                             ctypes.byref(self.exposure_time_actual))
+        log_wfs.debug('Get Exposure Time (ms): {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Exposure Time Actual (ms): {0}'.format(self.exposure_time_actual.value))
+        return status
 
     def _get_master_gain_range(self):
-        pass
+        status = lib_wfs.WFS_GetMasterGainRange(self.instrument_handle,
+                                                ctypes.byref(self.master_gain_min),
+                                                ctypes.byref(self.master_gain_max))
+        log_wfs.debug('Get Master Gain Range: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Master Gain Minimum: {0}'.format(self.master_gain_min.value))
+        log_wfs.info('Master Gain Maximum: {0}'.format(self.master_gain_max.value))
+        return status
 
-    def _set_master_gain_time(self):
-        pass
+    def _set_master_gain(self):
+        status = lib_wfs.WFS_SetMasterGain(self.instrument_handle,
+                                           self.master_gain_set,
+                                           ctypes.byref(self.master_gain_actual))
+        log_wfs.debug('Get Exposure Time: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Master Gain Set: {0}'.format(self.master_gain_set.value))
+        log_wfs.info('Master Gain Actual: {0}'.format(self.master_gain_actual.value))
+        return status
 
-    def _get_master_gain_time(self):
-        pass
+    def _get_master_gain(self):
+        status = lib_wfs.WFS_GetMasterGain(self.instrument_handle,
+                                           ctypes.byref(self.master_gain_actual))
+        log_wfs.debug('Get Exposure Time: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Master Gain Actual: {0}'.format(self.master_gain_actual.value))
+        return status
 
     def _set_black_level_offset(self):
-        pass
+        status = lib_wfs.WFS_SetBlackLevelOffset(self.instrument_handle,
+                                                 self.black_level_offset_set)
+        log_wfs.debug('Set Black Level Offset: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Black Level Offset Set: {0}'.format(self.black_level_offset_set.value))
+        return status
 
     def _get_black_level_offset(self):
-        pass
+        status = lib_wfs.WFS_GetBlackLevelOffset(self.instrument_handle,
+                                                 self.black_level_offset_actual)
+        log_wfs.debug('Get Black Level Offset: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Black Level Offset Actual: {0}'.format(self.black_level_offset_actual.value))
+        return status
 
     def _set_trigger_mode(self):
-        pass
+        status = lib_wfs.WFS_SetTriggerMode(self.instrument_handle,
+                                            self.trigger_mode)
+        log_wfs.debug('Set Trigger Mode: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Trigger Mode: {0}'.format(self.trigger_mode.value))
+        return status
 
     def _get_trigger_mode(self):
-        pass
-
-    def _set_trigger_delay(self):
-        pass
+        status = lib_wfs.WFS_GetTriggerMode(self.instrument_handle,
+                                            ctypes.byref(self.trigger_mode))
+        log_wfs.debug('Get Trigger Mode: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Trigger Mode: {0}'.format(self.trigger_mode.value))
+        return status
 
     def _get_trigger_delay_range(self):
-        pass
+        status = lib_wfs.WFS_GetTriggerDelayRange(self.instrument_handle,
+                                                  ctypes.byref(self.trigger_delay_min),
+                                                  ctypes.byref(self.trigger_delay_max),
+                                                  ctypes.byref(self.trigger_delay_increment))
+        log_wfs.debug('Get Trigger Delay Range: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Trigger Delay Minimum (µs): {0}'.format(self.trigger_delay_min.value))
+        log_wfs.info('Trigger Delay Maximum (µs): {0}'.format(self.trigger_delay_max.value))
+        log_wfs.info('Trigger Delay Increment (µs): {0}'.format(self.trigger_delay_increment.value))
+        return status
+
+    def _set_trigger_delay(self):
+        status = lib_wfs.WFS_SetTriggerDelay(self.instrument_handle,
+                                             self.trigger_delay_set,
+                                             ctypes.byref(self.trigger_delay_actual))
+        log_wfs.debug('Set Trigger Delay: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Trigger Delay Set (µs): {0}'.format(self.trigger_delay_set.value))
+        log_wfs.info('Trigger Delay Actual (µs): {0}'.format(self.trigger_delay_actual.value))
+        return status
 
     def _get_mla_count(self):
         status = lib_wfs.WFS_GetMlaCount(self.instrument_handle,
                                          ctypes.byref(self.mla_count))
-        log_wfs.info('Micro Lens Array: {0}'.format(self.mla_count.value))
-        self.mla_index = Vi.int_32(self.mla_count.value - 1)
+        self.mla_index = Vi.int32(self.mla_count.value - 1)
+        log_wfs.debug('Get MLA Count: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Micro Lens Array Count: {0}'.format(self.mla_count.value))
+        log_wfs.info('Micro Lens Array Index: {0}'.format(self.mla_index.value))
         return status
 
     def _get_mla_data(self):
@@ -707,15 +784,16 @@ class WFS(object):
                                         ctypes.byref(self.lenslet_focal_length_um),
                                         ctypes.byref(self.grid_correction_0),
                                         ctypes.byref(self.grid_correction_45))
-
+        log_wfs.debug('Get MLA Data: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('MLA Index: {0}'.format(self.mla_index.value))
         log_wfs.info('MLA Name: {0}'.format(self.mla_name.value))
-        log_wfs.info('MLA cam_pitch_um: {0}'.format(self.cam_pitch_um.value))
-        log_wfs.info('MLA lenslet_pitch_um: {0}'.format(self.lenslet_pitch_um.value))
-        log_wfs.info('MLA spot_offset_x: {0}'.format(self.spot_offset_x.value))
-        log_wfs.info('MLA spot_offset_y: {0}'.format(self.spot_offset_y.value))
-        log_wfs.info('MLA lenslet_focal_length_um: {0}'.format(self.lenslet_focal_length_um.value))
-        log_wfs.info('MLA grid_correction_0: {0}'.format(self.grid_correction_0.value))
-        log_wfs.info('MLA grid_correction_45: {0}'.format(self.grid_correction_45.value))
+        log_wfs.info('MLA Camera Pitch (µm): {0}'.format(self.cam_pitch_um.value))
+        log_wfs.info('MLA Lenslet Pitch (µm): {0}'.format(self.lenslet_pitch_um.value))
+        log_wfs.info('MLA Spot Offset X: {0}'.format(self.spot_offset_x.value))
+        log_wfs.info('MLA Spot Offset Y: {0}'.format(self.spot_offset_y.value))
+        log_wfs.info('MLA Lenslet Focal length (µm): {0}'.format(self.lenslet_focal_length_um.value))
+        log_wfs.info('MLA Grid Correction 0°'.format(self.grid_correction_0.value))
+        log_wfs.info('MLA Grid Correction 45°'.format(self.grid_correction_45.value))
         return status
 
     def _get_mla_data2(self):
@@ -731,17 +809,18 @@ class WFS(object):
                                          ctypes.byref(self.grid_correction_45),
                                          ctypes.byref(self.grid_correction_rotation),
                                          ctypes.byref(self.grid_correction_pitch))
-
+        log_wfs.debug('Get MLA Data2: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('MLA Index: {0}'.format(self.mla_index.value))
         log_wfs.info('MLA Name: {0}'.format(self.mla_name.value))
-        log_wfs.info('MLA cam_pitch_um: {0}'.format(self.cam_pitch_um.value))
-        log_wfs.info('MLA lenslet_pitch_um: {0}'.format(self.lenslet_pitch_um.value))
-        log_wfs.info('MLA spot_offset_x: {0}'.format(self.spot_offset_x.value))
-        log_wfs.info('MLA spot_offset_y: {0}'.format(self.spot_offset_y.value))
-        log_wfs.info('MLA lenslet_focal_length_um: {0}'.format(self.lenslet_focal_length_um.value))
-        log_wfs.info('MLA grid_correction_0: {0}'.format(self.grid_correction_0.value))
-        log_wfs.info('MLA grid_correction_45: {0}'.format(self.grid_correction_45.value))
-        log_wfs.info('MLA grid_correction_rotation: {0}'.format(self.grid_correction_rotation.value))
-        log_wfs.info('MLA grid_correction_pitch: {0}'.format(self.grid_correction_pitch.value))
+        log_wfs.info('MLA Camera Pitch (µm): {0}'.format(self.cam_pitch_um.value))
+        log_wfs.info('MLA Lenslet Pitch (µm): {0}'.format(self.lenslet_pitch_um.value))
+        log_wfs.info('MLA Spot Offset X: {0}'.format(self.spot_offset_x.value))
+        log_wfs.info('MLA Spot Offset Y: {0}'.format(self.spot_offset_y.value))
+        log_wfs.info('MLA Lenslet Focal length (µm): {0}'.format(self.lenslet_focal_length_um.value))
+        log_wfs.info('MLA Grid Correction 0°'.format(self.grid_correction_0.value))
+        log_wfs.info('MLA Grid Correction 45°'.format(self.grid_correction_45.value))
+        log_wfs.info('MLA Grid Correction Rotation: {0}'.format(self.grid_correction_rotation.value))
+        log_wfs.info('MLA Grid Correction Pitch: {0}'.format(self.grid_correction_pitch.value))
         return status
 
     def _select_mla(self):
@@ -757,10 +836,10 @@ class WFS(object):
 
     def _set_pupil(self, pupil_center_x_mm=0, pupil_center_y_mm=0,
                    pupil_diameter_x_mm=4.76, pupil_diameter_y_mm=4.76):
-        self.pupil_center_x_mm = Vi.real_64(pupil_center_x_mm)
-        self.pupil_center_y_mm = Vi.real_64(pupil_center_y_mm)
-        self.pupil_diameter_x_mm = Vi.real_64(pupil_diameter_x_mm)
-        self.pupil_diameter_y_mm = Vi.real_64(pupil_diameter_y_mm)
+        self.pupil_center_x_mm = Vi.real64(pupil_center_x_mm)
+        self.pupil_center_y_mm = Vi.real64(pupil_center_y_mm)
+        self.pupil_diameter_x_mm = Vi.real64(pupil_diameter_x_mm)
+        self.pupil_diameter_y_mm = Vi.real64(pupil_diameter_y_mm)
         status = lib_wfs.WFS_SetPupil(self.instrument_handle,
                                       self.pupil_center_x_mm,
                                       self.pupil_center_y_mm,
@@ -785,7 +864,7 @@ class WFS(object):
         return status
 
     def _set_reference_place(self, reference_index=0):
-        self.reference_index = Vi.int_32(reference_index)
+        self.reference_index = Vi.int32(reference_index)
         status = lib_wfs.WFS_SetReferencePlane(self.instrument_handle,
                                                self.reference_index)
         log_wfs.info('Set Reference Index: {0}'.format(self.reference_index.value))
@@ -846,10 +925,10 @@ class WFS(object):
 
     def _take_spotfield_image_auto_exposure(self):
         status = lib_wfs.WFS_TakeSpotfieldImageAutoExpos(self.instrument_handle,
-                                                         ctypes.byref(self.exposure_time_act),
-                                                         ctypes.byref(self.master_gain_act))
-        log_wfs.info('Exposure Time Act: {0}'.format(self.exposure_time_act.value))
-        log_wfs.info('Master Gain Act: {0}'.format(self.master_gain_act.value))
+                                                         ctypes.byref(self.exposure_time_actual),
+                                                         ctypes.byref(self.master_gain_actual))
+        log_wfs.info('Exposure Time Act: {0}'.format(self.exposure_time_actual.value))
+        log_wfs.info('Master Gain Act: {0}'.format(self.master_gain_actual.value))
         return status
 
     def _get_spotfield_image(self):
@@ -958,8 +1037,7 @@ class WFS(object):
                                         self.array_zernike_orders_um,
                                         ctypes.byref(self.roc_mm))
         log_wfs.info('Zernike Um:' + ''.join(['{:18}'.format(item) for item in self.array_zernike_um]))
-        log_wfs.info(
-            'Zernike Orders Um:' + ''.join(['{:18}'.format(item) for item in self.array_zernike_orders_um]))
+        log_wfs.info('Zernike Orders Um:' + ''.join(['{:18}'.format(item) for item in self.array_zernike_orders_um]))
         log_wfs.info('Zernike Orders: {0}'.format(self.zernike_orders.value))
         log_wfs.info('RoC [mm]: {0}'.format(self.roc_mm.value))
         return status
@@ -968,13 +1046,26 @@ class WFS(object):
         pass
 
     def _calc_reconstructed_deviations(self):
-        pass
+        status = lib_wfs.WFS_CalcReconstrDeviations(self.instrument_handle,
+                                                    self.zernike_orders,
+                                                    self.array_zernike_reconstructed,
+                                                    self.do_spherical_reference,
+                                                    ctypes.byref(self.fit_error_mean),
+                                                    ctypes.byref(self.fit_error_stdev))
+        log_wfs.debug('Calc Reconstructed Deviations: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Zernike Orders: {0}'.format(self.zernike_orders.value))
+        log_wfs.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_zernike_reconstructed]))
+        log_wfs.info('Do Spherical Reference: {0}'.format(self.do_spherical_reference.value))
+        log_wfs.info('Fit Error Mean: {0}'.format(self.fit_error_mean.value))
+        log_wfs.info('Fit Error Standard Deviation: {0}'.format(self.fit_error_stdev.value))
+        return status
 
     def _calc_wavefront(self):
         status = lib_wfs.WFS_CalcWavefront(self.instrument_handle,
                                            self.wavefront_type,
                                            self.limit_to_pupil,
                                            self.array_wavefront)
+        log_wfs.debug('Calc Wavefront: {0}'.format(self.instrument_handle.value))
         log_wfs.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_wavefront]))
         log_wfs.info('Wavefront Type: {0}'.format(self.wavefront_type.value))
         log_wfs.info('Limit to Pupil: {0}'.format(self.limit_to_pupil.value))
@@ -988,6 +1079,7 @@ class WFS(object):
                                                      ctypes.byref(self.wavefront_mean),
                                                      ctypes.byref(self.wavefront_rms),
                                                      ctypes.byref(self.wavefront_weighted_rms))
+        log_wfs.debug('Calc Wavefront Statistics: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Min: {0}'.format(self.wavefront_min.value))
         log_wfs.info('Max: {0}'.format(self.wavefront_max.value))
         log_wfs.info('Diff: {0}'.format(self.wavefront_diff.value))
@@ -998,18 +1090,17 @@ class WFS(object):
 
     # Utility Functions
     def _self_test(self):
-        # selfTestResult = ViInt16()
-        # selfTestMessage = ViAChar(self.WFS_BUFFER_SIZE)
-        # status = lib_wfs.WFS_self_test(self.instrumentHandle,
-        #                                   ctypes.byref(selfTestResult),
-        #                                   selfTestMessage)
-        # logger.info('Self Test Result: {0}'.format(selfTestResult.value))
-        # logger.info('Self Test Message: {0}'.format(selfTestMessage.value))
-        # return status
-        pass
+        status = lib_wfs.WFS_self_test(self.instrument_handle,
+                                       ctypes.byref(self.test_result),
+                                       self.test_message)
+        log_wfs.debug('Self Test: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Self Test Result: {0}'.format(self.test_result.value))
+        log_wfs.info('Self Test Message: {0}'.format(self.test_message.value))
+        return status
 
     def _reset(self):
         status = lib_wfs.WFS_reset(self.instrument_handle)
+        log_wfs.debug('Reset: {0}'.format(self.instrument_handle.value))
         return status
 
     def _revision_query(self,
@@ -1017,11 +1108,12 @@ class WFS(object):
                         instrument_driver_revision=WFS_BUFFER_SIZE,
                         firmware_revision=WFS_BUFFER_SIZE):
         self.instrument_handle = Vi.session(instrument_handle)
-        self.instrumentDriverRevision = Vi.array_char(instrument_driver_revision)
-        self.firmwareRevision = Vi.array_char(firmware_revision)
+        self.instrumentDriverRevision = Vi.char(instrument_driver_revision)
+        self.firmwareRevision = Vi.char(firmware_revision)
         status = lib_wfs.WFS_revision_query(self.instrument_handle,
                                             self.instrumentDriverRevision,
                                             self.firmwareRevision)
+        log_wfs.debug('Revision Query: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Instrument Driver Version: {0}'.format(self.instrumentDriverRevision.value))
         log_wfs.info('Instrument Firmware Version: {0}'.format(self.firmwareRevision.value))
         return status
@@ -1034,11 +1126,11 @@ class WFS(object):
         log_wfs.info('Error Code: {0}'.format(self.error_code.value))
         log_wfs.error('Error Message: {0}'.format(self.error_message.value))
         return status
-        # pass
 
     def _error_message(self, error_code):
         self.error_code = Vi.status(error_code)
         if self.error_code.value == 0:
+            log_wfs.debug('Error Message: {0}'.format(self.instrument_handle.value))
             log_wfs.info('No error: {0}'.format(self.error_code.value))
             return 0
         status = lib_wfs.WFS_error_message(self.instrument_handle,
@@ -1048,16 +1140,16 @@ class WFS(object):
         log_wfs.info('Error Code: {0}'.format(self.error_code.value))
         log_wfs.error('Error Message: {0}'.format(self.error_message.value))
         return status
-        # pass
 
     def _get_instrument_list_len(self,
                                  instrument_handle=0,
                                  instrument_count=0):
         self.instrument_handle = Vi.session(instrument_handle)
-        self.instrument_count = Vi.int_32(instrument_count)
+        self.instrument_count = Vi.int32(instrument_count)
         status = lib_wfs.WFS_GetInstrumentListLen(self.instrument_handle,
                                                   ctypes.byref(self.instrument_count))
-        self.instrument_index = Vi.int_32(self.instrument_count.value - 1)
+        self.instrument_index = Vi.int32(self.instrument_count.value - 1)
+        log_wfs.debug('Get Instrument List Length: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Instrument Index: {0}'.format(self.instrument_index.value))
         return status
 
@@ -1069,11 +1161,11 @@ class WFS(object):
                                   serial_number_wfs=WFS_BUFFER_SIZE,
                                   resource_name=WFS_BUFFER_SIZE):
         self.instrument_handle = Vi.session(instrument_handle)
-        self.device_id = Vi.int_32(device_id)
-        self.in_use = Vi.int_32(in_use)
-        self.instrument_name = Vi.array_char(instrument_name)
-        self.serial_number_wfs = Vi.array_char(serial_number_wfs)
-        self.resource_name = Vi.array_char(resource_name)
+        self.device_id = Vi.int32(device_id)
+        self.in_use = Vi.int32(in_use)
+        self.instrument_name = Vi.char(instrument_name)
+        self.serial_number_wfs = Vi.char(serial_number_wfs)
+        self.resource_name = Vi.char(resource_name)
         status = lib_wfs.WFS_GetInstrumentListInfo(self.instrument_handle,
                                                    self.instrument_index,
                                                    ctypes.byref(self.device_id),
@@ -1081,6 +1173,7 @@ class WFS(object):
                                                    self.instrument_name,
                                                    self.serial_number_wfs,
                                                    self.resource_name)
+        log_wfs.debug('Get Instrument List Info: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Device ID: {0}'.format(self.device_id.value))
         log_wfs.info('In Use: {0}'.format(self.in_use.value))
         log_wfs.info('Instrument Name: {0}'.format(self.instrument_name.value))
@@ -1089,7 +1182,13 @@ class WFS(object):
         return status
 
     def _get_xy_scale(self):
-        pass
+        status = lib_wfs.WFS_GetXYScale(self.instrument_handle,
+                                        self.array_scale_x,
+                                        self.array_scale_y)
+        log_wfs.debug('Set Spots To User Reference: {0}'.format(self.instrument_handle.value))
+        log_wfs.debug('Array Scale X:' + ''.join(['{:18}'.format(item) for item in self.array_scale_x]))
+        log_wfs.debug('Array Scale Y:' + ''.join(['{:18}'.format(item) for item in self.array_scale_y]))
+        return status
 
     def _convert_wavefront_waves(self):
         status = lib_wfs.WFS_ConvertWavefrontWaves(self.instrument_handle,
