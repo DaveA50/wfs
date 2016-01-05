@@ -388,7 +388,6 @@ class WFS(object):
     CENTERED = 1
 
     def __init__(self):
-        self.do_spherical_reference = Vi.int32(0)
         self.adapt_centroids = Vi.int32(0)
         self.allow_auto_exposure = Vi.int32(0)
         self.array_centroid_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
@@ -407,6 +406,10 @@ class WFS(object):
         self.array_zernike_orders_um = (ctypes.c_float * (self.MAX_ZERNIKE_ORDERS + 1))()
         self.array_zernike_reconstructed = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_zernike_um = (ctypes.c_float * (self.MAX_ZERNIKE_MODES + 1))()
+        self.aoi_center_x_mm = Vi.real64(0)
+        self.aoi_center_y_mm = Vi.real64(0)
+        self.aoi_size_x_mm = Vi.real64(0)
+        self.aoi_size_y_mm = Vi.real64(0)
         self.beam_centroid_x_mm = Vi.real64(0)
         self.beam_centroid_y_mm = Vi.real64(0)
         self.beam_diameter_x_mm = Vi.real64(0)
@@ -418,6 +421,7 @@ class WFS(object):
         self.cam_resolution_index = Vi.int32(0)
         self.cancel_wavefront_tilt = Vi.int32(1)
         self.device_status = Vi.int32(0)
+        self.do_spherical_reference = Vi.int32(0)
         self.dynamic_noise_cut = Vi.int32(1)
         self.error_code = Vi.int32(0)
         self.error_message = Vi.char(self.WFS_ERR_DESCR_BUFFER_SIZE)
@@ -825,14 +829,35 @@ class WFS(object):
 
     def _select_mla(self):
         status = lib_wfs.WFS_SelectMla(self.instrument_handle, self.mla_index)
+        log_wfs.debug('Select MLA: {0}'.format(self.instrument_handle.value))
         log_wfs.info('MLA selection: {0}'.format(self.mla_index.value))
         return status
 
     def _set_aoi(self):
-        pass
+        status = lib_wfs.WFS_SetAoi(self.instrument_handle,
+                                    self.aoi_center_x_mm,
+                                    self.aoi_center_y_mm,
+                                    self.aoi_size_x_mm,
+                                    self.aoi_size_y_mm)
+        log_wfs.debug('Set AoI: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('AoI Center X (mm): {0}'.format(self.aoi_center_x_mm.value))
+        log_wfs.info('AoI Center y (mm): {0}'.format(self.aoi_center_y_mm.value))
+        log_wfs.info('AoI Size X (mm): {0}'.format(self.aoi_size_x_mm.value))
+        log_wfs.info('AoI Size Y (mm): {0}'.format(self.aoi_size_y_mm.value))
+        return status
 
     def _get_aoi(self):
-        pass
+        status = lib_wfs.WFS_GetAoi(self.instrument_handle,
+                                    ctypes.byref(self.aoi_center_x_mm),
+                                    ctypes.byref(self.aoi_center_y_mm),
+                                    ctypes.byref(self.aoi_size_x_mm),
+                                    ctypes.byref(self.aoi_size_y_mm))
+        log_wfs.debug('Set AoI: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('AoI Center X (mm): {0}'.format(self.aoi_center_x_mm.value))
+        log_wfs.info('AoI Center y (mm): {0}'.format(self.aoi_center_y_mm.value))
+        log_wfs.info('AoI Size X (mm): {0}'.format(self.aoi_size_x_mm.value))
+        log_wfs.info('AoI Size Y (mm): {0}'.format(self.aoi_size_y_mm.value))
+        return status
 
     def _set_pupil(self, pupil_center_x_mm=0, pupil_center_y_mm=0,
                    pupil_diameter_x_mm=4.76, pupil_diameter_y_mm=4.76):
