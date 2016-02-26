@@ -32,11 +32,11 @@ handlers:
         encoding: utf8
 
 loggers:
-    wfs:
+    WFS:
         level: INFO
         handlers: [console]
         propagate: no
-    camera:
+    UI:
         level: INFO
         handlers: [console]
         propagate: no

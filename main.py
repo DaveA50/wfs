@@ -1,83 +1,93 @@
 """
 Wrapper for interfacing with the Thorlabs Wavefront Sensor (WFS)
 """
+import sys
 
+from PyQt4 import QtGui, QtCore
+from PyQt4.QtCore import QObject, SIGNAL
+
+import gui
 from wfs import WFS
 
-def loop_images(n):
-    for i in xrange(n):
-        wfs._take_spotfield_image_auto_exposure()
-        wfs._get_spotfield_image()
-        wfs._calc_spots_centroid_diameter_intensity()
-        wfs._get_spot_centroids()
-        wfs._calc_beam_centroid_diameter()
-        wfs._calc_spot_to_reference_deviations()
-        wfs._get_spot_deviations()
-        wfs._calc_wavefront()
-        wfs._calc_wavefront_statistics()
-        wfs._zernike_lsf()
 
-wfs = WFS()
-print(wfs.WFS_WARNING)
-print(wfs.WFS_WARN_NSUP_ID_QUERY)
-print(wfs.WFS_WARN_NSUP_RESET)
-print(wfs.WFS_WARN_NSUP_SELF_TEST)
-print(wfs.WFS_WARN_NSUP_ERROR_QUERY)
-print(wfs.WFS_WARN_NSUP_REV_QUERY)
+class WFSApp(QtGui.QMainWindow, gui.design.Ui_MainWindow):
+    def __init__(self, parent=None, wfs=WFS()):
+        super(WFSApp, self).__init__(parent)
+        self.setupUi(self)
+        self.wfs = wfs
+        QObject.connect(self.btn_connect, SIGNAL('clicked()'),
+                        self.on_connect_click)
+        QObject.connect(self.btn_disconnect, SIGNAL('clicked()'),
+                        self.on_disconnect_click)
+        QObject.connect(self.btn_settings, SIGNAL('clicked()'),
+                        self.on_settings_click)
+        QObject.connect(self.btn_debug, SIGNAL('clicked()'),
+                        lambda: self.on_debug_click('Open settings window'))
+        QObject.connect(self.menu_settings, SIGNAL('triggered()'),
+                        self.on_settings_click)
 
-print(wfs.WFS_STATBIT_CON)
-print(wfs.WFS_STATBIT_PTH)
-print(wfs.WFS_STATBIT_PTL)
-print(wfs.WFS_STATBIT_HAL)
-print(wfs.WFS_STATBIT_SCL)
-print(wfs.WFS_STATBIT_ZFL)
-print(wfs.WFS_STATBIT_ZFH)
-print(wfs.WFS_STATBIT_ATR)
-print(wfs.WFS_STATBIT_CFG)
-print(wfs.WFS_STATBIT_PUD)
-print(wfs.WFS_STATBIT_SPC)
-print(wfs.WFS_STATBIT_RDA)
-print(wfs.WFS_STATBIT_URF)
-print(wfs.WFS_STATBIT_HSP)
-print(wfs.WFS_STATBIT_MIS)
-print(wfs.WFS_STATBIT_LOS)
-print(wfs.WFS_STATBIT_FIL)
+    @QtCore.pyqtSlot()
+    def on_connect_click(self):
+        self.wfs.connect()
+        self.btn_disconnect.setEnabled(True)
+        self.btn_connect.setEnabled(False)
 
-wfs._revision_query()
-wfs._get_instrument_list_len()
-wfs._get_instrument_list_info()
-wfs._init()
-wfs._get_instrument_info()
-wfs._get_mla_count()
-wfs._get_mla_data()
-wfs._select_mla()
-wfs._configure_cam()
-wfs._get_status()
-wfs._set_reference_place(0)
-wfs._get_reference_plane()
-wfs._set_pupil()
-wfs._get_pupil()
-wfs._get_status()
-wfs._take_spotfield_image_auto_exposure()
-wfs._get_status()
-wfs._take_spotfield_image_auto_exposure()
-wfs._get_status()
-wfs._take_spotfield_image_auto_exposure()
-wfs._get_status()
-wfs._take_spotfield_image_auto_exposure()
-wfs._error_message(wfs._get_status())
-wfs._error_message(wfs._take_spotfield_image_auto_exposure())
-print wfs._get_status()
-# print wfs._error_query()
-wfs._create_default_user_reference()
-# print wfs._get_spot_reference_positions()
-wfs._save_user_reference_file()
-wfs._load_user_reference_file()
-wfs._error_message(wfs._do_spherical_reference())
-wfs._set_calc_spots_to_user_reference()
-wfs._set_spots_to_user_reference()
-# #
-# # loop_images(10)
-#
-# wfs._close()
-# print(wfs.PUPIL_DIA_MAX_MM)
+    @QtCore.pyqtSlot()
+    def on_disconnect_click(self):
+        if self.wfs._close() == 0:
+            self.btn_connect.setEnabled(True)
+            self.btn_disconnect.setEnabled(False)
+
+    @QtCore.pyqtSlot()
+    def on_settings_click(self):
+        print('TODO')
+
+    @QtCore.pyqtSlot(str)
+    def on_debug_click(self, arg1):
+        def loop_images(n):
+            for i in xrange(n):
+                self.wfs._take_spotfield_image_auto_exposure()
+                self.wfs._get_spotfield_image()
+                self.wfs._calc_spots_centroid_diameter_intensity()
+                self.wfs._get_spot_centroids()
+                self.wfs._calc_beam_centroid_diameter()
+                self.wfs._calc_spot_to_reference_deviations()
+                self.wfs._get_spot_deviations()
+                self.wfs._calc_wavefront()
+                self.wfs._calc_wavefront_statistics()
+                self.wfs._zernike_lsf()
+
+        print(arg1)
+        self.wfs.connect()
+        self.wfs._set_reference_plane(0)
+        self.wfs._get_reference_plane()
+        self.wfs._set_pupil()
+        self.wfs._get_pupil()
+        self.wfs._get_status()
+        self.wfs._take_spotfield_image_auto_exposure()
+        self.wfs._get_status()
+        self.wfs._take_spotfield_image_auto_exposure()
+        self.wfs._get_status()
+        self.wfs._take_spotfield_image_auto_exposure()
+        self.wfs._get_status()
+        self.wfs._take_spotfield_image_auto_exposure()
+        self.wfs._error_message(wfs._get_status())
+        self.wfs._error_message(wfs._take_spotfield_image_auto_exposure())
+        self.wfs._create_default_user_reference()
+        self.wfs._save_user_reference_file()
+        self.wfs._load_user_reference_file()
+        self.wfs._error_message(wfs._do_spherical_reference())
+        self.wfs._set_calc_spots_to_user_reference()
+        self.wfs._set_spots_to_user_reference()
+        loop_images(0)
+
+
+def main(wfs):
+    app = QtGui.QApplication(sys.argv)
+    form = WFSApp(wfs=wfs)
+    form.show()
+    app.exec_()
+
+if __name__ == '__main__':
+    wfs = WFS()
+    main(wfs)

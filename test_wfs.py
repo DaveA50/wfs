@@ -59,19 +59,19 @@ def test_get_status(wfs):
     assert wfs._get_status() == 0
 
 
-def test_set_highspeed_mode(wfs):
-    # assert wfs._set_highspeed_mode() == 0
-    pass  # Not able to test on WFS150
+# def test_set_highspeed_mode(wfs):
+#     # assert wfs._set_highspeed_mode() == 0
+#     pass  # Not able to test on WFS150
 
 
-def test_get_highspeed_windows(wfs):
-    # assert wfs._get_highspeed_windows() == 0
-    pass  # Not able to test on WFS150
+# def test_get_highspeed_windows(wfs):
+#     # assert wfs._get_highspeed_windows() == 0
+#     pass  # Not able to test on WFS150
 
 
-def test_check_highspeed_centroids(wfs):
-    # assert wfs._check_highspeed_centroids() == 0
-    pass  # Not able to test on WFS150
+# def test_check_highspeed_centroids(wfs):
+#     # assert wfs._check_highspeed_centroids() == 0
+#     pass  # Not able to test on WFS150
 
 
 # def test_get_exposure_time_range(wfs):
@@ -139,7 +139,7 @@ def test_get_pupil(wfs):
 
 
 def test_set_reference_place(wfs):
-    assert wfs._set_reference_place(0) == 0
+    assert wfs._set_reference_plane(0) == 0
 
 
 def test_get_reference_plane(wfs):
@@ -198,8 +198,8 @@ def test_calc_spots_centroid_diameter_intensity(wfs):
     assert wfs._calc_spots_centroid_diameter_intensity() == 0
 
 
-def test_get_spot_centroids(wfs):
-    assert wfs._get_spot_centroids() == 0
+# def test_get_spot_centroids(wfs):
+#     assert wfs._get_spot_centroids() == 0
 
 
 # def test_get_spot_diameters(wfs):
@@ -222,8 +222,8 @@ def test_calc_spot_to_reference_deviations(wfs):
 #     assert wfs._get_spot_reference_positions() == 0
 #
 #
-def test_get_spot_deviations(wfs):
-    assert wfs._get_spot_deviations() == 0
+# def test_get_spot_deviations(wfs):
+#     assert wfs._get_spot_deviations() == 0
 
 
 def test_zernike_lsf(wfs):
@@ -238,14 +238,14 @@ def test_zernike_lsf(wfs):
 #     assert wfs._calc_reconstructed_deviations() == 0
 #
 #
-def test_calc_wavefront(wfs):
-    assert wfs._calc_wavefront() == 0
-
-
-def test_calc_wavefront_statistics(wfs):
-    assert wfs._calc_wavefront_statistics() == 0
-
-
+# def test_calc_wavefront(wfs):
+#     assert wfs._calc_wavefront() == 0
+#
+#
+# def test_calc_wavefront_statistics(wfs):
+#     assert wfs._calc_wavefront_statistics() == 0
+#
+#
 # def test_self_test(wfs):
 #     assert wfs._self_test() == 0
 #
@@ -254,8 +254,8 @@ def test_calc_wavefront_statistics(wfs):
 #     assert wfs._reset() == 0
 #
 #
-def test_error_query(wfs):
-    assert wfs._error_query() == 0
+# def test_error_query(wfs):
+#     assert wfs._error_query() == 0
 
 
 def test_error_message(wfs):
@@ -290,42 +290,42 @@ def test_error_message(wfs):
     assert wfs._error_message(wfs.WFS_ERROR_SPOT_TRUNCATED) == 0
     assert wfs._error_message(wfs.WFS_ERROR_NO_SPOT_DETECTED) == 0
     assert wfs._error_message(wfs.WFS_ERROR_TILT_CALCULATION) == 0
-#
-#
+
+
 # def test_get_xy_scale(wfs):
 #     assert wfs._get_xy_scale() == 0
-#
-#
+
+
 # def test_convert_wavefront_waves(wfs):
 #     assert wfs._convert_wavefront_waves() == 0
-#
-#
+
+
 # def test_flip_2d_array(wfs):
 #     assert wfs._flip_2d_array() == 0
-#
-#
-def test_set_spots_to_user_reference(wfs):
-    assert wfs._set_spots_to_user_reference() == 0
 
 
-def test_set_calc_spots_to_user_reference(wfs):
-    assert wfs._set_calc_spots_to_user_reference() == 0
+# def test_set_spots_to_user_reference(wfs):
+#     assert wfs._set_spots_to_user_reference() == 0
 
 
-def test_create_default_user_reference(wfs):
-    assert wfs._create_default_user_reference() == 0
+# def test_set_calc_spots_to_user_reference(wfs):
+#     assert wfs._set_calc_spots_to_user_reference() == 0
 
 
-def test_save_user_reference_file(wfs):
-    assert wfs._save_user_reference_file() == 0
+# def test_create_default_user_reference(wfs):
+#     assert wfs._create_default_user_reference() == 0
 
 
-def test_load_user_reference_file(wfs):
-    assert wfs._load_user_reference_file() == 0
+# def test_save_user_reference_file(wfs):
+#     assert wfs._save_user_reference_file() == 0
 
 
-def test_do_spherical_reference(wfs):
-    assert wfs._do_spherical_reference() == 0
+# def test_load_user_reference_file(wfs):
+#     assert wfs._load_user_reference_file() == 0
+
+
+# def test_do_spherical_reference(wfs):
+#     assert wfs._do_spherical_reference() == 0
 
 
 def test_close(wfs):
