@@ -1,3 +1,4 @@
 pyaml
 pytest
 PyQt4
+PySide

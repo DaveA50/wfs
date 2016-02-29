@@ -1,49 +1,60 @@
 """
 Wrapper for interfacing with the Thorlabs Wavefront Sensor (WFS)
 """
+import subprocess
 import sys
 
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import QObject, SIGNAL
-
-import gui
 from wfs import WFS
 
+if 'pyside' in sys.argv[1]:
+    from PySide import QtCore, QtGui
+    Signal = QtCore.Signal
+    Slot = QtCore.Slot
+    subprocess.call("pyside-uic.exe gui/design.ui -o gui/design.py")
+else:
+    from PyQt4 import QtCore, QtGui
+    Signal = QtCore.pyqtSignal
+    Slot = QtCore.pyqtSlot
+    subprocess.call("pyuic4.bat gui/design.ui -o gui/design.py")
 
-class WFSApp(QtGui.QMainWindow, gui.design.Ui_MainWindow):
+import gui
+
+
+class WFSApp(QtGui.QMainWindow, gui.design.Ui_main_window):
     def __init__(self, parent=None, wfs=WFS()):
         super(WFSApp, self).__init__(parent)
         self.setupUi(self)
         self.wfs = wfs
-        QObject.connect(self.btn_connect, SIGNAL('clicked()'),
-                        self.on_connect_click)
-        QObject.connect(self.btn_disconnect, SIGNAL('clicked()'),
-                        self.on_disconnect_click)
-        QObject.connect(self.btn_settings, SIGNAL('clicked()'),
-                        self.on_settings_click)
-        QObject.connect(self.btn_debug, SIGNAL('clicked()'),
-                        lambda: self.on_debug_click('Open settings window'))
-        QObject.connect(self.menu_settings, SIGNAL('triggered()'),
-                        self.on_settings_click)
 
-    @QtCore.pyqtSlot()
+        self.action_quit.triggered.connect(self.on_quit_trigger)
+        self.action_connect.triggered.connect(self.on_connect_click)
+        self.action_disconnect.triggered.connect(self.on_disconnect_click)
+        self.btn_settings.clicked.connect(lambda: self.on_settings_click('Debug'))
+        self.action_settings.triggered.connect(lambda: self.on_settings_click('Debug'))
+        self.btn_debug.clicked.connect(self.on_debug_click)
+
+    @Slot()
+    def on_quit_trigger(self):
+        self.close()
+
+    @Slot()
     def on_connect_click(self):
         self.wfs.connect()
-        self.btn_disconnect.setEnabled(True)
-        self.btn_connect.setEnabled(False)
+        self.action_disconnect.setEnabled(True)
+        self.action_connect.setEnabled(False)
 
-    @QtCore.pyqtSlot()
+    @Slot()
     def on_disconnect_click(self):
         if self.wfs._close() == 0:
-            self.btn_connect.setEnabled(True)
-            self.btn_disconnect.setEnabled(False)
+            self.action_connect.setEnabled(True)
+            self.action_disconnect.setEnabled(False)
 
-    @QtCore.pyqtSlot()
-    def on_settings_click(self):
-        print('TODO')
+    @Slot(str)
+    def on_settings_click(self, arg1):
+        print(arg1)
 
-    @QtCore.pyqtSlot(str)
-    def on_debug_click(self, arg1):
+    @Slot()
+    def on_debug_click(self):
         def loop_images(n):
             for i in xrange(n):
                 self.wfs._take_spotfield_image_auto_exposure()
@@ -57,7 +68,6 @@ class WFSApp(QtGui.QMainWindow, gui.design.Ui_MainWindow):
                 self.wfs._calc_wavefront_statistics()
                 self.wfs._zernike_lsf()
 
-        print(arg1)
         self.wfs.connect()
         self.wfs._set_reference_plane(0)
         self.wfs._get_reference_plane()
