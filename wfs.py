@@ -14,11 +14,7 @@ import sys
 import yaml
 
 __version__ = '0.1.1'
-
-if sys.version_info[0] == 2:
-    py_version = 2
-else:
-    py_version = 3
+PY2 = sys.version_info[0] == 2
 
 
 def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
