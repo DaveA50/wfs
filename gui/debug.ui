@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1059</width>
+    <height>660</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Debug</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="config_groupbox">
+     <property name="title">
+      <string>Configuration Functions</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_9">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout_8">
+        <item row="2" column="1">
+         <widget class="QPushButton" name="btn_get_exposure_time">
+          <property name="text">
+           <string>get_exposure_time</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="btn_configure_cam">
+          <property name="text">
+           <string>configure_cam</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPushButton" name="btn_check_highspeed_centroids">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>check_highspeed_centroids</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="1">
+         <widget class="QPushButton" name="btn_set_reference_plane">
+          <property name="text">
+           <string>set_reference_plane</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QPushButton" name="btn_get_master_gain_range">
+          <property name="text">
+           <string>get_master_gain_range</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QPushButton" name="btn_set_aoi">
+          <property name="text">
+           <string>set_aoi</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="2">
+         <widget class="QPushButton" name="btn_get_reference_plane">
+          <property name="text">
+           <string>get_reference_plane</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QPushButton" name="btn_get_aoi">
+          <property name="text">
+           <string>get_aoi</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="btn_get_instrument_info">
+          <property name="text">
+           <string>get_instrument_info</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="btn_get_highspeed_windows">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>get_highspeed_windows</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0">
+         <widget class="QPushButton" name="btn_get_pupil">
+          <property name="text">
+           <string>get_pupil</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="2">
+         <widget class="QPushButton" name="btn_set_pupil">
+          <property name="text">
+           <string>set_pupil</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QPushButton" name="btn_set_exposure_time">
+          <property name="text">
+           <string>set_exposure_time</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QPushButton" name="btn_get_exposure_time_range">
+          <property name="text">
+           <string>get_exposure_time_range</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QPushButton" name="btn_get_mla_data">
+          <property name="text">
+           <string>get_mla_data</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QPushButton" name="btn_get_mla_data2">
+          <property name="text">
+           <string>get_mla_data2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="btn_set_highspeed_mode">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>set_highspeed_mode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QPushButton" name="btn_get_black_level_offset">
+          <property name="text">
+           <string>get_black_level_offset</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QPushButton" name="btn_set_master_gain">
+          <property name="text">
+           <string>set_master_gain</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="2">
+         <widget class="QPushButton" name="btn_select_mla">
+          <property name="text">
+           <string>select_mla</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QPushButton" name="btn_get_trigger_delay_range">
+          <property name="text">
+           <string>get_trigger_delay_range</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QPushButton" name="btn_get_master_gain">
+          <property name="text">
+           <string>get_master_gain</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QPushButton" name="btn_set_trigger_mode">
+          <property name="text">
+           <string>set_trigger_mode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QPushButton" name="btn_set_trigger_delay">
+          <property name="text">
+           <string>set_trigger_delay</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QPushButton" name="btn_set_black_level_offset">
+          <property name="text">
+           <string>set_black_level_offset</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="2">
+         <widget class="QPushButton" name="btn_get_trigger_mode">
+          <property name="text">
+           <string>get_trigger_mode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="2">
+         <widget class="QPushButton" name="btn_get_mla_count">
+          <property name="text">
+           <string>get_mla_count</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QGroupBox" name="args_groupbox">
+     <property name="title">
+      <string>Arguments</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QLabel" name="label_arg1">
+            <property name="text">
+             <string>arg1</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="line_arg1"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_arg2">
+            <property name="text">
+             <string>arg2</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="line_arg2"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_arg3">
+            <property name="text">
+             <string>arg3</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="line_arg3"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QGroupBox" name="utility_groupbox">
+     <property name="title">
+      <string>Utility Functions</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_11">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="4" column="0">
+         <widget class="QPushButton" name="btn_convert_wavefront_waves">
+          <property name="text">
+           <string>convert_wavefront_waves</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QPushButton" name="btn_get_xy_scale">
+          <property name="text">
+           <string>get_xy_scale</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QPushButton" name="btn_error_message">
+          <property name="text">
+           <string>error_message</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="btn_revision_query">
+          <property name="text">
+           <string>revision_query</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="btn_reset">
+          <property name="text">
+           <string>reset</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="btn_self_test">
+          <property name="text">
+           <string>self_test</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPushButton" name="btn_error_query">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>error_query</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QPushButton" name="btn_get_instrument_list_info">
+          <property name="text">
+           <string>get_instrument_list_info</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QPushButton" name="btn_get_instrument_list_len">
+          <property name="text">
+           <string>get_instrument_list_len</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QPushButton" name="btn_flip_2d_array">
+          <property name="text">
+           <string>flip_2d_array</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QGroupBox" name="data_groupbox">
+     <property name="title">
+      <string>Data Functions</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_10">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="1" column="1">
+         <widget class="QPushButton" name="btn_average_image">
+          <property name="text">
+           <string>average_image</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="btn_take_spotfield_image">
+          <property name="text">
+           <string>take_spotfield_image</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QPushButton" name="btn_average_image_rolling">
+          <property name="text">
+           <string>average_image_rolling</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QPushButton" name="btn_calc_mean_rms_noise">
+          <property name="text">
+           <string>calc_mean_rms_noise</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="2">
+         <widget class="QPushButton" name="btn_zernike_lsf">
+          <property name="text">
+           <string>zernike_lsf</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="btn_get_spotfield_image_copy">
+          <property name="text">
+           <string>get_spotfield_image_copy</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QPushButton" name="btn_cut_image_noise_floor">
+          <property name="text">
+           <string>cut_image_noise_floor</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QPushButton" name="btn_get_line">
+          <property name="text">
+           <string>get_line</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="btn_get_spotfield_image">
+          <property name="text">
+           <string>get_spotfield_image</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QPushButton" name="btn_calc_spots_centroid_diameter_intensity">
+          <property name="text">
+           <string>calc_spots_centroid_diameter_intensity</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QPushButton" name="btn_get_spot_diameters_statistics">
+          <property name="text">
+           <string>get_spot_diameters_statistics</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="2">
+         <widget class="QPushButton" name="btn_get_spot_diameters">
+          <property name="text">
+           <string>get_spot_diameters</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="2">
+         <widget class="QPushButton" name="btn_calc_spot_to_reference_deviations">
+          <property name="text">
+           <string>calc_spot_to_reference_deviations</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QPushButton" name="btn_get_spot_intensities">
+          <property name="text">
+           <string>get_spot_intensities</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QPushButton" name="btn_get_spot_centroids">
+          <property name="text">
+           <string>get_spot_centroids</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="btn_take_spotfield_image_auto_exposure">
+          <property name="text">
+           <string>take_spotfield_image_auto_exposure</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QPushButton" name="btn_calc_beam_centroid_diameter">
+          <property name="text">
+           <string>calc_beam_centroid_diameter</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QPushButton" name="btn_get_line_view">
+          <property name="text">
+           <string>get_line_view</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QPushButton" name="btn_get_spot_reference_positions">
+          <property name="text">
+           <string>get_spot_reference_positions</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QPushButton" name="btn_calc_fourier_optometric">
+          <property name="text">
+           <string>calc_fourier_optometric</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="2">
+         <widget class="QPushButton" name="btn_calc_wavefront">
+          <property name="text">
+           <string>calc_wavefront</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="1">
+         <widget class="QPushButton" name="btn_calc_reconstructed_deviations">
+          <property name="text">
+           <string>calc_reconstructed_deviations</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QPushButton" name="btn_get_spot_deviations">
+          <property name="text">
+           <string>get_spot_deviations</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QPushButton" name="btn_calc_image_min_max">
+          <property name="text">
+           <string>_calc_image_min_max</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0">
+         <widget class="QPushButton" name="btn_calc_wavefront_statistics">
+          <property name="text">
+           <string>calc_wavefront_statistics</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QGroupBox" name="calibration_groupbox">
+       <property name="title">
+        <string>Calibration Functions</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QPushButton" name="btn_set_spots_to_user_reference">
+            <property name="text">
+             <string>set_spots_to_user_reference</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="btn_do_spherical_reference">
+            <property name="text">
+             <string>do_spherical_reference</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="btn_save_user_reference_file">
+            <property name="text">
+             <string>save_user_reference_file</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="btn_create_default_user_reference">
+            <property name="text">
+             <string>create_default_user_reference</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="btn_load_user_reference_file">
+            <property name="text">
+             <string>load_user_reference_file</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="btn_set_calc_spots_to_user_reference">
+            <property name="text">
+             <string>set_calc_spots_to_user_reference</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="action_groupbox">
+       <property name="title">
+        <string>Action Functions</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QPushButton" name="btn_init">
+            <property name="text">
+             <string>init</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="btn_close">
+            <property name="text">
+             <string>close</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="btn_get_status">
+            <property name="text">
+             <string>get_status</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="1">
+    <widget class="QTextBrowser" name="text_display"/>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
