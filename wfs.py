@@ -15,6 +15,11 @@ import yaml
 
 __version__ = '0.1.1'
 
+if sys.version_info[0] == 2:
+    py_version = 2
+else:
+    py_version = 3
+
 
 def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
     """
@@ -172,9 +177,8 @@ class Vi:
 
     @staticmethod
     def string(s):
-        # return Vi.char(s)
+        # return Vi.char(s)    :
         return ctypes.c_char_p(s)
-
 
 class WFS(object):
     # Constants declared in WFS.h header file
@@ -209,7 +213,7 @@ class WFS(object):
     WFS_ERROR_NO_SENSOR_CONNECTED = WFS_INSTR_ERROR_OFFSET + 0x00
     WFS_ERROR_OUT_OF_MEMORY = WFS_INSTR_ERROR_OFFSET + 0x01
     WFS_ERROR_INVALID_HANDLE = WFS_INSTR_ERROR_OFFSET + 0x02
-    WFS_ERROR_CAM_NOT_CONFIGURED = WFS_INSTR_ERROR_OFFSET + 0x13
+    WFS_ERROR_CAM_NOT_CONFIGURED = WFS_INSTR_ERROR_OFFSET + 0x03
     WFS_ERROR_PIXEL_FORMAT = WFS_INSTR_ERROR_OFFSET + 0x04
     WFS_ERROR_EEPROM_CHECKSUM = WFS_INSTR_ERROR_OFFSET + 0x05
     WFS_ERROR_EEPROM_CAL_DATA = WFS_INSTR_ERROR_OFFSET + 0x06
@@ -511,12 +515,14 @@ class WFS(object):
         self.pixel_format = Vi.int32(self.PIXEL_FORMAT_MONO8)
         self.pupil_center_x_mm = Vi.real64(0)
         self.pupil_center_y_mm = Vi.real64(0)
-        self.pupil_diameter_x_mm = Vi.real64(0)
-        self.pupil_diameter_y_mm = Vi.real64(0)
+        self.pupil_diameter_x_mm = Vi.real64(4.76)  # Max diameter without clipping edges
+        self.pupil_diameter_y_mm = Vi.real64(4.76)  # Max diameter without clipping edges
         self.reference_index = Vi.int32(0)
         self.reset = Vi.int32(0)
         self.reset_device = Vi.boolean(0)
-        self.resource_name = Vi.rsrc('')  # resource_name='USB::0x1313::0x0000::1'
+        # self.resource_name = Vi.rsrc(b'')  # resource_name='USB::0x1313::0x0000::1'
+        self.resource_name = Vi.char(self.WFS_BUFFER_SIZE)
+        self.resource_name.value = b'USB::0x1313::0x0000::1'
         self.roc_mm = Vi.real64(0)
         self.saturated_pixels_percent = Vi.real64(0)
         self.serial_number_camera = Vi.char(self.WFS_BUFFER_SIZE)
@@ -640,7 +646,8 @@ class WFS(object):
         """
         if resource_name is not None:
             try:
-                self.resource_name = Vi.rsrc(resource_name)
+                self.resource_name = Vi.char(self.WFS_BUFFER_SIZE)
+                self.resource_name.value = resource_name
             except TypeError:
                 self.resource_name = resource_name
         if id_query is not None:
@@ -653,6 +660,11 @@ class WFS(object):
                 self.reset_device = Vi.boolean(reset_device)
             except TypeError:
                 self.reset_device = reset_device
+        lib_wfs.WFS_init.argtypes = [ctypes.c_char_p,
+                                     ctypes.c_ushort,
+                                     ctypes.c_ushort,
+                                     ctypes.POINTER(ctypes.c_ulong)]
+        lib_wfs.WFS_init.restypes = ctypes.c_long
         status = lib_wfs.WFS_init(self.resource_name,
                                   self.id_query,
                                   self.reset_device,
@@ -718,12 +730,22 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _configure_cam(self, instrument_handle=None):
+    def _configure_cam(self, instrument_handle=None, pixel_format=None, cam_resolution_index=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if pixel_format is not None:
+            try:
+                self.pixel_format = Vi.int32(pixel_format)
+            except TypeError:
+                self.pixel_format = pixel_format
+        if cam_resolution_index is not None:
+            try:
+                self.cam_resolution_index = Vi.int32(cam_resolution_index)
+            except TypeError:
+                self.cam_resolution_index = cam_resolution_index
         status = lib_wfs.WFS_ConfigureCam(self.instrument_handle,
                                           self.pixel_format,
                                           self.cam_resolution_index,
@@ -737,12 +759,33 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_highspeed_mode(self, instrument_handle=None):
+    def _set_highspeed_mode(self, instrument_handle=None, highspeed_mode=None,
+                            adapt_centroids=None, subtract_offset=None, allow_auto_exposure=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if highspeed_mode is not None:
+            try:
+                self.highspeed_mode = Vi.int32(highspeed_mode)
+            except TypeError:
+                self.highspeed_mode = highspeed_mode
+        if adapt_centroids is not None:
+            try:
+                self.adapt_centroids = Vi.int32(adapt_centroids)
+            except TypeError:
+                self.adapt_centroids = adapt_centroids
+        if subtract_offset is not None:
+            try:
+                self.subtract_offset = Vi.int32(subtract_offset)
+            except TypeError:
+                self.subtract_offset = subtract_offset
+        if allow_auto_exposure is not None:
+            try:
+                self.allow_auto_exposure = Vi.int32(allow_auto_exposure)
+            except TypeError:
+                self.allow_auto_exposure = allow_auto_exposure
         status = lib_wfs.WFS_SetHighspeedMode(self.instrument_handle,
                                               self.highspeed_mode,
                                               self.adapt_centroids,
@@ -807,12 +850,17 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_exposure_time(self, instrument_handle=None):
+    def _set_exposure_time(self, instrument_handle=None, exposure_time_set=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if exposure_time_set is not None:
+            try:
+                self.exposure_time_set = Vi.real64(exposure_time_set)
+            except TypeError:
+                self.exposure_time_set = exposure_time_set
         status = lib_wfs.WFS_SetExposureTime(self.instrument_handle,
                                              self.exposure_time_set,
                                              ctypes.byref(self.exposure_time_actual))
@@ -850,12 +898,17 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_master_gain(self, instrument_handle=None):
+    def _set_master_gain(self, instrument_handle=None, master_gain_set=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if master_gain_set is not None:
+            try:
+                self.master_gain_set = Vi.real64(master_gain_set)
+            except TypeError:
+                self.master_gain_set = master_gain_set
         status = lib_wfs.WFS_SetMasterGain(self.instrument_handle,
                                            self.master_gain_set,
                                            ctypes.byref(self.master_gain_actual))
@@ -878,12 +931,17 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_black_level_offset(self, instrument_handle=None):
+    def _set_black_level_offset(self, instrument_handle=None, black_level_offset_set=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if black_level_offset_set is not None:
+            try:
+                self.black_level_offset_set = Vi.int32(black_level_offset_set)
+            except TypeError:
+                self.black_level_offset_set = black_level_offset_set
         status = lib_wfs.WFS_SetBlackLevelOffset(self.instrument_handle,
                                                  self.black_level_offset_set)
         log_wfs.debug('Set Black Level Offset: {0}'.format(self.instrument_handle.value))
@@ -898,18 +956,23 @@ class WFS(object):
             except TypeError:
                 self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetBlackLevelOffset(self.instrument_handle,
-                                                 self.black_level_offset_actual)
+                                                 ctypes.byref(self.black_level_offset_actual))
         log_wfs.debug('Get Black Level Offset: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Black Level Offset Actual: {0}'.format(self.black_level_offset_actual.value))
         self._error_message(status)
         return status
 
-    def _set_trigger_mode(self, instrument_handle=None):
+    def _set_trigger_mode(self, instrument_handle=None, trigger_mode=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if trigger_mode is not None:
+            try:
+                self.trigger_mode = Vi.int32(trigger_mode)
+            except TypeError:
+                self.trigger_mode = trigger_mode
         status = lib_wfs.WFS_SetTriggerMode(self.instrument_handle,
                                             self.trigger_mode)
         log_wfs.debug('Set Trigger Mode: {0}'.format(self.instrument_handle.value))
@@ -930,6 +993,26 @@ class WFS(object):
         self._error_message(status)
         return status
 
+    def _set_trigger_delay(self, instrument_handle=None, trigger_delay_set=None):
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
+        if trigger_delay_set is not None:
+            try:
+                self.trigger_delay_set = Vi.int32(trigger_delay_set)
+            except TypeError:
+                self.trigger_delay_set = trigger_delay_set
+        status = lib_wfs.WFS_SetTriggerDelay(self.instrument_handle,
+                                             self.trigger_delay_set,
+                                             ctypes.byref(self.trigger_delay_actual))
+        log_wfs.debug('Set Trigger Delay: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('Trigger Delay Set (µs): {0}'.format(self.trigger_delay_set.value))
+        log_wfs.info('Trigger Delay Actual (µs): {0}'.format(self.trigger_delay_actual.value))
+        self._error_message(status)
+        return status
+
     def _get_trigger_delay_range(self, instrument_handle=None):
         if instrument_handle is not None:
             try:
@@ -944,21 +1027,6 @@ class WFS(object):
         log_wfs.info('Trigger Delay Minimum (µs): {0}'.format(self.trigger_delay_min.value))
         log_wfs.info('Trigger Delay Maximum (µs): {0}'.format(self.trigger_delay_max.value))
         log_wfs.info('Trigger Delay Increment (µs): {0}'.format(self.trigger_delay_increment.value))
-        self._error_message(status)
-        return status
-
-    def _set_trigger_delay(self, instrument_handle=None):
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
-        status = lib_wfs.WFS_SetTriggerDelay(self.instrument_handle,
-                                             self.trigger_delay_set,
-                                             ctypes.byref(self.trigger_delay_actual))
-        log_wfs.debug('Set Trigger Delay: {0}'.format(self.instrument_handle.value))
-        log_wfs.info('Trigger Delay Set (µs): {0}'.format(self.trigger_delay_set.value))
-        log_wfs.info('Trigger Delay Actual (µs): {0}'.format(self.trigger_delay_actual.value))
         self._error_message(status)
         return status
 
@@ -977,12 +1045,17 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_mla_data(self, instrument_handle=None):
+    def _get_mla_data(self, instrument_handle=None, mla_index=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if mla_index is not None:
+            try:
+                self.mla_index = Vi.int32(mla_index)
+            except TypeError:
+                self.mla_index = mla_index
         status = lib_wfs.WFS_GetMlaData(self.instrument_handle,
                                         self.mla_index,
                                         self.mla_name,
@@ -1006,12 +1079,17 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_mla_data2(self, instrument_handle=None):
+    def _get_mla_data2(self, instrument_handle=None, mla_index=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if mla_index is not None:
+            try:
+                self.mla_index = Vi.int32(mla_index)
+            except TypeError:
+                self.mla_index = mla_index
         status = lib_wfs.WFS_GetMlaData2(self.instrument_handle,
                                          self.mla_index,
                                          self.mla_name,
@@ -1039,24 +1117,52 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _select_mla(self, instrument_handle=None):
+    def _select_mla(self, instrument_handle=None, mla_index=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
-        status = lib_wfs.WFS_SelectMla(self.instrument_handle, self.mla_index)
+        if mla_index is not None:
+            try:
+                self.mla_index = Vi.int32(mla_index)
+            except TypeError:
+                self.mla_index = mla_index
+        status = lib_wfs.WFS_SelectMla(self.instrument_handle,
+                                       self.mla_index)
         log_wfs.debug('Select MLA: {0}'.format(self.instrument_handle.value))
         log_wfs.info('MLA selection: {0}'.format(self.mla_index.value))
         self._error_message(status)
         return status
 
-    def _set_aoi(self, instrument_handle=None):
+    def _set_aoi(self, instrument_handle=None,
+                 aoi_center_x_mm=None, aoi_center_y_mm=None,
+                 aoi_size_x_mm=None, aoi_size_y_mm=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if aoi_center_x_mm is not None:
+            try:
+                self.aoi_center_x_mm = Vi.real64(aoi_center_x_mm)
+            except TypeError:
+                self.aoi_center_x_mm = aoi_center_x_mm
+        if aoi_center_y_mm is not None:
+            try:
+                self.aoi_center_y_mm = Vi.real64(aoi_center_y_mm)
+            except TypeError:
+                self.aoi_center_y_mm = aoi_center_y_mm
+        if aoi_size_x_mm is not None:
+            try:
+                self.aoi_size_x_mm = Vi.real64(aoi_size_x_mm)
+            except TypeError:
+                self.aoi_size_x_mm = aoi_size_x_mm
+        if aoi_size_y_mm is not None:
+            try:
+                self.aoi_size_y_mm = Vi.real64(aoi_size_y_mm)
+            except TypeError:
+                self.aoi_size_y_mm = aoi_size_y_mm
         status = lib_wfs.WFS_SetAoi(self.instrument_handle,
                                     self.aoi_center_x_mm,
                                     self.aoi_center_y_mm,
@@ -1089,12 +1195,35 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_pupil(self, pupil_center_x_mm=0, pupil_center_y_mm=0,
-                   pupil_diameter_x_mm=4.76, pupil_diameter_y_mm=4.76):
-        self.pupil_center_x_mm = Vi.real64(pupil_center_x_mm)
-        self.pupil_center_y_mm = Vi.real64(pupil_center_y_mm)
-        self.pupil_diameter_x_mm = Vi.real64(pupil_diameter_x_mm)
-        self.pupil_diameter_y_mm = Vi.real64(pupil_diameter_y_mm)
+    def _set_pupil(self, instrument_handle=None,
+                   pupil_center_x_mm=None, pupil_center_y_mm=None,
+                   pupil_diameter_x_mm=None, pupil_diameter_y_mm=None):
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
+        if pupil_center_x_mm is not None:
+            try:
+                self.pupil_center_x_mm = Vi.real64(pupil_center_x_mm)
+            except TypeError:
+                self.pupil_center_x_mm = pupil_center_x_mm
+        if pupil_center_y_mm is not None:
+            try:
+                self.pupil_center_y_mm = Vi.real64(pupil_center_y_mm)
+            except TypeError:
+                self.pupil_center_y_mm = pupil_center_y_mm
+        if pupil_diameter_x_mm is not None:
+            try:
+                self.pupil_diameter_x_mm = Vi.real64(pupil_diameter_x_mm)
+            except TypeError:
+                self.pupil_diameter_x_mm = pupil_diameter_x_mm
+        if pupil_diameter_y_mm is not None:
+            try:
+                self.pupil_diameter_y_mm = Vi.real64(pupil_diameter_y_mm)
+            except TypeError:
+                self.pupil_diameter_y_mm = pupil_diameter_y_mm
+
         status = lib_wfs.WFS_SetPupil(self.instrument_handle,
                                       self.pupil_center_x_mm,
                                       self.pupil_center_y_mm,
@@ -1127,7 +1256,17 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_reference_plane(self, reference_index=0):
+    def _set_reference_plane(self, instrument_handle=None, reference_index=None):
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
+        if reference_index is not None:
+            try:
+                self.reference_index = Vi.int32(reference_index)
+            except TypeError:
+                self.reference_index = reference_index
         self.reference_index = Vi.int32(reference_index)
         status = lib_wfs.WFS_SetReferencePlane(self.instrument_handle,
                                                self.reference_index)
@@ -1669,6 +1808,7 @@ class WFS(object):
     def _get_instrument_list_info(self,
                                   instrument_handle=Vi.null,
                                   instrument_index=None):
+        # TODO TODO
         if instrument_handle is not Vi.null:
             try:
                 instrument_handle = Vi.session(instrument_handle)
@@ -1681,6 +1821,20 @@ class WFS(object):
                 self.instrument_index = Vi.int32(instrument_index)
             except TypeError:
                 self.instrument_index = instrument_index
+        print(repr(self.instrument_name_wfs.value))
+        print(repr(self.serial_number_wfs.value))
+        print(repr(self.resource_name.value))
+        print(type(self.instrument_name_wfs))
+        print(type(self.serial_number_wfs))
+        print(type(self.resource_name))
+        lib_wfs.WFS_GetInstrumentListInfo.argtypes = [ctypes.c_ulong,
+                                                      ctypes.c_long,
+                                                      ctypes.POINTER(ctypes.c_long),
+                                                      ctypes.POINTER(ctypes.c_long),
+                                                      ctypes.c_char_p,
+                                                      ctypes.c_char_p,
+                                                      ctypes.c_char_p]
+        lib_wfs.WFS_GetInstrumentListInfo.restypes = ctypes.c_long
         status = lib_wfs.WFS_GetInstrumentListInfo(instrument_handle,
                                                    self.instrument_index,
                                                    ctypes.byref(self.device_id),
