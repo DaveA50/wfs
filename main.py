@@ -1,11 +1,15 @@
 """
 Wrapper for interfacing with the Thorlabs Wavefront Sensor (WFS)
 """
+from __future__ import print_function
 import os
 import subprocess
 import sys
 
 from wfs import WFS
+
+__version__ = '0.1.0'
+PY2 = sys.version_info[0] == 2
 
 if 'pyside' in sys.argv[1]:
     from PySide import QtCore, QtGui
@@ -69,17 +73,15 @@ class WFSApp(design_base, design_ui):
 
     @Slot()
     def on_debug_click(self):
-        # self.wfs._get_instrument_list_len()
-        # self.wfs._get_instrument_list_info()
-        # self.wfs._init(id_query=1, reset_device=1)
-        # self.wfs._revision_query()
+        self.wfs._get_instrument_list_len()
+        self.wfs._get_instrument_list_info()
+        self.wfs._init(resource_name=b'USB::0x1313::0x0000::1', id_query=1, reset_device=1)
+        self.wfs._revision_query()
         self.wfs.allow_auto_exposure.value = 1
-        for i in range(5):
-            self.wfs.update()
-        # self.wfs._flip_2d_array(array_wavefront_yx=self.wfs.array_wavefront)
-        self.wfs._convert_wavefront_waves(wavelength=300)
-        self.wfs._convert_wavefront_waves(wavelength=700)
-        self.wfs._convert_wavefront_waves(wavelength=1100)
+        # print(self.wfs.WFS_DRIVER_STATUS)
+        # for i in range(5):
+        #     self.wfs.update()
+        # self.wfs._convert_wavefront_waves(wavelength=405)
 
 
 class WFSDebugApp(debug_base, debug_ui):
@@ -87,7 +89,6 @@ class WFSDebugApp(debug_base, debug_ui):
         super(WFSDebugApp, self).__init__(parent)
         self.setupUi(self)
         self.wfs = wfs
-
 
         # self.btn.clicked.connect(self.on_click)
         self.btn_get_instrument_info.clicked.connect(self.on_get_instrument_info_click)
