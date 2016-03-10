@@ -73,15 +73,8 @@ class WFSApp(design_base, design_ui):
 
     @Slot()
     def on_debug_click(self):
-        self.wfs._get_instrument_list_len()
-        self.wfs._get_instrument_list_info()
-        self.wfs._init(resource_name=b'USB::0x1313::0x0000::1', id_query=1, reset_device=1)
-        self.wfs._revision_query()
-        self.wfs.allow_auto_exposure.value = 1
-        # print(self.wfs.WFS_DRIVER_STATUS)
-        # for i in range(5):
-        #     self.wfs.update()
-        # self.wfs._convert_wavefront_waves(wavelength=405)
+        for i in range(5):
+            self.wfs.update()
 
 
 class WFSDebugApp(debug_base, debug_ui):

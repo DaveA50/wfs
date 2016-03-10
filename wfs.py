@@ -415,7 +415,7 @@ class WFS(object):
 
     def __init__(self):
         self.adapt_centroids = Vi.int32(0)
-        self.allow_auto_exposure = Vi.int32(0)
+        self.allow_auto_exposure = Vi.int32(1)
         self.array_centroid_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_centroid_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_deviations_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
@@ -2077,6 +2077,9 @@ class WFS(object):
         self._get_instrument_list_len()
         self._get_instrument_list_info()
         self._init(id_query=1, reset_device=1)
+        if self.in_use.value == 1:
+            log_wfs.warning('Instrument is being used!')
+            return
         self._revision_query()
         self._get_instrument_info()
         self._get_mla_count()
@@ -2092,6 +2095,7 @@ class WFS(object):
             self._take_spotfield_image_auto_exposure()
         else:
             self._take_spotfield_image()
+        self._get_status()
         self._get_spotfield_image()
         self._calc_spots_centroid_diameter_intensity()
         self._get_spot_centroids()
