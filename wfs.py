@@ -517,12 +517,12 @@ class WFS(object):
         self.pupil_diameter_x_mm = Vi.real64(4.76)  # Max diameter without clipping edges
         self.pupil_diameter_y_mm = Vi.real64(4.76)  # Max diameter without clipping edges
         self.reference_index = Vi.int32(0)
-        self.reset = Vi.int32(0)
         self.reset_device = Vi.boolean(0)
         # self.resource_name = Vi.rsrc(b'')  # resource_name='USB::0x1313::0x0000::1'
         self.resource_name = Vi.char(self.WFS_BUFFER_SIZE)
         self.resource_name.value = b'USB::0x1313::0x0000::1'
         self.roc_mm = Vi.real64(0)
+        self.rolling_reset = Vi.int32(0)
         self.saturated_pixels_percent = Vi.real64(0)
         self.serial_number_camera = Vi.char(self.WFS_BUFFER_SIZE)
         self.serial_number_wfs = Vi.char(self.WFS_BUFFER_SIZE)
@@ -550,7 +550,7 @@ class WFS(object):
         self.wavefront_type = Vi.int32(0)
         self.wavefront_weighted_rms = Vi.real64(0)
         self.wavelength = Vi.real64(532)
-        self.zernike_orders = Vi.int32(4)
+        self.zernike_orders = Vi.int32(4)  # 0=Auto, 2, 3, 4, 5, 6, 7, 8, 9, 10
         self.window_count_x = Vi.int32(0)
         self.window_count_y = Vi.int32(0)
         self.window_size_x = Vi.int32(0)
@@ -1347,12 +1347,17 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _average_image(self, instrument_handle=None):
+    def _average_image(self, average_count=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if average_count is not None:
+            try:
+                self.average_count = Vi.int32(average_count)
+            except TypeError:
+                self.average_count = average_count
         status = lib_wfs.WFS_AverageImage(self.instrument_handle,
                                           self.average_count,
                                           ctypes.byref(self.average_data_ready))
@@ -1362,27 +1367,42 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _average_image_rolling(self, instrument_handle=None):
+    def _average_image_rolling(self, average_count=None, rolling_reset=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if average_count is not None:
+            try:
+                self.average_count = Vi.int32(average_count)
+            except TypeError:
+                self.average_count = average_count
+        if rolling_reset is not None:
+            try:
+                self.rolling_reset = Vi.int32(rolling_reset)
+            except TypeError:
+                self.rolling_reset = rolling_reset
         status = lib_wfs.WFS_AverageImageRolling(self.instrument_handle,
                                                  self.average_count,
-                                                 self.reset)
+                                                 self.rolling_reset)
         log_wfs.debug('Average Image Rolling: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Average Count: {0}'.format(self.average_count.value))
-        log_wfs.info('Reset: {0}'.format(self.reset.value))
+        log_wfs.info('Rolling Reset: {0}'.format(self.rolling_reset.value))
         self._error_message(status)
         return status
 
-    def _cut_image_noise_floor(self, instrument_handle=None):
+    def _cut_image_noise_floor(self, intensity_limit=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if intensity_limit is not None:
+            try:
+                self.intensity_limit = Vi.int32(intensity_limit)
+            except TypeError:
+                self.intensity_limit = intensity_limit
         status = lib_wfs.WFS_CutImageNoiseFloor(self.instrument_handle,
                                                 self.intensity_limit)
         log_wfs.debug('Cut Image Noise Floor: {0}'.format(self.instrument_handle.value))
@@ -1422,12 +1442,17 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_line(self, instrument_handle=None):
+    def _get_line(self, line=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if line is not None:
+            try:
+                self.line = Vi.int32(line)
+            except TypeError:
+                self.line = line
         status = lib_wfs.WFS_GetLine(self.instrument_handle,
                                      self.line,
                                      self.line_selected)
@@ -1476,12 +1501,23 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _calc_spots_centroid_diameter_intensity(self, instrument_handle=None):
+    def _calc_spots_centroid_diameter_intensity(self, dynamic_noise_cut=None, calculate_diameters=None,
+                                                instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if dynamic_noise_cut is not None:
+            try:
+                self.dynamic_noise_cut = Vi.int32(dynamic_noise_cut)
+            except TypeError:
+                self.dynamic_noise_cut = dynamic_noise_cut
+        if calculate_diameters is not None:
+            try:
+                self.calculate_diameters = Vi.int32(calculate_diameters)
+            except TypeError:
+                self.calculate_diameters = calculate_diameters
         status = lib_wfs.WFS_CalcSpotsCentrDiaIntens(self.instrument_handle,
                                                      self.dynamic_noise_cut,
                                                      self.calculate_diameters)
@@ -1527,11 +1563,10 @@ class WFS(object):
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
-        # TODO
-        status = lib_wfs.WFS_GetSpotDiameters(self.instrument_handle,
-                                              ctypes.byref(self.diameter_min),
-                                              ctypes.byref(self.diameter_max),
-                                              ctypes.byref(self.diameter_mean))
+        status = lib_wfs.WFS_GetSpotDiaStatistics(self.instrument_handle,
+                                                  ctypes.byref(self.diameter_min),
+                                                  ctypes.byref(self.diameter_max),
+                                                  ctypes.byref(self.diameter_mean))
         log_wfs.debug('Get Spot Diameter Statistics: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Diameter Minimum: {0}'.format(self.diameter_min.value))
         log_wfs.info('Diameter Maximum: {0}'.format(self.diameter_max.value))
@@ -1552,12 +1587,17 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _calc_spot_to_reference_deviations(self, instrument_handle=None):
+    def _calc_spot_to_reference_deviations(self, cancel_wavefront_tilt=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if cancel_wavefront_tilt is not None:
+            try:
+                self.cancel_wavefront_tilt = Vi.int32(cancel_wavefront_tilt)
+            except TypeError:
+                self.cancel_wavefront_tilt = cancel_wavefront_tilt
         status = lib_wfs.WFS_CalcSpotToReferenceDeviations(self.instrument_handle,
                                                            self.cancel_wavefront_tilt)
         log_wfs.debug('Calc Spot to Reference Deviations: {0}'.format(self.instrument_handle.value))
@@ -1614,12 +1654,23 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _calc_fourier_optometric(self, instrument_handle=None):
+    def _calc_fourier_optometric(self, zernike_orders=None, fourier_orders=None,
+                                 instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if zernike_orders is not None:
+            try:
+                self.zernike_orders = Vi.int32(zernike_orders)
+            except TypeError:
+                self.zernike_orders = zernike_orders
+        if fourier_orders is not None:
+            try:
+                self.fourier_orders = Vi.int32(fourier_orders)
+            except TypeError:
+                self.fourier_orders = fourier_orders
         status = lib_wfs.WFS_CalcFourierOptometric(self.instrument_handle,
                                                    self.zernike_orders,
                                                    self.fourier_orders,
@@ -1641,12 +1692,29 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _calc_reconstructed_deviations(self, instrument_handle=None):
+    def _calc_reconstructed_deviations(self, zernike_orders=None, array_zernike_reconstructed=None,
+                                       do_spherical_reference=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if zernike_orders is not None:
+            try:
+                self.zernike_orders = Vi.int32(zernike_orders)
+            except TypeError:
+                self.zernike_orders = zernike_orders
+        if array_zernike_reconstructed is not None:
+            # try:
+            #     self.array_zernike_reconstructed = Vi.TO#DO(array_zernike_reconstructed)
+            # except TypeError:
+            #     self.array_zernike_reconstructed = array_zernike_reconstructed
+            self.array_zernike_reconstructed = array_zernike_reconstructed
+        if do_spherical_reference is not None:
+            try:
+                self.do_spherical_reference = Vi.int32(do_spherical_reference)
+            except TypeError:
+                self.do_spherical_reference = do_spherical_reference
         status = lib_wfs.WFS_CalcReconstrDeviations(self.instrument_handle,
                                                     self.zernike_orders,
                                                     self.array_zernike_reconstructed,
@@ -1663,12 +1731,22 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _calc_wavefront(self, instrument_handle=None):
+    def _calc_wavefront(self, wavefront_type=None, limit_to_pupil=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if wavefront_type is not None:
+            try:
+                self.wavefront_type = Vi.int32(wavefront_type)
+            except TypeError:
+                self.wavefront_type = wavefront_type
+        if limit_to_pupil is not None:
+            try:
+                self.limit_to_pupil = Vi.int32(limit_to_pupil)
+            except TypeError:
+                self.limit_to_pupil = limit_to_pupil
         status = lib_wfs.WFS_CalcWavefront(self.instrument_handle,
                                            self.wavefront_type,
                                            self.limit_to_pupil,
