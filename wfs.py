@@ -162,9 +162,9 @@ class Vi:
     def object(n):
         return Vi.uint32(n)
 
-    @staticmethod
-    def rsrc(s):
-        return Vi.string(s)
+    # @staticmethod
+    # def rsrc(s):
+    #     return Vi.string(s)
 
     @staticmethod
     def session(n):
@@ -174,10 +174,10 @@ class Vi:
     def status(n):
         return Vi.int32(n)
 
-    @staticmethod
-    def string(s):
-        # return Vi.char(s)    :
-        return ctypes.c_char_p(s)
+    # @staticmethod
+    # def string(s):
+    #     return ctypes.c_char_p(s)
+
 
 class WFS(object):
     # Constants declared in WFS.h header file
@@ -729,7 +729,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _configure_cam(self, instrument_handle=None, pixel_format=None, cam_resolution_index=None):
+    def _configure_cam(self, pixel_format=None, cam_resolution_index=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -758,8 +758,8 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_highspeed_mode(self, instrument_handle=None, highspeed_mode=None,
-                            adapt_centroids=None, subtract_offset=None, allow_auto_exposure=None):
+    def _set_highspeed_mode(self, highspeed_mode=None, adapt_centroids=None, subtract_offset=None,
+                            allow_auto_exposure=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -849,7 +849,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_exposure_time(self, instrument_handle=None, exposure_time_set=None):
+    def _set_exposure_time(self, exposure_time_set=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -897,7 +897,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_master_gain(self, instrument_handle=None, master_gain_set=None):
+    def _set_master_gain(self, master_gain_set=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -930,7 +930,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_black_level_offset(self, instrument_handle=None, black_level_offset_set=None):
+    def _set_black_level_offset(self, black_level_offset_set=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -961,7 +961,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_trigger_mode(self, instrument_handle=None, trigger_mode=None):
+    def _set_trigger_mode(self, trigger_mode=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -992,7 +992,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_trigger_delay(self, instrument_handle=None, trigger_delay_set=None):
+    def _set_trigger_delay(self, trigger_delay_set=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1044,7 +1044,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_mla_data(self, instrument_handle=None, mla_index=None):
+    def _get_mla_data(self, mla_index=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1078,7 +1078,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_mla_data2(self, instrument_handle=None, mla_index=None):
+    def _get_mla_data2(self, mla_index=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1116,7 +1116,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _select_mla(self, instrument_handle=None, mla_index=None):
+    def _select_mla(self, mla_index=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1134,9 +1134,8 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_aoi(self, instrument_handle=None,
-                 aoi_center_x_mm=None, aoi_center_y_mm=None,
-                 aoi_size_x_mm=None, aoi_size_y_mm=None):
+    def _set_aoi(self, aoi_center_x_mm=None, aoi_center_y_mm=None,
+                 aoi_size_x_mm=None, aoi_size_y_mm=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1194,9 +1193,8 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_pupil(self, instrument_handle=None,
-                   pupil_center_x_mm=None, pupil_center_y_mm=None,
-                   pupil_diameter_x_mm=None, pupil_diameter_y_mm=None):
+    def _set_pupil(self, pupil_center_x_mm=None, pupil_center_y_mm=None,
+                   pupil_diameter_x_mm=None, pupil_diameter_y_mm=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1255,7 +1253,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_reference_plane(self, instrument_handle=None, reference_index=None):
+    def _set_reference_plane(self, reference_index=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1786,8 +1784,7 @@ class WFS(object):
         log_wfs.error('Error Message: {0}'.format(self.error_message.value))
         return status
 
-    def _get_instrument_list_len(self,
-                                 instrument_handle=Vi.null):
+    def _get_instrument_list_len(self, instrument_handle=Vi.null):
         if instrument_handle is not Vi.null:
             try:
                 instrument_handle = Vi.session(instrument_handle)
@@ -1804,10 +1801,8 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_instrument_list_info(self,
-                                  instrument_handle=Vi.null,
+    def _get_instrument_list_info(self, instrument_handle=Vi.null,
                                   instrument_index=None):
-        # TODO TODO
         if instrument_handle is not Vi.null:
             try:
                 instrument_handle = Vi.session(instrument_handle)
@@ -1820,12 +1815,6 @@ class WFS(object):
                 self.instrument_index = Vi.int32(instrument_index)
             except TypeError:
                 self.instrument_index = instrument_index
-        print(repr(self.instrument_name_wfs.value))
-        print(repr(self.serial_number_wfs.value))
-        print(repr(self.resource_name.value))
-        print(type(self.instrument_name_wfs))
-        print(type(self.serial_number_wfs))
-        print(type(self.resource_name))
         lib_wfs.WFS_GetInstrumentListInfo.argtypes = [ctypes.c_ulong,
                                                       ctypes.c_long,
                                                       ctypes.POINTER(ctypes.c_long),
@@ -1866,7 +1855,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _convert_wavefront_waves(self, instrument_handle=None, wavelength=None, array_wavefront=None):
+    def _convert_wavefront_waves(self, wavelength=None, array_wavefront=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1894,7 +1883,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _flip_2d_array(self, instrument_handle=None, array_wavefront_yx=None):
+    def _flip_2d_array(self, array_wavefront_yx=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1927,8 +1916,8 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _set_calc_spots_to_user_reference(self, instrument_handle=None, spot_ref_type=None,
-                                          array_reference_x=None, array_reference_y=None):
+    def _set_calc_spots_to_user_reference(self, spot_ref_type=None, array_reference_x=None,
+                                          array_reference_y=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
