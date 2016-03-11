@@ -521,7 +521,7 @@ class WFS(object):
         self.highspeed_mode = Vi.int32(0)
         self.id_query = Vi.boolean(0)
         self.image_buffer = Vi.uint8(0)
-        # self.image_buffer_copy =Vi.uint8(0)  # TODO
+        # self.image_buffer_copy = Vi.uint8(0)  # TODO
         self.image_buffer_copy = ((ctypes.c_ubyte * self.CAM_MAX_PIX_X) * self.CAM_MAX_PIX_Y)()
         self.intensity_limit = Vi.int32(1)
         self.intensity_max = Vi.int32(0)
@@ -538,11 +538,8 @@ class WFS(object):
         self.lenslet_pitch_um = Vi.real64(0)
         self.limit_to_pupil = Vi.int32(0)
         self.line = Vi.int32(0)
-        # self.line_max = Vi.real32(0)  # TODO
         self.line_max = (ctypes.c_float * 1280)()
-        # self.line_min = Vi.real32(0)  # TODO
         self.line_min = (ctypes.c_float * 1280)()
-        # self.line_selected = Vi.real32(0)  # TODO
         self.line_selected = (ctypes.c_float * 1280)()
         self.manufacturer_name = Vi.char(self.WFS_BUFFER_SIZE)
         self.master_gain_actual = Vi.real64(0)
@@ -1493,9 +1490,7 @@ class WFS(object):
                                      self.line_selected)
         log_wfs.debug('Get Line: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Line: {0}'.format(self.line.value))
-        # TODO
-        # log_wfs.info('Line Selected: {0}'.format(self.line_selected))
-        log_wfs.info('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.line_selected]))
+        log_wfs.info('Line Selected: ' + ','.join(['{:6}'.format(item) for item in self.line_selected]))
         self._error_message(status)
         return status
 
@@ -1509,11 +1504,8 @@ class WFS(object):
                                          self.line_min,
                                          self.line_max)
         log_wfs.debug('Get Line View: {0}'.format(self.instrument_handle.value))
-        # TODO
-        # log_wfs.info('Line Minimum: {0}'.format(self.line_min))
-        log_wfs.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.line_min]))
-        # log_wfs.info('Line Maximum: {0}'.format(self.line_max))
-        log_wfs.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.line_max]))
+        log_wfs.info('Line Minimum: ' + ','.join(['{:6}'.format(item) for item in self.line_min]))
+        log_wfs.info('Line Maximum: ' + ','.join(['{:6}'.format(item) for item in self.line_max]))
         self._error_message(status)
         return status
 

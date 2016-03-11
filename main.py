@@ -122,7 +122,8 @@ class WFSDebugApp(debug_base, debug_ui):
         self.btn_get_line.clicked.connect(self.on_get_line_click)
         self.btn_get_line_view.clicked.connect(self.on_get_line_view_click)
         self.btn_calc_beam_centroid_diameter.clicked.connect(self.on_calc_beam_centroid_diameter_click)
-        self.btn_calc_spots_centroid_diameter_intensity.clicked.connect(self.on_calc_spots_centroid_diameter_intensity_click)
+        self.btn_calc_spots_centroid_diameter_intensity.clicked.connect(
+            self.on_calc_spots_centroid_diameter_intensity_click)
         self.btn_get_spot_centroids.clicked.connect(self.on_get_spot_centroids_click)
         self.btn_get_spot_diameters.clicked.connect(self.on_get_spot_diameters_click)
         self.btn_get_spot_diameters_statistics.clicked.connect(self.on_get_spot_diameters_statistics_click)
