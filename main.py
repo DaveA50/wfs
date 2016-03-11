@@ -8,7 +8,7 @@ import sys
 
 from wfs import WFS
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 PY2 = sys.version_info[0] == 2
 
 if 'pyside' in sys.argv[1]:
