@@ -472,6 +472,9 @@ class WFS(object):
         self.array_diameter_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_image_buffer = ((ctypes.c_ubyte * self.CAM_MAX_PIX_X) * self.CAM_MAX_PIX_Y)()
         self.array_intensity = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        self.array_line_max = (ctypes.c_float * 1280)()
+        self.array_line_min = (ctypes.c_float * 1280)()
+        self.array_line_selected = (ctypes.c_float * 1280)()
         self.array_reference_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_reference_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_scale_x = (ctypes.c_float * self.MAX_SPOTS_X)()
@@ -542,9 +545,6 @@ class WFS(object):
         self.lenslet_pitch_um = Vi.real64(0)
         self.limit_to_pupil = Vi.int32(0)
         self.line = Vi.int32(0)
-        self.line_max = (ctypes.c_float * 1280)()
-        self.line_min = (ctypes.c_float * 1280)()
-        self.line_selected = (ctypes.c_float * 1280)()
         self.manufacturer_name = Vi.char(self.WFS_BUFFER_SIZE)
         self.master_gain_actual = Vi.real64(0)
         self.master_gain_max = Vi.real64(5)
@@ -563,9 +563,9 @@ class WFS(object):
         self.pupil_diameter_y_mm = Vi.real64(4.76)  # Max diameter without clipping edges
         self.reference_index = Vi.int32(0)
         self.reset_device = Vi.boolean(0)
-        # self.resource_name = Vi.rsrc(b'')  # resource_name='USB::0x1313::0x0000::1'
-        self.resource_name = Vi.char(self.WFS_BUFFER_SIZE)
-        self.resource_name.value = b'USB::0x1313::0x0000::1'
+        self.resource_name = Vi.rsrc(b'USB::0x1313::0x0000::1')  # resource_name='USB::0x1313::0x0000::1'
+        # self.resource_name = Vi.char(self.WFS_BUFFER_SIZE)
+        # self.resource_name.value = b'USB::0x1313::0x0000::1'
         self.roc_mm = Vi.real64(0)
         self.rolling_reset = Vi.int32(1)
         self.saturated_pixels_percent = Vi.real64(0)
@@ -1489,11 +1489,11 @@ class WFS(object):
                 self.line = line
         status = lib_wfs.WFS_GetLine(self.instrument_handle,
                                      self.line,
-                                     self.line_selected)
+                                     self.array_line_selected)
         log_wfs.debug('Get Line: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Line: {0}'.format(self.line.value))
         log_wfs.info('Line Selected: ' +
-                     ''.join(['{:6}'.format(item) for item in self.line_selected]))
+                     ''.join(['{:6}'.format(item) for item in self.array_line_selected]))
         self._error_message(status)
         return status
 
@@ -1504,13 +1504,13 @@ class WFS(object):
             except TypeError:
                 self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetLineView(self.instrument_handle,
-                                         self.line_min,
-                                         self.line_max)
+                                         self.array_line_min,
+                                         self.array_line_max)
         log_wfs.debug('Get Line View: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Line Minimum: ' +
-                     ''.join(['{:6}'.format(item) for item in self.line_min]))
+                     ''.join(['{:6}'.format(item) for item in self.array_line_min]))
         log_wfs.info('Line Maximum: ' +
-                     ''.join(['{:6}'.format(item) for item in self.line_max]))
+                     ''.join(['{:6}'.format(item) for item in self.array_line_max]))
         self._error_message(status)
         return status
 

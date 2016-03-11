@@ -33,7 +33,7 @@ handlers:
 
 loggers:
     WFS:
-        level: DEBUG
+        level: WARNING
         handlers: [console]
         propagate: no
     UI:
