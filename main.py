@@ -83,7 +83,6 @@ class WFSDebugApp(debug_base, debug_ui):
         self.setupUi(self)
         self.wfs = wfs
 
-        # self.btn.clicked.connect(self.on_click)
         self.btn_get_instrument_info.clicked.connect(self.on_get_instrument_info_click)
         self.btn_configure_cam.clicked.connect(self.on_configure_cam_click)
         self.btn_set_highspeed_mode.clicked.connect(self.on_set_highspeed_mode_click)
@@ -156,237 +155,563 @@ class WFSDebugApp(debug_base, debug_ui):
         self.btn_get_status.clicked.connect(self.on_get_status_click)
         self.btn_close.clicked.connect(self.on_close_click)
 
-    # @Slot()
-    # def on_click(self):
-    #     self.wfs.()
-
     @Slot()
     def on_get_instrument_info_click(self):
-        self.wfs._get_instrument_info()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_instrument_info(instrument_handle=arg5)
 
     @Slot()
     def on_configure_cam_click(self):
-        self.wfs._configure_cam()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg2 = str(self.line_arg2.text())
+        if arg2 == '':
+            arg2 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._configure_cam(cam_resolution_index=arg1,
+                                pixel_format=arg2,
+                                instrument_handle=arg5)
 
     @Slot()
     def on_set_highspeed_mode_click(self):
-        self.wfs._set_highspeed_mode()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg2 = str(self.line_arg2.text())
+        if arg2 == '':
+            arg2 = None
+        arg3 = str(self.line_arg3.text())
+        if arg3 == '':
+            arg3 = None
+        arg4 = str(self.line_arg4.text())
+        if arg4 == '':
+            arg4 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._set_highspeed_mode(highspeed_mode=arg1,
+                                     adapt_centroids=arg2,
+                                     subtract_offset=arg3,
+                                     allow_auto_exposure=arg4,
+                                     instrument_handle=arg5)
 
     @Slot()
     def on_get_highspeed_windows_click(self):
-        self.wfs._get_highspeed_windows()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_highspeed_windows(instrument_handle=arg5)
 
     @Slot()
     def on_check_highspeed_centroids_click(self):
-        self.wfs._check_highspeed_centroids()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._check_highspeed_centroids(instrument_handle=arg5)
 
     @Slot()
     def on_get_exposure_time_range_click(self):
-        self.wfs._get_exposure_time_range()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_exposure_time_range(instrument_handle=arg5)
 
     @Slot()
     def on_set_exposure_time_click(self):
-        self.wfs._set_exposure_time()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._set_exposure_time(exposure_time_set=arg1,
+                                    instrument_handle=arg5)
 
     @Slot()
     def on_get_exposure_time_click(self):
-        self.wfs._get_exposure_time()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_exposure_time(instrument_handle=arg5)
 
     @Slot()
     def on_get_master_gain_range_click(self):
-        self.wfs._get_master_gain_range()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_master_gain_range(instrument_handle=arg5)
 
     @Slot()
     def on_set_master_gain_click(self):
-        self.wfs._set_master_gain()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._set_master_gain(master_gain_set=arg1,
+                                  instrument_handle=arg5)
 
     @Slot()
     def on_get_master_gain_click(self):
-        self.wfs._get_master_gain()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_master_gain(instrument_handle=arg5)
 
     @Slot()
     def on_set_black_level_offset_click(self):
-        self.wfs._set_black_level_offset()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._set_black_level_offset(black_level_offset_set=arg1,
+                                         instrument_handle=arg5)
 
     @Slot()
     def on_get_black_level_offset_click(self):
-        self.wfs._get_black_level_offset()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_black_level_offset(instrument_handle=arg5)
 
     @Slot()
     def on_set_trigger_mode_click(self):
-        self.wfs._set_trigger_mode()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._set_trigger_mode(trigger_mode=arg1,
+                                   instrument_handle=arg5)
 
     @Slot()
     def on_get_trigger_mode_click(self):
-        self.wfs._get_trigger_mode()
-
-    @Slot()
-    def on_get_trigger_delay_range_click(self):
-        self.wfs._get_trigger_delay_range()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_trigger_mode(instrument_handle=arg5)
 
     @Slot()
     def on_set_trigger_delay_click(self):
-        self.wfs._set_trigger_delay()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._set_trigger_delay(trigger_delay_set=arg1,
+                                    instrument_handle=arg5)
+
+    @Slot()
+    def on_get_trigger_delay_range_click(self):
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_trigger_delay_range(instrument_handle=arg5)
 
     @Slot()
     def on_get_mla_count_click(self):
-        self.wfs._get_mla_count()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_mla_count(instrument_handle=arg5)
 
     @Slot()
     def on_get_mla_data_click(self):
-        self.wfs._get_mla_data()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_mla_data(mla_index=arg1,
+                               instrument_handle=arg5)
 
     @Slot()
     def on_get_mla_data2_click(self):
-        self.wfs._get_mla_data2()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_mla_data2(mla_index=arg1,
+                                instrument_handle=arg5)
 
     @Slot()
     def on_select_mla_click(self):
-        self.wfs._select_mla()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._select_mla(mla_index=arg1,
+                             instrument_handle=arg5)
 
     @Slot()
     def on_set_aoi_click(self):
-        self.wfs._set_aoi()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg2 = str(self.line_arg2.text())
+        if arg2 == '':
+            arg2 = None
+        arg3 = str(self.line_arg3.text())
+        if arg3 == '':
+            arg3 = None
+        arg4 = str(self.line_arg4.text())
+        if arg4 == '':
+            arg4 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._set_aoi(aoi_center_x_mm=arg1,
+                          aoi_center_y_mm=arg2,
+                          aoi_size_x_mm=arg3,
+                          aoi_size_y_mm=arg4,
+                          instrument_handle=arg5)
 
     @Slot()
     def on_get_aoi_click(self):
-        self.wfs._get_aoi()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_aoi(instrument_handle=arg5)
 
     @Slot()
     def on_set_pupil_click(self):
-        self.wfs._set_pupil()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg2 = str(self.line_arg2.text())
+        if arg2 == '':
+            arg2 = None
+        arg3 = str(self.line_arg3.text())
+        if arg3 == '':
+            arg3 = None
+        arg4 = str(self.line_arg4.text())
+        if arg4 == '':
+            arg4 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._set_pupil(pupil_center_x_mm=arg1,
+                            pupil_center_y_mm=arg2,
+                            pupil_diameter_x_mm=arg3,
+                            pupil_diameter_y_mm=arg4,
+                            instrument_handle=arg5)
 
     @Slot()
     def on_get_pupil_click(self):
-        self.wfs._get_pupil()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_pupil(instrument_handle=arg5)
 
     @Slot()
     def on_set_reference_plane_click(self):
-        self.wfs._set_reference_plane()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._set_reference_plane(reference_index=arg1,
+                                      instrument_handle=arg5)
 
     @Slot()
     def on_get_reference_plane_click(self):
-        self.wfs._get_reference_plane()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_reference_plane(instrument_handle=arg5)
 
     @Slot()
     def on_take_spotfield_image_click(self):
-        self.wfs._take_spotfield_image()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._take_spotfield_image(instrument_handle=arg5)
 
     @Slot()
     def on_take_spotfield_image_auto_exposure_click(self):
-        self.wfs._take_spotfield_image_auto_exposure()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._take_spotfield_image_auto_exposure(instrument_handle=arg5)
 
     @Slot()
     def on_get_spotfield_image_click(self):
-        self.wfs._get_spotfield_image()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_spotfield_image(instrument_handle=arg5)
 
     @Slot()
     def on_get_spotfield_image_copy_click(self):
-        self.wfs._get_spotfield_image_copy()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_spotfield_image_copy(instrument_handle=arg5)
 
     @Slot()
     def on_average_image_click(self):
-        self.wfs._average_image()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._average_image(average_count=arg1,
+                                instrument_handle=arg5)
 
     @Slot()
     def on_average_image_rolling_click(self):
-        self.wfs._average_image_rolling()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg2 = str(self.line_arg2.text())
+        if arg2 == '':
+            arg2 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._average_image_rolling(average_count=arg1,
+                                        rolling_reset=arg2,
+                                        instrument_handle=arg5)
 
     @Slot()
     def on_cut_image_noise_floor_click(self):
-        self.wfs._cut_image_noise_floor()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._cut_image_noise_floor(intensity_limit=arg1,
+                                        instrument_handle=arg5)
 
     @Slot()
     def on_calc_image_min_max_click(self):
-        self.wfs._calc_image_min_max()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._calc_image_min_max(instrument_handle=arg5)
 
     @Slot()
     def on_calc_mean_rms_noise_click(self):
-        self.wfs._calc_mean_rms_noise()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._calc_mean_rms_noise(instrument_handle=arg5)
 
     @Slot()
     def on_get_line_click(self):
-        self.wfs._get_line()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_line(line=arg1,
+                           instrument_handle=arg5)
 
     @Slot()
     def on_get_line_view_click(self):
-        self.wfs._get_line_view()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_line_view(instrument_handle=arg5)
 
     @Slot()
     def on_calc_beam_centroid_diameter_click(self):
-        self.wfs._calc_beam_centroid_diameter()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._calc_beam_centroid_diameter(instrument_handle=arg5)
 
     @Slot()
     def on_calc_spots_centroid_diameter_intensity_click(self):
-        self.wfs._calc_spots_centroid_diameter_intensity()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg2 = str(self.line_arg2.text())
+        if arg2 == '':
+            arg2 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._calc_spots_centroid_diameter_intensity(dynamic_noise_cut=arg1,
+                                                         calculate_diameters=arg2,
+                                                         instrument_handle=arg5)
 
     @Slot()
     def on_get_spot_centroids_click(self):
-        self.wfs._get_spot_centroids()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_spot_centroids(instrument_handle=arg5)
 
     @Slot()
     def on_get_spot_diameters_click(self):
-        self.wfs._get_spot_diameters()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_spot_diameters(instrument_handle=arg5)
 
     @Slot()
     def on_get_spot_diameters_statistics_click(self):
-        self.wfs._get_spot_diameters_statistics()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_spot_diameters_statistics(instrument_handle=arg5)
 
     @Slot()
     def on_get_spot_intensities_click(self):
-        self.wfs._get_spot_intensities()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_spot_intensities(instrument_handle=arg5)
 
     @Slot()
     def on_calc_spot_to_reference_deviations_click(self):
-        self.wfs._calc_spot_to_reference_deviations()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._calc_spot_to_reference_deviations(cancel_wavefront_tilt=arg1,
+                                                    instrument_handle=arg5)
 
     @Slot()
     def on_get_spot_reference_positions_click(self):
-        self.wfs._get_spot_reference_positions()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_spot_reference_positions(instrument_handle=arg5)
 
     @Slot()
     def on_get_spot_deviations_click(self):
-        self.wfs._get_spot_deviations()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_spot_deviations(instrument_handle=arg5)
 
     @Slot()
     def on_zernike_lsf_click(self):
-        self.wfs._zernike_lsf()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._zernike_lsf(instrument_handle=arg5)
 
     @Slot()
     def on_calc_fourier_optometric_click(self):
-        self.wfs._calc_fourier_optometric()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg2 = str(self.line_arg2.text())
+        if arg2 == '':
+            arg2 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._calc_fourier_optometric(zernike_orders=arg1,
+                                          fourier_orders=arg2,
+                                          instrument_handle=arg5)
 
     @Slot()
     def on_calc_reconstructed_deviations_click(self):
-        self.wfs._calc_reconstructed_deviations()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg2 = str(self.line_arg2.text())
+        if arg2 == '':
+            arg2 = None
+        else:
+            # print('Array input not implemented')
+            arg2 = None
+        arg3 = str(self.line_arg3.text())
+        if arg3 == '':
+            arg3 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._calc_reconstructed_deviations(zernike_orders=arg1,
+                                                array_zernike_reconstructed=arg2,
+                                                do_spherical_reference=arg3,
+                                                instrument_handle=arg5)
 
     @Slot()
     def on_calc_wavefront_click(self):
-        self.wfs._calc_wavefront()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg2 = str(self.line_arg2.text())
+        if arg2 == '':
+            arg2 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._calc_wavefront(wavefront_type=arg1,
+                                 limit_to_pupil=arg2,
+                                 instrument_handle=arg5)
 
     @Slot()
     def on_calc_wavefront_statistics_click(self):
-        self.wfs._calc_wavefront_statistics()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._calc_wavefront_statistics(instrument_handle=arg5)
 
     @Slot()
     def on_self_test_click(self):
-        self.wfs._self_test()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._self_test(instrument_handle=arg5)
 
     @Slot()
     def on_reset_click(self):
-        self.wfs._reset()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._reset(instrument_handle=arg5)
 
     @Slot()
     def on_revision_query_click(self):
-        self.wfs._revision_query()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._revision_query(instrument_handle=arg5)
 
     @Slot()
     def on_error_query_click(self):
-        self.wfs._error_query()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._error_query(instrument_handle=arg5)
 
     @Slot()
     def on_error_message_click(self):
-        self.wfs._error_message()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._error_message(error_code=arg1,
+                                instrument_handle=arg5)
 
     @Slot()
     def on_get_instrument_list_len_click(self):
@@ -394,55 +719,138 @@ class WFSDebugApp(debug_base, debug_ui):
 
     @Slot()
     def on_get_instrument_list_info_click(self):
-        self.wfs._get_instrument_list_info()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        self.wfs._get_instrument_list_info(instrument_index=arg1)
 
     @Slot()
     def on_get_xy_scale_click(self):
-        self.wfs._get_xy_scale()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_xy_scale(instrument_handle=arg5)
 
     @Slot()
     def on_convert_wavefront_waves_click(self):
-        self.wfs._convert_wavefront_waves()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg2 = str(self.line_arg2.text())
+        if arg2 == '':
+            arg2 = None
+        else:
+            # print('Array input not implemented')
+            arg2 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._convert_wavefront_waves(wavelength=arg1,
+                                          array_wavefront=arg2,
+                                          instrument_handle=arg5)
 
     @Slot()
     def on_flip_2d_array_click(self):
-        self.wfs._flip_2d_array()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        else:
+            # print('Array input not implemented')
+            arg1 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._flip_2d_array(array_wavefront_yx=arg1,
+                                instrument_handle=arg5)
 
     @Slot()
     def on_set_spots_to_user_reference_click(self):
-        self.wfs._set_spots_to_user_reference()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._set_spots_to_user_reference(instrument_handle=arg5)
 
     @Slot()
     def on_set_calc_spots_to_user_reference_click(self):
-        self.wfs._set_calc_spots_to_user_reference()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg2 = str(self.line_arg2.text())
+        if arg2 == '':
+            arg2 = None
+        else:
+            # print('Array input not implemented')
+            arg2 = None
+        arg3 = str(self.line_arg3.text())
+        if arg3 == '':
+            arg3 = None
+        else:
+            # print('Array input not implemented')
+            arg3 = None
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._set_calc_spots_to_user_reference(spot_ref_type=arg1,
+                                                   array_reference_x=arg2,
+                                                   array_reference_y=arg3,
+                                                   instrument_handle=arg5)
 
     @Slot()
     def on_create_default_user_reference_click(self):
-        self.wfs._create_default_user_reference()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._create_default_user_reference(instrument_handle=arg5)
 
     @Slot()
     def on_save_user_reference_file_click(self):
-        self.wfs._save_user_reference_file()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._save_user_reference_file(instrument_handle=arg5)
 
     @Slot()
     def on_load_user_reference_file_click(self):
-        self.wfs._load_user_reference_file()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._load_user_reference_file(instrument_handle=arg5)
 
     @Slot()
     def on_do_spherical_reference_click(self):
-        self.wfs._do_spherical_reference()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._do_spherical_reference(instrument_handle=arg5)
 
     @Slot()
     def on_init_click(self):
-        self.wfs._init()
+        arg1 = str(self.line_arg1.text())
+        if arg1 == '':
+            arg1 = None
+        arg2 = str(self.line_arg2.text())
+        if arg2 == '':
+            arg2 = None
+        arg3 = str(self.line_arg3.text())
+        if arg3 == '':
+            arg3 = None
+        self.wfs._init(resource_name=arg1,
+                       id_query=arg2,
+                       reset_device=arg3)
 
     @Slot()
     def on_get_status_click(self):
-        self.wfs._get_status()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._get_status(instrument_handle=arg5)
 
     @Slot()
     def on_close_click(self):
-        self.wfs._close()
+        arg5 = str(self.line_arg5.text())
+        if arg5 == '':
+            arg5 = None
+        self.wfs._close(instrument_handle=arg5)
 
 
 def main(wfs):

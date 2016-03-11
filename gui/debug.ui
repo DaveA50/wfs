@@ -278,7 +278,7 @@
           <item>
            <widget class="QLabel" name="label_arg5">
             <property name="text">
-             <string>arg5</string>
+             <string>arg5 (instrument_handle)</string>
             </property>
            </widget>
           </item>

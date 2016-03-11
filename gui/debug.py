@@ -371,7 +371,7 @@ class Ui_Form(object):
         self.label_arg2.setText(_translate("Form", "arg2", None))
         self.label_arg3.setText(_translate("Form", "arg3", None))
         self.label_arg4.setText(_translate("Form", "arg4", None))
-        self.label_arg5.setText(_translate("Form", "arg5", None))
+        self.label_arg5.setText(_translate("Form", "arg5 (instrument_handle)", None))
         self.utility_groupbox.setTitle(_translate("Form", "Utility Functions", None))
         self.btn_convert_wavefront_waves.setText(_translate("Form", "convert_wavefront_waves", None))
         self.btn_get_xy_scale.setText(_translate("Form", "get_xy_scale", None))

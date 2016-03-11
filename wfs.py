@@ -84,7 +84,11 @@ class Vi:
         Args:
             n: size of char array
         """
-        return ctypes.create_string_buffer(n)
+        try:
+            return ctypes.create_string_buffer(int(n))
+        except ValueError as e:
+            log_wfs.warning('Must be an Int, setting to 512: {0}'.format(e))
+            return ctypes.create_string_buffer(512)
 
     @staticmethod
     def int8(n):
@@ -92,7 +96,11 @@ class Vi:
         Args:
             n: Binary8 char
         """
-        return ctypes.c_byte(n)
+        try:
+            return ctypes.c_byte(int(n))
+        except ValueError as e:
+            log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
+            return ctypes.c_byte(0)
 
     @staticmethod
     def uint8(n):
@@ -100,7 +108,11 @@ class Vi:
         Args:
             n: Binary8 unsigned char
         """
-        return ctypes.c_ubyte(n)
+        try:
+            return ctypes.c_ubyte(int(n))
+        except ValueError as e:
+            log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
+            return ctypes.c_ubyte(0)
 
     @staticmethod
     def int16(n):
@@ -108,7 +120,11 @@ class Vi:
         Args:
             n: Binary16 short int
         """
-        return ctypes.c_short(n)
+        try:
+            return ctypes.c_short(int(n))
+        except ValueError as e:
+            log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
+            return ctypes.c_short(0)
 
     @staticmethod
     def uint16(n):
@@ -116,7 +132,11 @@ class Vi:
         Args:
             n: Binary16 unsigned short int
         """
-        return ctypes.c_ushort(n)
+        try:
+            return ctypes.c_ushort(int(n))
+        except ValueError as e:
+            log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
+            return ctypes.c_ushort(0)
 
     @staticmethod
     def int32(n):
@@ -124,7 +144,11 @@ class Vi:
         Args:
             n: Binary32 long int
         """
-        return ctypes.c_long(n)
+        try:
+            return ctypes.c_long(int(n))
+        except ValueError as e:
+            log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
+            return ctypes.c_long(0)
 
     @staticmethod
     def uint32(n):
@@ -132,7 +156,11 @@ class Vi:
         Args:
             n: Binary32 long int
         """
-        return ctypes.c_ulong(n)
+        try:
+            return ctypes.c_ulong(int(n))
+        except ValueError as e:
+            log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
+            return ctypes.c_ulong(0)
 
     @staticmethod
     def real32(n):
@@ -140,7 +168,11 @@ class Vi:
         Args:
             n: float, char*
         """
-        return ctypes.c_float(n)
+        try:
+            return ctypes.c_float(float(n))
+        except ValueError as e:
+            log_wfs.warning('Must be a float, setting to 0: {0}'.format(e))
+            return ctypes.c_float(float(0))
 
     @staticmethod
     def real64(n):
@@ -148,7 +180,11 @@ class Vi:
         Args:
             n: double, char*
         """
-        return ctypes.c_double(n)
+        try:
+            return ctypes.c_double(float(n))
+        except ValueError as e:
+            log_wfs.warning('Must be a float, setting to 0: {0}'.format(e))
+            return ctypes.c_double(float(0))
 
     @staticmethod
     def boolean(n):
@@ -156,15 +192,15 @@ class Vi:
             n = Vi.true
         elif n is False:
             n = Vi.false
-        return Vi.uint16(n)
+        try:
+            return Vi.uint16(int(n))
+        except ValueError as e:
+            log_wfs.warning('Must be a 0, 1, False, or True. Setting to 0 (False): {0}'.format(e))
+            return Vi.uint16(0)
 
     @staticmethod
     def object(n):
         return Vi.uint32(n)
-
-    # @staticmethod
-    # def rsrc(s):
-    #     return Vi.string(s)
 
     @staticmethod
     def session(n):
@@ -177,6 +213,10 @@ class Vi:
     # @staticmethod
     # def string(s):
     #     return ctypes.c_char_p(s)
+
+    # @staticmethod
+    # def rsrc(s):
+    #     return Vi.string(s)
 
 
 class WFS(object):
@@ -382,7 +422,6 @@ class WFS(object):
     # MAX_SPOTS_X = 50  # WFS20: 1440*5/150 = 48
     # MAX_SPOTS_Y = 40  # WFS20: 1080*5/150 = 36
     MAX_SPOTS_X = 41  # max for 1280x1024 with 4.65µm pixels and 150µm lenslet pitch (WFSx)
-                      # also for 640x480 with 9.9µm pixels and 150µm lenslet pitch (WFS10x)
     MAX_SPOTS_Y = 33  # determines also 3D display size
 
     # Reference
@@ -428,7 +467,7 @@ class WFS(object):
         self.array_scale_x = (ctypes.c_float * self.MAX_SPOTS_X)()
         self.array_scale_y = (ctypes.c_float * self.MAX_SPOTS_Y)()
         self.array_wavefront = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        self.array_wavefront_waves = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        self.array_wavefront_wave = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_wavefront_xy = ((ctypes.c_float * self.MAX_SPOTS_Y) * self.MAX_SPOTS_X)()
         self.array_wavefront_yx = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_zernike_orders_um = (ctypes.c_float * (self.MAX_ZERNIKE_ORDERS + 1))()
@@ -685,8 +724,6 @@ class WFS(object):
                                        ctypes.byref(self.device_status))
         log_wfs.debug('Get Status: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Device Status: {0}'.format(self.device_status.value))
-        # self.device_status.value -= 1788  # Some unknown offset? TODO
-        # self.device_status.value -= 1792  # Some unknown offset? TODO
         if self.device_status.value in self.WFS_DRIVER_STATUS:
             log_wfs.info('Device Status: {0}'.format(self.WFS_DRIVER_STATUS[self.device_status.value]))
         else:
@@ -729,22 +766,22 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _configure_cam(self, pixel_format=None, cam_resolution_index=None, instrument_handle=None):
+    def _configure_cam(self, cam_resolution_index=None, pixel_format=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
-        if pixel_format is not None:
-            try:
-                self.pixel_format = Vi.int32(pixel_format)
-            except TypeError:
-                self.pixel_format = pixel_format
         if cam_resolution_index is not None:
             try:
                 self.cam_resolution_index = Vi.int32(cam_resolution_index)
             except TypeError:
                 self.cam_resolution_index = cam_resolution_index
+        if pixel_format is not None:
+            try:
+                self.pixel_format = Vi.int32(pixel_format)
+            except TypeError:
+                self.pixel_format = pixel_format
         status = lib_wfs.WFS_ConfigureCam(self.instrument_handle,
                                           self.pixel_format,
                                           self.cam_resolution_index,
@@ -1840,16 +1877,17 @@ class WFS(object):
         log_wfs.error('Error Message: {0}'.format(self.error_message.value))
         return status
 
-    def _error_message(self, error_code=0, instrument_handle=None):
+    def _error_message(self, error_code=None, instrument_handle=None):
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
-        try:
-            self.error_code = Vi.session(error_code)
-        except TypeError:
-            self.error_code = error_code
+        if error_code is not None:
+            try:
+                self.error_code = Vi.status(error_code)
+            except TypeError:
+                self.error_code = error_code
         if self.error_code.value == 0:
             # log_wfs.debug('Error Message: {0}'.format(self.instrument_handle.value))
             log_wfs.debug('No error: {0}'.format(self.error_code.value))
@@ -1862,14 +1900,8 @@ class WFS(object):
         log_wfs.error('Error Message: {0}'.format(self.error_message.value))
         return status
 
-    def _get_instrument_list_len(self, instrument_handle=Vi.null):
-        if instrument_handle is not Vi.null:
-            try:
-                instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                instrument_handle = instrument_handle
-        else:
-            instrument_handle = Vi.session(instrument_handle)
+    def _get_instrument_list_len(self):
+        instrument_handle = Vi.session(Vi.null)
         status = lib_wfs.WFS_GetInstrumentListLen(instrument_handle,
                                                   ctypes.byref(self.instrument_count))
         self.instrument_index = Vi.int32(self.instrument_count.value - 1)
@@ -1879,20 +1911,13 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_instrument_list_info(self, instrument_handle=Vi.null,
-                                  instrument_index=None):
-        if instrument_handle is not Vi.null:
-            try:
-                instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                instrument_handle = instrument_handle
-        else:
-            instrument_handle = Vi.session(instrument_handle)
+    def _get_instrument_list_info(self, instrument_index=None):
         if instrument_index is not None:
             try:
                 self.instrument_index = Vi.int32(instrument_index)
             except TypeError:
                 self.instrument_index = instrument_index
+        instrument_handle = Vi.session(Vi.null)
         lib_wfs.WFS_GetInstrumentListInfo.argtypes = [ctypes.c_ulong,
                                                       ctypes.c_long,
                                                       ctypes.POINTER(ctypes.c_long),
@@ -1953,11 +1978,11 @@ class WFS(object):
         status = lib_wfs.WFS_ConvertWavefrontWaves(self.instrument_handle,
                                                    self.wavelength,
                                                    self.array_wavefront,
-                                                   self.array_wavefront_waves)
+                                                   self.array_wavefront_wave)
         log_wfs.debug('Convert Wavefront to Waves: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Wavelength: {0}'.format(self.wavelength.value))
         log_wfs.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_wavefront]))
-        log_wfs.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_wavefront_waves]))
+        log_wfs.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_wavefront_wave]))
         self._error_message(status)
         return status
 
@@ -2105,9 +2130,6 @@ class WFS(object):
         self._calc_wavefront()
         self._calc_wavefront_statistics()
         self._zernike_lsf()
-
-    def testing(self, var):
-        print(var)
 
 
 if __name__ == '__main__':
