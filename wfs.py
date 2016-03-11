@@ -470,6 +470,7 @@ class WFS(object):
         self.array_deviations_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_diameter_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_diameter_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        self.array_image_buffer = ((ctypes.c_ubyte * self.CAM_MAX_PIX_X) * self.CAM_MAX_PIX_Y)()
         self.array_intensity = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_reference_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_reference_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
@@ -526,8 +527,6 @@ class WFS(object):
         self.highspeed_mode = Vi.int32(0)
         self.id_query = Vi.boolean(0)
         self.image_buffer = Vi.uint8(0)
-        # self.image_buffer_copy = Vi.uint8(0)  # TODO
-        self.image_buffer_copy = ((ctypes.c_ubyte * self.CAM_MAX_PIX_X) * self.CAM_MAX_PIX_Y)()
         self.intensity_limit = Vi.int32(1)
         self.intensity_max = Vi.int32(0)
         self.intensity_mean = Vi.int32(0)
@@ -1372,13 +1371,12 @@ class WFS(object):
             except TypeError:
                 self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetSpotfieldImageCopy(self.instrument_handle,
-                                                   self.image_buffer_copy,
+                                                   self.array_image_buffer,
                                                    ctypes.byref(self.spotfield_rows),
                                                    ctypes.byref(self.spotfield_columns))
         log_wfs.debug('Get Spotfield Image Copy: {0}'.format(self.instrument_handle.value))
-        log_wfs.info('Image Buffer: {0}'.format(self.image_buffer_copy))
-        # TODO
-        log_wfs.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.image_buffer_copy]))
+        log_wfs.info('Image Buffer: {0}'.format(self.array_image_buffer))
+        log_wfs.debug('\n'.join([''.join(['{:6}'.format(item) for item in row]) for row in self.array_image_buffer]))
         log_wfs.info('Rows: {0}'.format(self.spotfield_rows.value))
         log_wfs.info('Columns: {0}'.format(self.spotfield_columns.value))
         self._error_message(status)
