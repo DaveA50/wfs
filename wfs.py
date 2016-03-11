@@ -210,13 +210,15 @@ class Vi:
     def status(n):
         return Vi.int32(n)
 
-    # @staticmethod
-    # def string(s):
-    #     return ctypes.c_char_p(s)
+    @staticmethod
+    def string(s):
+        str_buffer = Vi.char(256)
+        str_buffer.value = s
+        return str_buffer
 
-    # @staticmethod
-    # def rsrc(s):
-    #     return Vi.string(s)
+    @staticmethod
+    def rsrc(s):
+        return Vi.string(s)
 
 
 class WFS(object):
@@ -375,6 +377,8 @@ class WFS(object):
     CAM_RES_512 = 3  # 512x512
     CAM_RES_320 = 4  # 320x320 smallest!
     CAM_RES_MAX_IDX = 4
+    CAM_MAX_PIX_X = 1280
+    CAM_MAX_PIX_Y = 1024
 
     # pre-defined image sizes for WFS10 instruments
     CAM_RES_WFS10_640 = 0  # 640x480
@@ -473,7 +477,7 @@ class WFS(object):
         self.array_zernike_orders_um = (ctypes.c_float * (self.MAX_ZERNIKE_ORDERS + 1))()
         self.array_zernike_reconstructed = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
         self.array_zernike_um = (ctypes.c_float * (self.MAX_ZERNIKE_MODES + 1))()
-        self.average_count = Vi.int32(0)
+        self.average_count = Vi.int32(1)
         self.average_data_ready = Vi.int32(0)
         self.aoi_center_x_mm = Vi.real64(0)
         self.aoi_center_y_mm = Vi.real64(0)
@@ -485,7 +489,7 @@ class WFS(object):
         self.beam_diameter_y_mm = Vi.real64(0)
         self.black_level_offset_actual = Vi.int32(0)
         self.black_level_offset_set = Vi.int32(0)
-        self.calculate_diameters = Vi.int32(0)
+        self.calculate_diameters = Vi.int32(1)
         self.cam_pitch_um = Vi.real64(0)
         self.cam_resolution_index = Vi.int32(0)
         self.cancel_wavefront_tilt = Vi.int32(1)
@@ -499,10 +503,10 @@ class WFS(object):
         self.error_code = Vi.int32(0)
         self.error_message = Vi.char(self.WFS_ERR_DESCR_BUFFER_SIZE)
         self.exposure_time_actual = Vi.real64(0)
-        self.exposure_time_increment = Vi.real64(0)
-        self.exposure_time_max = Vi.real64(0)
-        self.exposure_time_min = Vi.real64(0)
-        self.exposure_time_set = Vi.real64(0)
+        self.exposure_time_increment = Vi.real64(0.0554)
+        self.exposure_time_max = Vi.real64(66.6147666666)
+        self.exposure_time_min = Vi.real64(0.0793666666667)
+        self.exposure_time_set = Vi.real64(0.0793666666667)
         self.firmware_revision = Vi.char(self.WFS_BUFFER_SIZE)
         self.fit_error_mean = Vi.real64(0)
         self.fit_error_stdev = Vi.real64(0)
@@ -516,9 +520,10 @@ class WFS(object):
         self.grid_correction_rotation = Vi.real64(0)
         self.highspeed_mode = Vi.int32(0)
         self.id_query = Vi.boolean(0)
-        # self.image_buffer = ctypes.c_uint(0)
         self.image_buffer = Vi.uint8(0)
-        self.intensity_limit = Vi.int32(0)
+        # self.image_buffer_copy =Vi.uint8(0)  # TODO
+        self.image_buffer_copy = ((ctypes.c_ubyte * self.CAM_MAX_PIX_X) * self.CAM_MAX_PIX_Y)()
+        self.intensity_limit = Vi.int32(1)
         self.intensity_max = Vi.int32(0)
         self.intensity_mean = Vi.int32(0)
         self.intensity_min = Vi.int32(0)
@@ -533,11 +538,11 @@ class WFS(object):
         self.lenslet_pitch_um = Vi.real64(0)
         self.limit_to_pupil = Vi.int32(0)
         self.line = Vi.int32(0)
-        # self.line_max = Vi.real32(0)  # TODO Float Array
+        # self.line_max = Vi.real32(0)  # TODO
         self.line_max = (ctypes.c_float * 1280)()
-        # self.line_min = Vi.real32(0)  # TODO Float Array
+        # self.line_min = Vi.real32(0)  # TODO
         self.line_min = (ctypes.c_float * 1280)()
-        # self.line_selected = Vi.real32(0)  # TODO Float Array
+        # self.line_selected = Vi.real32(0)  # TODO
         self.line_selected = (ctypes.c_float * 1280)()
         self.manufacturer_name = Vi.char(self.WFS_BUFFER_SIZE)
         self.master_gain_actual = Vi.real64(0)
@@ -561,7 +566,7 @@ class WFS(object):
         self.resource_name = Vi.char(self.WFS_BUFFER_SIZE)
         self.resource_name.value = b'USB::0x1313::0x0000::1'
         self.roc_mm = Vi.real64(0)
-        self.rolling_reset = Vi.int32(0)
+        self.rolling_reset = Vi.int32(1)
         self.saturated_pixels_percent = Vi.real64(0)
         self.serial_number_camera = Vi.char(self.WFS_BUFFER_SIZE)
         self.serial_number_wfs = Vi.char(self.WFS_BUFFER_SIZE)
@@ -576,10 +581,10 @@ class WFS(object):
         self.test_message = Vi.int16(0)
         self.test_result = Vi.char(self.WFS_BUFFER_SIZE)
         self.trigger_delay_actual = Vi.int32(0)
-        self.trigger_delay_increment = Vi.int32(0)
-        self.trigger_delay_max = Vi.int32(0)
-        self.trigger_delay_min = Vi.int32(0)
-        self.trigger_delay_set = Vi.int32(0)
+        self.trigger_delay_increment = Vi.int32(1)
+        self.trigger_delay_max = Vi.int32(4000000)
+        self.trigger_delay_min = Vi.int32(15)
+        self.trigger_delay_set = Vi.int32(15)
         self.trigger_mode = Vi.int32(0)
         self.wavefront_diff = Vi.real64(0)
         self.wavefront_max = Vi.real64(0)
@@ -599,93 +604,54 @@ class WFS(object):
 
     # WFS Functions
     def _init(self, resource_name=None, id_query=None, reset_device=None):
-        """
-        WFS_init
+        """Initializes the instrument driver session.
 
-        ViStatus WFS_init (ViRsrc resourceName, ViBoolean IDQuery, ViBoolean resetDevice, ViPSession instrumentHandle);
-
-        Purpose
-        This function initializes the instrument driver session and performs the
-        following initialization actions:
-
-        (1) Opens a session to the Default Resource Manager resource and a
-        session to the selected device using the Resource Name.
+        Each time this function is invoked an unique session is opened.
+        It Performs the following initialization actions:
+        (1) Opens a session to the Default Resource Manager resource
+            and a session to the selected device using the Resource
+            Name.
         (2) Performs an identification query on the Instrument.
         (3) Resets the instrument to a known state.
         (4) Sends initialization commands to the instrument.
-        (5) Returns an instrument handle which is used to differentiate between
-        different sessions of this instrument driver.
+        (5) Returns an instrument handle which is used to differentiate
+            between different sessions of this instrument driver.
 
-        Notes:
-        (1) Each time this function is invoked an unique session is opened.
+        Args:
+            resource_name (Vi.rsrc(str)): This parameter specifies the
+                interface of the device that is to be initialized. The
+                resource name has to follow the syntax:
+                "USB::0x1313::0x0000::" followed by the Device ID.
+                The Device ID can be gotten with the function
+                _get_instrument_list_info E.g. "USB::0x1313::0x0000::1"
+            id_query (Vi.boolean(int)): Performs an In-System
+                Verification. Checks if the resource matches the vendor
+                and product id.
+            reset_device (Vi.boolean(int)): Performs Reset operation
+                and places the instrument in a pre-defined reset state.
 
-        Parameter List
-
-        resourceName
-
-            Variable Type       ViRsrc
-
-            This parameter specifies the interface of the device that is to be
-            initialized.The resource name has to follow the syntax:
-
-            "USB::0x1313::0x0000::" followed by the Device ID.
-
-            The Device ID can be get with the function
-            "WFS_GetInstrumentListInfo". E.g. "USB::0x1313::0x0000::1"
-
-        IDQuery
-
-            Variable Type       ViBoolean
-
-            Performs an In-System Verification.
-            Checks if the resource matches the vendor and product id.
-
-        resetDevice
-
-            Variable Type       ViBoolean
-
-            Performs Reset operation and places the instrument in a pre-defined
-            reset state.
-
-        instrumentHandle
-
-            Variable Type       ViSession (passed by reference)
-
-            This parameter returns an instrument handle that is used in all
-            subsequent calls to distinguish between different sessions of this
-            instrument driver.
-
-        Return Value
-
-            Operational return status. Contains either a completion code or an
-            error code. Instrument driver specific codes that may be returned in
-            addition to the VISA error codes defined in VPP-4.3 and vendor
-            specific codes, are as follows.
-
-            Completion Codes
-            ----------------------------------------------------------------
-            VI_SUCCESS              Initialization successful
-            VI_WARN_NSUP_ID_QUERY   Identification query not supported
-            VI_WARN_NSUP_RESET      Reset not supported
-
-            Error Codes
-            ----------------------------------------------------------------
-            VI_ERROR_FAIL_ID_QUERY  Instrument identification query failed
-
-            Vendor Specific Codes
-            ----------------------------------------------------------------
-            For error codes and descriptions see <Error Message>.
-
-        Keyword arguments
-        :param resource_name:
-        :param id_query:
-        :param reset_device:
-        :return status:
+        Returns:
+            instrument_handle (Vi.session(int)): This parameter returns
+                an instrument handle that is used in all subsequent
+                calls to distinguish between different sessions of this
+                instrument driver.
+            status (Vi.status(int)): Operational return status.
+                Contains either a completion code or an error code.
+                Instrument driver specific codes that may be returned
+                in addition to the VISA error codes defined in VPP-4.3
+                and vendor specific codes, are as follows.
+                Completion Codes:
+                    WFS_SUCCESS: Initialization successful
+                    WFS_WARN_NSUP_ID_QUERY: Identification query not
+                                            supported
+                    WFS_WARN_NSUP_RESET: Reset not supported
+                Error Codes:
+                    VI_ERROR_FAIL_ID_QUERY: Instrument identification
+                                            query failed
         """
         if resource_name is not None:
             try:
-                self.resource_name = Vi.char(self.WFS_BUFFER_SIZE)
-                self.resource_name.value = resource_name
+                self.resource_name = Vi.rsrc(resource_name)
             except TypeError:
                 self.resource_name = resource_name
         if id_query is not None:
@@ -715,6 +681,22 @@ class WFS(object):
         return status
 
     def _get_status(self, instrument_handle=None):
+        """Get the device status of the Wavefront Sensor instrument.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            device_status (Vi.int32(int)): This parameter returns the
+                device status of the Wavefront Sensor instrument.
+                Lower 24 bits are used.
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -732,6 +714,21 @@ class WFS(object):
         return status
 
     def _close(self, instrument_handle=None):
+        """Closes the instrument driver session.
+
+        Note: The instrument must be reinitialized to use it again.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1372,13 +1369,14 @@ class WFS(object):
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
-        # TODO
         status = lib_wfs.WFS_GetSpotfieldImageCopy(self.instrument_handle,
-                                                   self.image_buffer,
+                                                   self.image_buffer_copy,
                                                    ctypes.byref(self.spotfield_rows),
                                                    ctypes.byref(self.spotfield_columns))
         log_wfs.debug('Get Spotfield Image Copy: {0}'.format(self.instrument_handle.value))
-        log_wfs.info('Image Buffer: {0}'.format(self.image_buffer.value))
+        log_wfs.info('Image Buffer: {0}'.format(self.image_buffer_copy))
+        # TODO
+        log_wfs.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.image_buffer_copy]))
         log_wfs.info('Rows: {0}'.format(self.spotfield_rows.value))
         log_wfs.info('Columns: {0}'.format(self.spotfield_columns.value))
         self._error_message(status)
@@ -1495,9 +1493,9 @@ class WFS(object):
                                      self.line_selected)
         log_wfs.debug('Get Line: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Line: {0}'.format(self.line.value))
-        # TODO AttributeError: 'c_float_Array_1280' object has no attribute 'value'
-        log_wfs.info('Line Selected: {0}'.format(self.line_selected.value))
-        log_wfs.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.line_selected]))
+        # TODO
+        # log_wfs.info('Line Selected: {0}'.format(self.line_selected))
+        log_wfs.info('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.line_selected]))
         self._error_message(status)
         return status
 
@@ -1511,10 +1509,10 @@ class WFS(object):
                                          self.line_min,
                                          self.line_max)
         log_wfs.debug('Get Line View: {0}'.format(self.instrument_handle.value))
-        # TODO AttributeError: 'c_float_Array_1280' object has no attribute 'value'
-        log_wfs.info('Line Minimum: {0}'.format(self.line_min.value))
+        # TODO
+        # log_wfs.info('Line Minimum: {0}'.format(self.line_min))
         log_wfs.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.line_min]))
-        log_wfs.info('Line Maximum: {0}'.format(self.line_max.value))
+        # log_wfs.info('Line Maximum: {0}'.format(self.line_max))
         log_wfs.debug('\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.line_max]))
         self._error_message(status)
         return status
@@ -1820,6 +1818,7 @@ class WFS(object):
 
     # Utility Functions
     def _self_test(self, instrument_handle=None):
+        # TODO
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1835,6 +1834,7 @@ class WFS(object):
         return status
 
     def _reset(self, instrument_handle=None):
+        # TODO
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
