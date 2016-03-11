@@ -292,6 +292,11 @@ class WFS(object):
     WFS_WARN_NSUP_SELF_TEST = 0x3FFC0103
     WFS_WARN_NSUP_ERROR_QUERY = 0x3FFC0104
     WFS_WARN_NSUP_REV_QUERY = 0x3FFC0105
+    WFS_WARNING_CODES = {WFS_WARN_NSUP_ID_QUERY: 'Identification query not supported',
+                         WFS_WARN_NSUP_RESET: 'Reset not supported',
+                         WFS_WARN_NSUP_SELF_TEST: 'Self-test not supported',
+                         WFS_WARN_NSUP_ERROR_QUERY: 'Error query not supported',
+                         WFS_WARN_NSUP_REV_QUERY: 'Instrument revision query not supported'}
 
     # Driver Status reporting (lower 24 bits)
     WFS_STATBIT_CON = 0x00000001  # USB connection lost, set by driver
@@ -1810,7 +1815,6 @@ class WFS(object):
 
     # Utility Functions
     def _self_test(self, instrument_handle=None):
-        # TODO
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1819,6 +1823,7 @@ class WFS(object):
         status = lib_wfs.WFS_self_test(self.instrument_handle,
                                        ctypes.byref(self.test_result),
                                        self.test_message)
+        print(status)
         log_wfs.debug('Self Test: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Self Test Result: {0}'.format(self.test_result.value))
         log_wfs.info('Self Test Message: {0}'.format(self.test_message.value))
@@ -1826,13 +1831,13 @@ class WFS(object):
         return status
 
     def _reset(self, instrument_handle=None):
-        # TODO
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_reset(self.instrument_handle)
+        print(status)
         log_wfs.debug('Reset: {0}'.format(self.instrument_handle.value))
         self._error_message(status)
         return status
@@ -1881,8 +1886,10 @@ class WFS(object):
             except TypeError:
                 self.error_code = error_code
         if self.error_code.value == 0:
-            # log_wfs.debug('Error Message: {0}'.format(self.instrument_handle.value))
             log_wfs.debug('No error: {0}'.format(self.error_code.value))
+            return 0
+        elif self.error_code.value in self.WFS_WARNING_CODES:
+            log_wfs.warning('Unsupported: {0}'.format(self.WFS_WARNING_CODES[self.error_code.value]))
             return 0
         status = lib_wfs.WFS_error_message(self.instrument_handle,
                                            self.error_code,

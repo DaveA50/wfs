@@ -22,13 +22,6 @@
      <layout class="QGridLayout" name="gridLayout_9">
       <item row="0" column="0">
        <layout class="QGridLayout" name="gridLayout_8">
-        <item row="2" column="1">
-         <widget class="QPushButton" name="btn_get_exposure_time">
-          <property name="text">
-           <string>get_exposure_time</string>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="1">
          <widget class="QPushButton" name="btn_configure_cam">
           <property name="text">
@@ -36,17 +29,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QPushButton" name="btn_check_highspeed_centroids">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>check_highspeed_centroids</string>
-          </property>
-         </widget>
-        </item>
-        <item row="8" column="1">
+        <item row="9" column="1">
          <widget class="QPushButton" name="btn_set_reference_plane">
           <property name="text">
            <string>set_reference_plane</string>
@@ -60,24 +43,142 @@
           </property>
          </widget>
         </item>
-        <item row="7" column="0">
+        <item row="2" column="1">
+         <widget class="QPushButton" name="btn_get_exposure_time">
+          <property name="text">
+           <string>get_exposure_time</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QPushButton" name="btn_check_highspeed_centroids">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>check_highspeed_centroids</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="0">
          <widget class="QPushButton" name="btn_set_aoi">
           <property name="text">
            <string>set_aoi</string>
           </property>
          </widget>
         </item>
-        <item row="8" column="2">
+        <item row="9" column="2">
          <widget class="QPushButton" name="btn_get_reference_plane">
           <property name="text">
            <string>get_reference_plane</string>
           </property>
          </widget>
         </item>
+        <item row="4" column="1">
+         <widget class="QPushButton" name="btn_set_trigger_mode">
+          <property name="text">
+           <string>set_trigger_mode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="0">
+         <widget class="QPushButton" name="btn_get_mla_data">
+          <property name="text">
+           <string>get_mla_data</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="2">
+         <widget class="QPushButton" name="btn_get_trigger_mode">
+          <property name="text">
+           <string>get_trigger_mode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="btn_set_highspeed_mode">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>set_highspeed_mode</string>
+          </property>
+         </widget>
+        </item>
         <item row="7" column="1">
+         <widget class="QPushButton" name="btn_get_mla_data2">
+          <property name="text">
+           <string>get_mla_data2</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="0">
+         <widget class="QPushButton" name="btn_get_pupil">
+          <property name="text">
+           <string>get_pupil</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QPushButton" name="btn_get_exposure_time_range">
+          <property name="text">
+           <string>get_exposure_time_range</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="2">
+         <widget class="QPushButton" name="btn_set_pupil">
+          <property name="text">
+           <string>set_pupil</string>
+          </property>
+         </widget>
+        </item>
+        <item row="7" column="2">
+         <widget class="QPushButton" name="btn_select_mla">
+          <property name="text">
+           <string>select_mla</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QPushButton" name="btn_set_exposure_time">
+          <property name="text">
+           <string>set_exposure_time</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QPushButton" name="btn_get_black_level_offset">
+          <property name="text">
+           <string>get_black_level_offset</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QPushButton" name="btn_set_black_level_offset">
+          <property name="text">
+           <string>set_black_level_offset</string>
+          </property>
+         </widget>
+        </item>
+        <item row="8" column="1">
          <widget class="QPushButton" name="btn_get_aoi">
           <property name="text">
            <string>get_aoi</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QPushButton" name="btn_get_master_gain">
+          <property name="text">
+           <string>get_master_gain</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="2">
+         <widget class="QPushButton" name="btn_get_mla_count">
+          <property name="text">
+           <string>get_mla_count</string>
           </property>
          </widget>
         </item>
@@ -98,65 +199,6 @@
           </property>
          </widget>
         </item>
-        <item row="8" column="0">
-         <widget class="QPushButton" name="btn_get_pupil">
-          <property name="text">
-           <string>get_pupil</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="2">
-         <widget class="QPushButton" name="btn_set_pupil">
-          <property name="text">
-           <string>set_pupil</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QPushButton" name="btn_set_exposure_time">
-          <property name="text">
-           <string>set_exposure_time</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QPushButton" name="btn_get_exposure_time_range">
-          <property name="text">
-           <string>get_exposure_time_range</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0">
-         <widget class="QPushButton" name="btn_get_mla_data">
-          <property name="text">
-           <string>get_mla_data</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="1">
-         <widget class="QPushButton" name="btn_get_mla_data2">
-          <property name="text">
-           <string>get_mla_data2</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QPushButton" name="btn_set_highspeed_mode">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>set_highspeed_mode</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QPushButton" name="btn_get_black_level_offset">
-          <property name="text">
-           <string>get_black_level_offset</string>
-          </property>
-         </widget>
-        </item>
         <item row="3" column="0">
          <widget class="QPushButton" name="btn_set_master_gain">
           <property name="text">
@@ -164,59 +206,17 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="2">
-         <widget class="QPushButton" name="btn_select_mla">
-          <property name="text">
-           <string>select_mla</string>
-          </property>
-         </widget>
-        </item>
         <item row="5" column="0">
-         <widget class="QPushButton" name="btn_get_trigger_delay_range">
-          <property name="text">
-           <string>get_trigger_delay_range</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QPushButton" name="btn_get_master_gain">
-          <property name="text">
-           <string>get_master_gain</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QPushButton" name="btn_set_trigger_mode">
-          <property name="text">
-           <string>set_trigger_mode</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
          <widget class="QPushButton" name="btn_set_trigger_delay">
           <property name="text">
            <string>set_trigger_delay</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="2">
-         <widget class="QPushButton" name="btn_set_black_level_offset">
+        <item row="5" column="1">
+         <widget class="QPushButton" name="btn_get_trigger_delay_range">
           <property name="text">
-           <string>set_black_level_offset</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="2">
-         <widget class="QPushButton" name="btn_get_trigger_mode">
-          <property name="text">
-           <string>get_trigger_mode</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="2">
-         <widget class="QPushButton" name="btn_get_mla_count">
-          <property name="text">
-           <string>get_mla_count</string>
+           <string>get_trigger_delay_range</string>
           </property>
          </widget>
         </item>
@@ -330,6 +330,9 @@
         </item>
         <item row="0" column="1">
          <widget class="QPushButton" name="btn_reset">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>reset</string>
           </property>
@@ -337,6 +340,9 @@
         </item>
         <item row="0" column="0">
          <widget class="QPushButton" name="btn_self_test">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>self_test</string>
           </property>
