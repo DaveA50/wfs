@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import wfs
+from __future__ import absolute_import
+from . import wfs
 
 __author__ = 'David Amrhein'
 __email__ = 'davea50@gmail.com'
