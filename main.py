@@ -47,6 +47,7 @@ class WFSApp(design_base, design_ui):
         self.btn_settings.clicked.connect(lambda: self.on_settings_click('Settings'))
         self.action_settings.triggered.connect(lambda: self.on_settings_click('Settings'))
         self.btn_debug.clicked.connect(self.on_debug_click)
+        self.btn_test.clicked.connect(self.on_test_click)
 
     @Slot()
     def on_quit_trigger(self):
@@ -67,14 +68,19 @@ class WFSApp(design_base, design_ui):
     @Slot(str)
     def on_settings_click(self, arg1):
         print(arg1)
-        if self.debug_window is None:
-            self.debug_window = WFSDebugApp(wfs=self.wfs)
-        self.debug_window.show()
+
+    @Slot()
+    def on_test_click(self):
+        for i in range(3):
+            self.wfs.update()
+            roc = str(self.wfs.roc_mm.value)
+            self.text_browser.append(roc)
 
     @Slot()
     def on_debug_click(self):
-        for i in range(5):
-            self.wfs.update()
+        if self.debug_window is None:
+            self.debug_window = WFSDebugApp(wfs=self.wfs)
+        self.debug_window.show()
 
 
 class WFSDebugApp(debug_base, debug_ui):
