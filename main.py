@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
 """
 Wrapper for interfacing with the Thorlabs Wavefront Sensor (WFS)
 """
+
 from __future__ import print_function
 import os
 import subprocess
