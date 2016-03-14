@@ -2019,6 +2019,23 @@ class WFS(object):
 
     # Calibration Functions
     def _set_spots_to_user_reference(self, instrument_handle=None):
+        """Set the measured spot centroid positions to the User Ref
+
+        This function copies the measured spot centroid positions to
+        the User Reference spot positions. Consequently spot
+        deviations become zero resulting in a plane wavefront.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -2031,6 +2048,45 @@ class WFS(object):
 
     def _set_calc_spots_to_user_reference(self, spot_ref_type=None, array_reference_x=None,
                                           array_reference_y=None, instrument_handle=None):
+        """Set the X and Y user ref spots to calculated spot positions
+
+        This function sets the X and Y user reference spot positions in
+        pixels to calculated spot positions given by two
+        two-dimensional arrays.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+            spot_ref_type (Vi.int32(int)): This parameter defines the
+                reference type to either relative or or absolute.
+                Valid values:
+                0   WFS_REF_TYPE_REL
+                1   WFS_REF_TYPE_ABS
+                Relative reference type means that the given spot
+                positions are relative (+/- pixels) to the internal
+                factory calibration data whereas absolute reference
+                type denotes absolute spot position data
+                (0 ... max. camera pixels).
+            array_reference_x (((ctypes.float*X)*Y)()): This parameter
+                accepts a two-dimensional array of float containing
+                user calculated reference X spot positions in pixels.
+                The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+                Note: First array index is the spot number in Y, second
+                index the spot number in X direction.
+            array_reference_y (((ctypes.float*X)*Y)()): This parameter
+                accepts a two-dimensional array of float containing
+                user calculated reference Y spot positions in pixels.
+                The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+                Note: First array index is the spot number in Y, second
+                index the spot number in X direction.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -2067,6 +2123,23 @@ class WFS(object):
         return status
 
     def _create_default_user_reference(self, instrument_handle=None):
+        """Create a default User Reference identical to Internal Ref
+
+        Generates a default User Reference which is identical to the
+        Internal Reference. Use function _get_spot_reference_positions
+        to get the data arrays.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -2078,6 +2151,34 @@ class WFS(object):
         return status
 
     def _save_user_reference_file(self, instrument_handle=None):
+        """Save a User Reference spotfield file for the selected MLA
+
+        This function saves a User Reference spotfield file for the
+        actual selected Microlens Array and image resolution to folder
+        C:\Users\<user>\Documents\Thorlabs\Wavefront Sensor\Reference
+        The file name is automatically set to:
+        WFS_<serial_number_wfs>_<mla_name>_<cam_resolution_index>.ref
+        or
+        WFS10_<serial_number_wfs>_<mla_name>_<cam_resolution_index>.ref
+        or
+        WFS20_<serial_number_wfs>_<mla_name>_<cam_resolution_index>.ref
+        Example: "WFS_M00224955_MLA150M-5C_0.ref"
+
+        Note: Centroid positions stored as 0.0 are converted to NaN in
+        the reference spotfield array because they denote undetected
+        spots.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -2089,6 +2190,34 @@ class WFS(object):
         return status
 
     def _load_user_reference_file(self, instrument_handle=None):
+        """Load a User Reference spotfield file for the selected MLA
+
+        This function loads a User Reference spotfield file for the
+        actual selected Microlens Array and image resolution from folder
+        C:\Users\<user>\Documents\Thorlabs\Wavefront Sensor\Reference
+        The file name is automatically set to:
+        WFS_<serial_number_wfs>_<mla_name>_<cam_resolution_index>.ref
+        or
+        WFS10_<serial_number_wfs>_<mla_name>_<cam_resolution_index>.ref
+        or
+        WFS20_<serial_number_wfs>_<mla_name>_<cam_resolution_index>.ref
+        Example: "WFS_M00224955_MLA150M-5C_0.ref"
+
+        Note: Centroid positions stored as 0.0 are converted to NaN in
+        the reference spotfield array because they denote undetected
+        spots.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -2100,6 +2229,30 @@ class WFS(object):
         return status
 
     def _do_spherical_reference(self, instrument_handle=None):
+        """Calculate spot positions based on a pure spherical wavefront
+
+        This function calculates User Reference spot positions based on
+        an already performed measurement of a pure spherical wavefront.
+        It supposes an already performed measurement including
+        - calculation of Zernike coefficients with function ZernikeLsf
+        - already calculated reconstructed deviations using function
+        _calc_reconstructed_deviations with option
+        do_spherical_reference set to 1.
+
+        Use function _set_reference_plane to activate the performed
+        spherical User Reference calibration.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)

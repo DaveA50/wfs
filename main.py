@@ -85,10 +85,10 @@ class WFSApp(design_base, design_ui):
         self.btn_debug.clicked.connect(self.on_debug_click)
         self.btn_test.clicked.connect(self.on_test_click)
 
-        self.worker = WFSThread()
+        # self.worker = WFSThread()
         # self.worker.roc_ready.connect(self.on_test_click)
         # self.worker.finished.connect(self.on_test_click)
-        self.worker.start()
+        # self.worker.start()
 
     @Slot()
     def on_quit_trigger(self):
