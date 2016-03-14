@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
 """
 Wrapper for interfacing with the Thorlabs Wavefront Sensor (WFS)
 """
+
 from __future__ import print_function
 import os
 import subprocess
@@ -11,11 +14,24 @@ from wfs import WFS
 __version__ = '0.2.0'
 PY2 = sys.version_info[0] == 2
 
+abs_path = os.path.dirname(os.path.abspath(__file__))
+gui_path = os.path.join(abs_path, 'gui')
+design_path = os.path.join(gui_path, 'design.ui')
+debug_path = os.path.join(gui_path, 'debug.ui')
 if 'pyside' in sys.argv[1]:
     from PySide import QtCore, QtGui
+    import pysideuic as uic
     Signal = QtCore.Signal
     Slot = QtCore.Slot
-    subprocess.call("pyside-uic.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
+    try:
+        subprocess.call("pyside-uic.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
+    except FileNotFoundError:
+        pass
+    # uic.compileUi()
+    with open(os.path.join(gui_path, 'design.py'), 'w') as file:
+        uic.compileUi(design_path, file, from_imports=True)
+    with open(os.path.join(gui_path, 'debug.py'), 'w') as file:
+        uic.compileUi(debug_path, file, from_imports=True)
     import gui
     design_ui, design_base = gui.design.Ui_main_window, QtGui.QMainWindow
     debug_ui, debug_base = gui.debug.Ui_Form, QtGui.QMainWindow
@@ -23,13 +39,13 @@ else:
     from PyQt4 import QtCore, QtGui, uic
     Signal = QtCore.pyqtSignal
     Slot = QtCore.pyqtSlot
-    subprocess.call("pyuic4.bat gui/design.ui -o gui/design.py")  # Compile .py from .ui
-    subprocess.call("pyuic4.bat gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
-    abs_path = os.path.dirname(os.path.abspath(__file__))
-    gui_path = os.path.join(abs_path, 'gui')
-    design_path = os.path.join(gui_path, 'design.ui')
+    try:
+        subprocess.call("pyuic4.bat gui/design.ui -o gui/design.py")  # Compile .py from .ui
+        subprocess.call("pyuic4.bat gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
+        import gui
+    except FileNotFoundError:
+        pass
     design_ui, design_base = uic.loadUiType(design_path)
-    debug_path = os.path.join(gui_path, 'debug.ui')
     debug_ui, debug_base = uic.loadUiType(debug_path)
 
 
