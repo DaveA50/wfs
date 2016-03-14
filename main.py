@@ -15,7 +15,7 @@ from wfs import WFS
 __version__ = '0.2.0'
 PY2 = sys.version_info[0] == 2
 try:
-    FileNotFoundError
+    FileNotFoundError  # noinspection PyUnboundLocalVariable
 except NameError:
     FileNotFoundError = IOError
 

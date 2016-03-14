@@ -632,10 +632,6 @@ class WFS(object):
                 and places the instrument in a pre-defined reset state.
 
         Returns:
-            instrument_handle (Vi.session(int)): This parameter returns
-                an instrument handle that is used in all subsequent
-                calls to distinguish between different sessions of this
-                instrument driver.
             status (Vi.status(int)): Operational return status.
                 Contains either a completion code or an error code.
                 Instrument driver specific codes that may be returned
@@ -649,6 +645,10 @@ class WFS(object):
                 Error Codes:
                     VI_ERROR_FAIL_ID_QUERY: Instrument identification
                                             query failed
+            instrument_handle (Vi.session(int)): This parameter returns
+                an instrument handle that is used in all subsequent
+                calls to distinguish between different sessions of this
+                instrument driver.
         """
         if resource_name is not None:
             try:
@@ -679,7 +679,7 @@ class WFS(object):
         log_wfs.info('ID Query: {0}'.format(self.id_query.value))
         log_wfs.info('Reset Device: {0}'.format(self.reset_device.value))
         self._error_message(status)
-        return status
+        return status, self.instrument_handle.value
 
     def _get_status(self, instrument_handle=None):
         """Get the device status of the Wavefront Sensor instrument.
@@ -691,12 +691,12 @@ class WFS(object):
                 session.
 
         Returns:
-            device_status (Vi.int32(int)): This parameter returns the
-                device status of the Wavefront Sensor instrument.
-                Lower 24 bits are used.
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            device_status (Vi.int32(int)): This parameter returns the
+                device status of the Wavefront Sensor instrument.
+                Lower 24 bits are used.
         """
         if instrument_handle is not None:
             try:
@@ -712,7 +712,7 @@ class WFS(object):
         else:
             log_wfs.info('Device Status: Unknown/OK')
         self._error_message(status)
-        return status
+        return status, self.device_status.value
 
     def _close(self, instrument_handle=None):
         """Closes the instrument driver session.
@@ -1822,6 +1822,30 @@ class WFS(object):
 
     # Utility Functions
     def _self_test(self, instrument_handle=None):
+        """Perform a self-test of the instrument
+
+        This function causes the instrument to perform a self-test and
+        returns the result of that self-test.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): Operational return status.
+                Contains either a completion code or an error code.
+                Instrument driver specific codes that may be returned
+                in addition to the VISA error codes defined in VPP-4.3
+                and vendor specific codes, are as follows:
+                WFS_SUCCESS - Self-test operation successful
+                WFS_WARN_NSUP_SELF_TEST - Self-test  not supported
+                For Status Codes see function _error_message.
+            test_result (Vi.int16(int)): Numeric result from self-test
+                operation, 0 = no error (test passed).
+            test_message (Vi.char(int)): Self-test status message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1830,26 +1854,69 @@ class WFS(object):
         status = lib_wfs.WFS_self_test(self.instrument_handle,
                                        ctypes.byref(self.test_result),
                                        self.test_message)
-        print(status)
         log_wfs.debug('Self Test: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Self Test Result: {0}'.format(self.test_result.value))
         log_wfs.info('Self Test Message: {0}'.format(self.test_message.value))
         self._error_message(status)
-        return status
+        return status, self.test_result.value, self.test_message.value
 
     def _reset(self, instrument_handle=None):
+        """Places the instrument in a default state
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): Operational return status.
+                Contains either a completion code or an error code.
+                Instrument driver specific codes that may be returned
+                in addition to the VISA error codes defined in VPP-4.3
+                and vendor specific codes, are as follows:
+                WFS_SUCCESS - Reset operation successful
+                WFS_WARN_NSUP_RESET - Reset operation not supported
+                For Status Codes see function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_reset(self.instrument_handle)
-        print(status)
         log_wfs.debug('Reset: {0}'.format(self.instrument_handle.value))
         self._error_message(status)
         return status
 
     def _revision_query(self, instrument_handle=None):
+        """Queries the instrument for driver and firmware revisions
+
+        This function returns the revision of the instrument driver
+        and the firmware revision of the instrument being used.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): Operational return status.
+                Contains either a completion code or an error code.
+                Instrument driver specific codes that may be returned
+                in addition to the VISA error codes defined in VPP-4.3
+                and vendor specific codes, are as follows:
+                WFS_SUCCESS - Revision query operation successful
+                WFS_WARN_NSUP_REV_QUERY - Revision query not supported
+                For Status Codes see function _error_message.
+            instrument_driver_revision (Vi.char(int)): Instrument
+                driver revision. The message buffer has to be
+                initialized with 256 bytes.
+            firmware_revision (Vi.char(int)): Instrument firmware
+                revision. The message buffer has to be initialized
+                with 256 bytes.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1862,9 +1929,34 @@ class WFS(object):
         log_wfs.info('Instrument Driver Version: {0}'.format(self.instrument_driver_revision.value))
         log_wfs.info('Instrument Firmware Version: {0}'.format(self.firmware_revision.value))
         self._error_message(status)
-        return status
+        return status, self.instrument_driver_revision.value, self.firmware_revision.value
 
     def _error_query(self, instrument_handle=None):
+        """Queries the instrument for specific error information
+
+        This function queries the instrument and returns instrument-
+        specific error information.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): Operational return status.
+                Contains either a completion code or an error code.
+                Instrument driver specific codes that may be returned
+                in addition to the VISA error codes defined in VPP-4.3
+                and vendor specific codes, are as follows:
+                WFS_SUCCESS - Error query operation successful
+                WFS_WARN_NSUP_ERROR_QUERY - Error query not supported
+                For Status Codes see function _error_message.
+            error_code (Vi.status(int)): Instrument error code
+                returned by driver functions.
+            error_message (Vi.char(int)): Error message. The message
+                buffer has to be initialized with 256 bytes.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1873,15 +1965,34 @@ class WFS(object):
         status = lib_wfs.WFS_error_query(self.instrument_handle,
                                          ctypes.byref(self.error_code),
                                          self.error_message)
-        if status == self.WFS_WARN_NSUP_ERROR_QUERY:
-            log_wfs.debug('Error query not supported')
-            return 0
         log_wfs.debug('Error Query: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Error Code: {0}'.format(self.error_code.value))
         log_wfs.error('Error Message: {0}'.format(self.error_message.value))
-        return status
+        self._error_message(status)
+        return status, self.error_code.value, self.error_message.value
 
     def _error_message(self, error_code=None, instrument_handle=None):
+        """Translates an error code into its user-readable message
+
+        This function translates the error return value from a
+        VXI plug&play instrument driver function to a user-readable
+        string.
+
+        Args:
+            error_code (Vi.status(int)): Instrument driver error code.
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+            error_message (Vi.char(int)): VISA or instrument driver
+                error message. The message buffer has to be initialized
+                with 256 bytes.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1894,19 +2005,39 @@ class WFS(object):
                 self.error_code = error_code
         if self.error_code.value == 0:
             log_wfs.debug('No error: {0}'.format(self.error_code.value))
-            return 0
+            self.error_message.value = 'No errors'
+            status = 0
+            return status, self.error_message.value
         elif self.error_code.value in self.WFS_WARNING_CODES:
             log_wfs.warning('Unsupported: {0}'.format(self.WFS_WARNING_CODES[self.error_code.value]))
-            return 0
+            self.error_message.value = 'Unsupported: {0}'.format(self.WFS_WARNING_CODES[self.error_code.value])
+            status = 0
+            return status, self.error_message.value
         status = lib_wfs.WFS_error_message(self.instrument_handle,
                                            self.error_code,
                                            self.error_message)
         # log_wfs.debug('Error Message: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Error Code: {0}'.format(self.error_code.value))
         log_wfs.error('Error Message: {0}'.format(self.error_message.value))
-        return status
+        return status, self.error_message.value
 
     def _get_instrument_list_len(self):
+        """Get the information about all WFS Instrument indexes
+
+        This function reads all Wavefront Sensor devices connected to
+        the PC and returns the number of it. Use function
+        _get_instrument_list_info to retrieve information about each
+        WFS instrument.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+            instrument_index (Vi.int32(int)): This parameter returns
+                the index of WFS instruments connected to the PC.
+            instrument_count (Vi.int32(int)): This parameter returns
+                the number of WFS instruments connected to the PC.
+        """
         instrument_handle = Vi.session(Vi.null)
         status = lib_wfs.WFS_GetInstrumentListLen(instrument_handle,
                                                   ctypes.byref(self.instrument_count))
@@ -1915,9 +2046,47 @@ class WFS(object):
         log_wfs.debug('Instrument Count: {0}'.format(self.instrument_count.value))
         log_wfs.info('Instrument Index: {0}'.format(self.instrument_index.value))
         self._error_message(status)
-        return status
+        return status, self.instrument_index.value, self.instrument_count.value
 
     def _get_instrument_list_info(self, instrument_index=None):
+        """Get the information about a WFS Instrument based on index
+
+        This function returns information about one connected WFS
+        instrument selected by Instrument Index.
+
+        Args:
+            instrument_index (Vi.int32(int)): This parameter accepts
+                the index of a WFS instrument of the instrument list
+                generated by function _get_instrument_list_len.
+                Valid range: 0 .. InstrumentCount-1
+                Note: The first instrument has index 0.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+            device_id (Vi.int32(int)): This parameter returns the
+                Device ID required to open the WFS instrument in
+                function _init.
+            in_use (Vi.int32(int)): This parameter returns the
+                information if the instrument is already used by
+                another application or driver session.
+                0 - Not in use, free to open
+                1 - Already in use
+                Note: An instrument already in use will fail to open
+                in function _init.
+            instrument_name_wfs (Vi.char(int)): This parameter returns
+                the Instrument Name of the selected instrument.
+                Note: The string must contain at least WFS_BUFFER_SIZE
+                (256) elements (Vi.char(WFS_BUFFER_SIZE)).
+            serial_number_wfs (Vi.char(int)): This parameter returns
+                the Serial Number of the selected instrument.
+                Note: The string must contain at least WFS_BUFFER_SIZE
+                (256) elements (Vi.char(WFS_BUFFER_SIZE)).
+            resource_name (Vi.char(int)): 	This resource name can be
+                used for the _int function. The string has the format:
+                "USB::0x1313::0x0000::" followed by the device ID.
+        """
         if instrument_index is not None:
             try:
                 self.instrument_index = Vi.int32(instrument_index)
@@ -1947,9 +2116,34 @@ class WFS(object):
         log_wfs.info('Serial Number WFS: {0}'.format(self.serial_number_wfs.value))
         log_wfs.info('Resource Name: {0}'.format(self.resource_name.value))
         self._error_message(status)
-        return status
+        return (status, self.instrument_index.value, self.device_id.value, self.instrument_name_wfs.value,
+                self.serial_number_wfs.value, self.resource_name.value)
 
     def _get_xy_scale(self, instrument_handle=None):
+        """Get X and Y scales for spot intensity and wavefront in mm
+
+        This function returns two one-dimensional arrays containing the
+        X and Y axis scales in mm for spot intensity and wavefront
+        arrays. The center spot in the image center is denoted
+        (0.0, 0.0) mm.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+            array_scale_x ((ctypes.float*X)()): This parameter returns
+                a one-dimensional array containing the X scale in mm.
+                The required array size is MAX_SPOTS_X.
+            array_scale_x ((ctypes.float*X)()): This parameter returns
+                a one-dimensional array containing the Y scale in mm.
+                The required array size is MAX_SPOTS_Y.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1962,9 +2156,36 @@ class WFS(object):
         log_wfs.debug('Array Scale X:' + ''.join(['{:18}'.format(item) for item in self.array_scale_x]))
         log_wfs.debug('Array Scale Y:' + ''.join(['{:18}'.format(item) for item in self.array_scale_y]))
         self._error_message(status)
-        return status
+        return status, self.array_scale_x, self.array_scale_y
 
     def _convert_wavefront_waves(self, wavelength=None, array_wavefront=None, instrument_handle=None):
+        """Convert wavefront from µm into waves based on wavelength
+
+        This function converts the wavefront data array calculated by
+        function CalcWavefront() from µm into waves unit depending on
+        the actual wavelength.
+
+        Args:
+            wavelength (Vi.real64(float)): This parameter accepts the
+                actual wavelength in nm. Valid range: 300 ... 1100 nm.
+            array_wavefront (((ctypes.float*X)*Y)()): This parameter
+                accepts a two-dimensional array of float containing the
+                wavefront data in µm.
+                The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+            array_wavefront_wave (((ctypes.float*X)*Y)()): This
+                parameter returns a two-dimensional array of float
+                containing the wavefront data in waves. The required
+                array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1992,9 +2213,38 @@ class WFS(object):
         log_wfs.debug('Wavefront (waves): \n' +
                       '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_wavefront_wave]))
         self._error_message(status)
-        return status
+        return status, self.array_wavefront_wave
 
     def _flip_2d_array(self, array_wavefront_yx=None, instrument_handle=None):
+        """Flip a 2D array YX into another array XY
+
+        This function flips a 2-dimensional array of size
+        array_wavefront_yx[MAX_SPOTS_Y][MAX_SPOTS_X] into another array
+        array_wavefront_xy[MAX_SPOTS_X][MAX_SPOTS_Y] with flipped x, y
+        index order.
+        This function is helpful to convert data arrays calculated by
+        this WFS driver into a format accepted by graphic tools for
+        display.
+
+        Args:
+            array_wavefront_yx (((ctypes.float*X)*Y)()): This parameter
+                accepts a two-dimensional array of float and array size
+                [MAX_SPOTS_Y][MAX_SPOTS_X].
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+            array_reference_xy (((ctypes.float*Y)*X)()): This parameter
+                returns a two-dimensional array of float and array size
+                [MAX_SPOTS_X][MAX_SPOTS_Y]. All array indices are
+                flipped compared to input ArrayYX
+                Note: Array XY must not be the same as Array YX!
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -2015,7 +2265,7 @@ class WFS(object):
         log_wfs.debug('Wavefront XY: \n' +
                       '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_wavefront_xy]))
         self._error_message(status)
-        return status
+        return status, self.array_wavefront_xy
 
     # Calibration Functions
     def _set_spots_to_user_reference(self, instrument_handle=None):
@@ -2055,10 +2305,6 @@ class WFS(object):
         two-dimensional arrays.
 
         Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
-                function to select the desired instrument driver
-                session.
             spot_ref_type (Vi.int32(int)): This parameter defines the
                 reference type to either relative or or absolute.
                 Valid values:
@@ -2081,6 +2327,10 @@ class WFS(object):
                 The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
                 Note: First array index is the spot number in Y, second
                 index the spot number in X direction.
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
