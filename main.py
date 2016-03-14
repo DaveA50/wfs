@@ -14,6 +14,10 @@ from wfs import WFS
 
 __version__ = '0.2.0'
 PY2 = sys.version_info[0] == 2
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
 
 abs_path = os.path.dirname(os.path.abspath(__file__))
 gui_path = os.path.join(abs_path, 'gui')
