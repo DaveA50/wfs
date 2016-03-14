@@ -745,7 +745,6 @@ class WFS(object):
         return status
 
     # Configuration Functions
-    # TODO Docstrings
     def _get_instrument_info(self, instrument_handle=None):
         """Get information about the instrument names and serials
 
@@ -1073,6 +1072,21 @@ class WFS(object):
         return status
 
     def _get_exposure_time_range(self, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1090,6 +1104,21 @@ class WFS(object):
         return status
 
     def _set_exposure_time(self, exposure_time_set=None, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1110,6 +1139,21 @@ class WFS(object):
         return status
 
     def _get_exposure_time(self, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1123,6 +1167,21 @@ class WFS(object):
         return status
 
     def _get_master_gain_range(self, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1138,6 +1197,21 @@ class WFS(object):
         return status
 
     def _set_master_gain(self, master_gain_set=None, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1158,6 +1232,21 @@ class WFS(object):
         return status
 
     def _get_master_gain(self, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1171,6 +1260,21 @@ class WFS(object):
         return status
 
     def _set_black_level_offset(self, black_level_offset_set=None, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1189,6 +1293,21 @@ class WFS(object):
         return status
 
     def _get_black_level_offset(self, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1202,6 +1321,21 @@ class WFS(object):
         return status
 
     def _set_trigger_mode(self, trigger_mode=None, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1220,6 +1354,21 @@ class WFS(object):
         return status
 
     def _get_trigger_mode(self, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1233,6 +1382,21 @@ class WFS(object):
         return status
 
     def _set_trigger_delay(self, trigger_delay_set=None, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1253,6 +1417,21 @@ class WFS(object):
         return status
 
     def _get_trigger_delay_range(self, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1270,6 +1449,21 @@ class WFS(object):
         return status
 
     def _get_mla_count(self, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1285,6 +1479,21 @@ class WFS(object):
         return status
 
     def _get_mla_data(self, mla_index=None, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1319,6 +1528,21 @@ class WFS(object):
         return status
 
     def _get_mla_data2(self, mla_index=None, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1357,6 +1581,21 @@ class WFS(object):
         return status
 
     def _select_mla(self, mla_index=None, instrument_handle=None):
+        """ TODO Docstrings
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1376,6 +1615,45 @@ class WFS(object):
 
     def _set_aoi(self, aoi_center_x_mm=None, aoi_center_y_mm=None,
                  aoi_size_x_mm=None, aoi_size_y_mm=None, instrument_handle=None):
+        """Set the area of interest position and size
+
+        This function defines the area of interest (AOI) within the
+        camera image in position and size. All spots outside this area
+        are ignored for Zernike and wavefront calculations.
+
+        In order to set the maximum available area set all 4 input
+        values to 0.0.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+            aoi_center_x_mm (Vi.real64(int)): This parameter defines
+                the AOI center X position in mm. It needs to be within
+                the active camera area defined by function
+                _configure_cam. Origin is the image center. Note:
+                The parameter must fit to the selected camera area.
+            aoi_center_y_mm (Vi.real64(int)): This parameter defines
+                the AOI center Y position in mm. It needs to be within
+                the active camera area defined by function
+                _configure_cam. Origin is the image center. Note:
+                The parameter must fit to the selected camera area.
+            aoi_size_x_mm (Vi.real64(int)): This parameter defines the
+                AOI width in mm. The area needs to be within the active
+                camera area defined by function _configure_cam. Note:
+                The parameter must fit to the selected camera area.
+            aoi_size_y_mm (Vi.real64(int)): This parameter defines the
+                AOI height in mm. The area needs to be within the
+                active camera area defined by function _configure_cam.
+                Note: The parameter must fit to the selected camera
+                area.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1415,6 +1693,32 @@ class WFS(object):
         return status
 
     def _get_aoi(self, instrument_handle=None):
+        """Get the area of interest position and size
+
+        This function returns the actual the area of interest (AOI)
+        position and size. All spots outside this area are ignored for
+        Beam View display as well as for Zernike and wavefront
+        calculations.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+            aoi_center_x_mm (Vi.real64(int)): This parameter returns
+                the AOI center X position in mm.
+            aoi_center_y_mm (Vi.real64(int)): This parameter returns
+                the AOI center Y position in mm.
+            aoi_size_x_mm (Vi.real64(int)): This parameter returns the
+                AOI X size in mm.
+            aoi_size_y_mm (Vi.real64(int)): This parameter returns the
+                AOI Y size in mm.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1431,10 +1735,46 @@ class WFS(object):
         log_wfs.info('AoI Size X (mm): {0}'.format(self.aoi_size_x_mm.value))
         log_wfs.info('AoI Size Y (mm): {0}'.format(self.aoi_size_y_mm.value))
         self._error_message(status)
-        return status
+        return (status, self.aoi_center_x_mm.value, self.aoi_center_y_mm.value,
+                self.aoi_size_x_mm.value, self.aoi_size_y_mm.value)
 
     def _set_pupil(self, pupil_center_x_mm=None, pupil_center_y_mm=None,
                    pupil_diameter_x_mm=None, pupil_diameter_y_mm=None, instrument_handle=None):
+        """
+
+        This function
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+            pupil_center_x_mm (Vi.real64(int)): This parameter defines
+                the pupil center X position in mm. It needs to be
+                within the active camera area defined by function
+                _configure_cam. Origin is the image center.
+                Valid range: -5.0 ... +5.0 mm
+            pupil_center_y_mm (Vi.real64(int)): This parameter defines
+                the pupil center Y position in mm. It needs to be
+                within the active camera area defined by function
+                _configure_cam. Origin is the image center.
+                Valid range: -5.0 ... +5.0 mm
+            pupil_diameter_x_mm (Vi.real64(int)): This parameter
+                defines the pupil X diameter in mm. The pupil area
+                needs to be within the active camera area defined by
+                function _configure_cam.
+                Valid range: 0.1 ... +10.0 mm
+            pupil_diameter_y_mm (Vi.real64(int)): This parameter
+                defines the pupil Y diameter in mm. The pupil area
+                needs to be within the active camera area defined by
+                function _configure_cam.
+                Valid range: 0.1 ... +10.0 mm
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1475,6 +1815,29 @@ class WFS(object):
         return status
 
     def _get_pupil(self, instrument_handle=None):
+        """Get the actual pupil position and size
+
+        This function returns the actual the pupil position and size.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+            pupil_center_x_mm (Vi.real64(int)): This parameter returns
+                the pupil center X position in mm.
+            pupil_center_y_mm (Vi.real64(int)): This parameter returns
+                the pupil center Y position in mm.
+            pupil_diameter_x_mm (Vi.real64(int)): This parameter
+                returns the pupil X diameter in mm.
+            pupil_diameter_y_mm (Vi.real64(int)): This parameter
+                returns the pupil Y diameter in mm.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1491,9 +1854,39 @@ class WFS(object):
         log_wfs.info('Get Pupil Diameter X (mm): {0}'.format(self.pupil_diameter_x_mm.value))
         log_wfs.info('Get Pupil Diameter Y (mm): {0}'.format(self.pupil_diameter_y_mm.value))
         self._error_message(status)
-        return status
+        return (status, self.pupil_center_x_mm.value, self.pupil_center_y_mm.value,
+                self.pupil_diameter_x_mm.value, self.pupil_diameter_y_mm.value)
 
     def _set_reference_plane(self, reference_index=None, instrument_handle=None):
+        """Set the reference plane to either Internal or User Defined
+
+        This function defines the WFS Reference Plane to either
+        Internal or User (external).
+
+        Args:
+            reference_index (Vi.int32(int)): This parameter sets the
+                Reference Plane to either Internal or User (external).
+                Valid values:
+                0 - WFS_REF_INTERNAL
+                1 - WFS_REF_USER
+                User reference is based on a file .ref containing spot
+                reference positions which can be loaded and saved by
+                functions _load_user_reference_file and
+                _save_user_reference_file. It's name is specific to
+                the WFS serial number, MLA name and actual camera
+                resolution. A default User Reference file containing a
+                copy of internal reference data can be created by
+                function _create_default_user_reference.
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1512,6 +1905,27 @@ class WFS(object):
         return status
 
     def _get_reference_plane(self, instrument_handle=None):
+        """Get the reference plane of the WFS Instrument
+
+        This function returns the Reference Plane setting of the WFS
+        instrument.
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+            reference_index (Vi.int32(int)): This parameter returns
+                the actual Reference Plane of the WFS instrument.
+                Valid return values:
+                0 - WFS_REF_INTERNAL
+                1 - WFS_REF_USER
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1522,7 +1936,7 @@ class WFS(object):
         log_wfs.debug('Get Reference Plane: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Get Reference Index: {0}'.format(self.reference_index.value))
         self._error_message(status)
-        return status
+        return status, self.reference_index.value
 
     # Data Functions
     # TODO Docstrings
