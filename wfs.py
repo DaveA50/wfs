@@ -1040,7 +1040,7 @@ class WFS(object):
                 self.window_size_y.value, self.window_start_position_x.value, self.window_start_position_y.value)
 
     def _check_highspeed_centroids(self, instrument_handle=None):
-        """Check if measured spots are within calculation in Highspeed Mode
+        """Check if measured spots are in calculation in Highspeed Mode
 
         This function checks if the actual measured spot centroid
         positions are within the calculation windows in Highspeed Mode.
