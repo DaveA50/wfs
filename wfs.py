@@ -745,7 +745,45 @@ class WFS(object):
         return status
 
     # Configuration Functions
+    # TODO Docstrings
     def _get_instrument_info(self, instrument_handle=None):
+        """Get information about the instrument names and serials
+
+        This function returns the following information about the
+        opened instrument:
+        - Driver Manufacturer Name
+        - Instrument Name
+        - Instrument Serial Number
+        - Camera Serial Number
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+            manufacturer_name (Vi.char(int)): This parameter returns
+                the Manufacturer Name of this instrument driver.
+                Note: The string must contain at least WFS_BUFFER_SIZE
+                (256) elements (char(WFS_BUFFER_SIZE)).
+            instrument_name_wfs (Vi.char(int)): This parameter returns
+                the Instrument Name of the WFS.
+                Note: The string must contain at least WFS_BUFFER_SIZE
+                (256) elements (char(WFS_BUFFER_SIZE)).
+            serial_number_wfs (Vi.char(int)): This parameter returns
+                the Serial Number of the WFS.
+                Note: The string must contain at least WFS_BUFFER_SIZE
+                (256) elements (char(WFS_BUFFER_SIZE)).
+            serial_number_camera (Vi.char(int)): This parameter returns
+                the Serial Number of the camera body the WFS is based
+                on.
+                Note: The string must contain at least WFS_BUFFER_SIZE
+                (256) elements (char(WFS_BUFFER_SIZE)).
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -762,9 +800,70 @@ class WFS(object):
         log_wfs.info('Serial Number WFS: {0}'.format(self.serial_number_wfs.value))
         log_wfs.info('Serial Number Camera: {0}'.format(self.serial_number_camera.value))
         self._error_message(status)
-        return status
+        return (status, self.manufacturer_name.value, self.instrument_name_wfs.value,
+                self.serial_number_wfs.value, self.serial_number_camera.value)
 
     def _configure_cam(self, cam_resolution_index=None, pixel_format=None, instrument_handle=None):
+        """Configure the WFS camera resolution and max spots in X and Y
+
+        This function configures the WFS instrument's camera resolution
+        and returns the maximum number of detectable spots in X and Y
+        direction. The result depends on the selected microlens array
+        in function _select_mla()
+        Note: This function is not available in Highspeed Mode!
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+            cam_resolution_index (Vi.int32(int)): This parameter
+                selects the camera resolution in pixels. Only the
+                following pre-defined settings are supported:
+                For WFS instruments:
+                Index  Resolution
+                0    1280x1024
+                1    1024x1024
+                2     768x768
+                3     512x512
+                4     320x320
+                For WFS10 instruments:
+                Index  Resolution
+                0     640x480
+                1     480x480
+                2     360x360
+                3     260x260
+                4     180x180
+                For WFS20 instruments:
+                Index  Resolution
+                0    1440x1080
+                1    1080x1080
+                2     768x768
+                3     512x512
+                4     360x360
+                5     720x540, bin2
+                6     540x540, bin2
+                7     384x384, bin2
+                8     256x256, bin2
+                9     180x180, bin2
+            pixel_format (Vi.int32(int)): This parameter selects the
+                bit width per pixel of the returned camera image.
+                Thorlabs WFS instruments currently support only 8 bit
+                format.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+            spots_x (Vi.int32(int)): This parameter returns the number
+                of spots which can be detected in X direction, based
+                on the selected camera resolution and Microlens Array
+                in function _select_mla.
+            spots_y (Vi.int32(int)): This parameter returns the number
+                of spots which can be detected in Y direction, based
+                on the selected camera resolution and Microlens Array
+                in function _select_mla.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -795,6 +894,51 @@ class WFS(object):
 
     def _set_highspeed_mode(self, highspeed_mode=None, adapt_centroids=None, subtract_offset=None,
                             allow_auto_exposure=None, instrument_handle=None):
+        """Set the WFS to use Highspeed mode
+
+        This function activates/deactivates the camera's Highspeed Mode
+        for WFS10/WFS20 instruments. When activated, the camera
+        calculates the spot centroid positions internally and sends the
+        result to the WFS driver instead of sending raw spotfield
+        images.
+        Note: There is no camera image available when Highspeed Mode is
+        activated! Highspeed Mode is not available for WFS150/WFS300
+        instruments!
+
+        Args:
+            highspeed_mode (Vi.int32(int)): This parameter determines
+                if the camera's Highspeed Mode is switched on or off.
+            adapt_centroids (Vi.int32(int)): When Highspeed Mode is
+                selected, this parameter determines if the centroid
+                positions measured in Normal Mode should be used to
+                adapt the spot search windows for Highspeed Mode.
+                Otherwise, a rigid grid based on reference spot
+                positions is used in Highspeed Mode.
+            subtract_offset (Vi.int32(int)): This parameter defines an
+                offset level for Highspeed Mode only. All camera pixels
+                will be subtracted by this level before the centroids
+                are being calculated, which increases accuracy.
+                Valid range: 0 ... 255
+                Note: The offset is only valid in Highspeed Mode and
+                must not set too high to clear the spots within the
+                camera image!
+            allow_auto_exposure (Vi.int32(int)): When Highspeed Mode is
+                selected, this parameter determines if the camera
+                should also calculate the image saturation in order
+                enable the auto exposure feature using function
+                _take_spotfield_image_auto_exposure() instead of
+                _take_spotfield_image(). This option leads to a
+                somewhat reduced measurement speed when enabled.
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -831,9 +975,47 @@ class WFS(object):
         log_wfs.info('Subtract Offset: {0}'.format(self.subtract_offset.value))
         log_wfs.info('Allow Auto Exposure: {0}'.format(self.allow_auto_exposure.value))
         self._error_message(status)
-        return status
+        return (status, self.highspeed_mode.value, self.adapt_centroids.value,
+                self.subtract_offset.value, self.allow_auto_exposure.value)
 
     def _get_highspeed_windows(self, instrument_handle=None):
+        """Get the data from spot detection in Highspeed Mode
+
+        This function returns data of the spot detection windows valid
+        in Highspeed Mode. Window size and positions depend on options
+        passed to function _set_highspeed_mode().
+        Note: This function is only available when Highspeed Mode is
+        activated!
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+            window_count_x (Vi.int32(int)): This parameter returns the
+                number of spot windows in X direction.
+            window_count_y (Vi.int32(int)): This parameter returns the
+                number of spot windows in Y direction.
+            window_size_x (Vi.int32(int)): This parameter returns the
+                size in pixels of spot windows in X direction.
+            window_size_y (Vi.int32(int)): This parameter returns the
+                size in pixels of spot windows in Y direction.
+            window_start_position_x (Vi.int32(int)): This parameter
+                returns a one-dimensional array containing the start
+                positions in pixels for spot windows in X direction.
+                The required array size is MAX_SPOTS_X.
+                Note: Window Stop X = Windows Start X + Windows Size X
+            window_start_position_y (Vi.int32(int)):This parameter
+                returns a one-dimensional array containing the start
+                positions in pixels for spot windows in Y direction.
+                The required array size is MAX_SPOTS_Y.
+                Note: Window Stop Y = Windows Start Y + Windows Size Y
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -854,9 +1036,32 @@ class WFS(object):
         log_wfs.info('Window Start Position X: {0}'.format(self.window_start_position_x.value))
         log_wfs.info('Window Start Position Y: {0}'.format(self.window_start_position_y.value))
         self._error_message(status)
-        return status
+        return (status, self.window_count_x.value, self.window_count_y.value, self.window_size_x.value,
+                self.window_size_y.value, self.window_start_position_x.value, self.window_start_position_y.value)
 
     def _check_highspeed_centroids(self, instrument_handle=None):
+        """Check if measured spots are within calculation in Highspeed Mode
+
+        This function checks if the actual measured spot centroid
+        positions are within the calculation windows in Highspeed Mode.
+        Possible error: WFS_ERROR_HIGHSPEED_WINDOW_MISMATCH
+        If this error occurs, measured centroids are not reliable for
+        wavefront interrogation because the appropriated spots are
+        truncated.
+        Note: This function is only available when Highspeed Mode is
+        activated!
+
+        Args:
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init
+                function to select the desired instrument driver
+                session.
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+        """
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
@@ -1320,6 +1525,7 @@ class WFS(object):
         return status
 
     # Data Functions
+    # TODO Docstrings
     def _take_spotfield_image(self, instrument_handle=None):
         if instrument_handle is not None:
             try:
