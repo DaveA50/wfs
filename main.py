@@ -5,6 +5,7 @@ Wrapper for interfacing with the Thorlabs Wavefront Sensor (WFS)
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import subprocess
 import sys
@@ -25,13 +26,13 @@ if 'pyside' in sys.argv[1]:
     Slot = QtCore.Slot
     try:
         subprocess.call("pyside-uic.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
-    except FileNotFoundError:
+    except (WindowsError, FileNotFoundError):
         pass
     # uic.compileUi()
-    with open(os.path.join(gui_path, 'design.py'), 'w') as file:
-        uic.compileUi(design_path, file, from_imports=True)
-    with open(os.path.join(gui_path, 'debug.py'), 'w') as file:
-        uic.compileUi(debug_path, file, from_imports=True)
+    with open(os.path.join(gui_path, 'design.py'), 'w') as outfile:
+        uic.compileUi(design_path, outfile, from_imports=True)
+    with open(os.path.join(gui_path, 'debug.py'), 'w') as outfile:
+        uic.compileUi(debug_path, outfile, from_imports=True)
     import gui
     design_ui, design_base = gui.design.Ui_main_window, QtGui.QMainWindow
     debug_ui, debug_base = gui.debug.Ui_Form, QtGui.QMainWindow
@@ -42,11 +43,26 @@ else:
     try:
         subprocess.call("pyuic4.bat gui/design.ui -o gui/design.py")  # Compile .py from .ui
         subprocess.call("pyuic4.bat gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
-        import gui
-    except FileNotFoundError:
+    except (WindowsError, FileNotFoundError):
         pass
     design_ui, design_base = uic.loadUiType(design_path)
     debug_ui, debug_base = uic.loadUiType(debug_path)
+
+
+class WFSThread(QtCore.QThread):
+    def __init__(self, parent=None, wfs=WFS()):
+        super(WFSThread, self).__init__(parent)
+        self.wfs = wfs
+        self.roc_ready = Signal(str)
+
+    def __del__(self):
+        self.wait()
+
+    def update(self):  # A slot takes no params
+        self.wfs.update()
+        roc = str(self.wfs.roc_mm.value)
+        self.roc_ready.emit(roc)
+        self.terminate()
 
 
 class WFSApp(design_base, design_ui):
@@ -64,6 +80,11 @@ class WFSApp(design_base, design_ui):
         self.action_settings.triggered.connect(lambda: self.on_settings_click('Settings'))
         self.btn_debug.clicked.connect(self.on_debug_click)
         self.btn_test.clicked.connect(self.on_test_click)
+
+        self.worker = WFSThread()
+        # self.worker.roc_ready.connect(self.on_test_click)
+        # self.worker.finished.connect(self.on_test_click)
+        self.worker.start()
 
     @Slot()
     def on_quit_trigger(self):
