@@ -684,7 +684,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -719,7 +719,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -755,7 +755,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -811,7 +811,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
             cam_resolution_index (Vi.int32(int)): This parameter
@@ -927,7 +927,7 @@ class WFS(object):
                 _take_spotfield_image(). This option leads to a
                 somewhat reduced measurement speed when enabled.
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -986,7 +986,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1050,7 +1050,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1078,7 +1078,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1123,7 +1123,7 @@ class WFS(object):
             exposure_time_set (Vi.real64(float)): This parameter sets
                 the target exposure time for the WFS camera in ms.
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1162,7 +1162,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1197,7 +1197,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1233,10 +1233,10 @@ class WFS(object):
 
         Args:
             master_gain_set (Vi.real64(float)): This parameter accepts
-                the Instrument Handle returned by the _init function
+                the Instrument Handle returned by the _init() function
                 to select the desired instrument driver session.
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1274,7 +1274,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1311,7 +1311,7 @@ class WFS(object):
                 higher black level will increase the intensity level
                 of a dark camera image. Valid range: 0 ... 255
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1344,7 +1344,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1386,7 +1386,7 @@ class WFS(object):
                 WFS_HW_TRIGGER_HL - Trigger on high->low edge
                 WFS_HW_TRIGGER_LH - Trigger on low->high edge
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1419,7 +1419,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1457,7 +1457,7 @@ class WFS(object):
                 _get_trigger_delay_range() to read out the accepted
                 limits.
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1496,7 +1496,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1535,7 +1535,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1573,7 +1573,7 @@ class WFS(object):
                 index of a removable microlens array.
                 Valid range: 0 ... mla_count-1
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1651,7 +1651,7 @@ class WFS(object):
                 index of a removable microlens array.
                 Valid range: 0 ... mla_count-1
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1742,7 +1742,7 @@ class WFS(object):
                 index of a removable microlens array to be selected.
                 Valid range: 0 ... Number of calibrated MLAs-1
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1781,7 +1781,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
             aoi_center_x_mm (Vi.real64(int)): This parameter defines
@@ -1857,7 +1857,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -1901,7 +1901,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
             pupil_center_x_mm (Vi.real64(int)): This parameter defines
@@ -1976,7 +1976,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2033,7 +2033,7 @@ class WFS(object):
                 copy of internal reference data can be created by
                 function _create_default_user_reference.
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2067,7 +2067,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2095,13 +2095,34 @@ class WFS(object):
 
     # Data Functions
     def _take_spotfield_image(self, instrument_handle=None):
-        """TODO
+        """Take a spotfield image from the WFS and load into buffer
 
-        This function
+        This function receives a spotfield image from the WFS camera
+        into a driver buffer. The reference to this buffer is provided
+        by function _get_spotfield_image() and an image copy is
+        returned by function _get_spotfield_image_copy(). In case of
+        unsuited image exposure the function sets the appropriate
+        status bits. Use function _get_status() to check the reason.
+        Bit          Name              Meaning if bit is set
+        0x00000002 - WFS_STATBIT_PTH - Power Too High (cam saturated)
+        0x00000004 - WFS_STATBIT_PTL - Power Too Low (low cam digits)
+        0x00000008 - WFS_STATBIT_HAL - High Ambient Light
+        You need to set optimized exposure and gain settings by
+        functions _set_exposure_time() and _set_master_gain() and
+        repeat calling the function until these status bits are
+        cleared. Alternatively, you may use function
+        _take_spotfield_image_auto_exposure(). When the trigger
+        capability is activated by function _set_trigger_mode() this
+        function will wait for a trigger event for a short period of
+        time (WFS_TIMEOUT_CAPTURE_TRIGGER = 0.1 sec.) prior to start
+        exposure and will return with error WFS_ERROR_AWAITING_TRIGGER
+        if no trigger event occurred. You need to repeat calling this
+        function until this error and status bit WFS_STATBIT_ATR
+        disappear.
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2121,13 +2142,35 @@ class WFS(object):
         return status
 
     def _take_spotfield_image_auto_exposure(self, instrument_handle=None):
-        """TODO
+        """Take a spotfield image with auto-exposure and load to buffer
 
-        This function
+        This function tries to find optimal exposure and gain settings
+        and then it receives a spotfield image from the WFS camera
+        into a driver buffer. The reference to this buffer is provided
+        by function _get_spotfield_image() and an image copy is
+        returned by function _get_spotfield_image_copy(). The exposure
+        and gain settings used for this image are returned. In case of
+        still unsuited image exposure the function sets the
+        appropriate status bits. Use function _get_status() to check
+        the reason.
+        Bit          Name              Meaning if bit is set
+        0x00000002 - WFS_STATBIT_PTH - Power Too High (cam saturated)
+        0x00000004 - WFS_STATBIT_PTL - Power Too Low (low cam digits)
+        0x00000008 - WFS_STATBIT_HAL - High Ambient Light
+        You may repeat calling the function until these status bits
+        are cleared. When the trigger capability is activated by
+        function _set_trigger_mode() this function will wait for a
+        trigger event for a short period of time
+        (WFS_TIMEOUT_CAPTURE_TRIGGER = 0.1 sec.) prior to start
+        exposure and will return with error
+        WFS_ERROR_AWAITING_TRIGGER if no trigger event occurred. You
+        need to repeat calling this function until this error and
+        status bit WFS_STATBIT_ATR disappear.
+        Note: This function is not available in Highspeed Mode!
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2135,6 +2178,12 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            exposure_time_actual (Vi.real64(float)): This parameter
+                returns the automatically selected actual exposure
+                time the camera image was taken with.
+            master_gain_actual (Vi.real64(float)): This parameter
+                returns the automatically selected actual master gain
+                the camera image was taken with.
         """
         if instrument_handle is not None:
             try:
@@ -2148,16 +2197,20 @@ class WFS(object):
         log_wfs.info('Exposure Time Actual: {0}'.format(self.exposure_time_actual.value))
         log_wfs.info('Master Gain Actual: {0}'.format(self.master_gain_actual.value))
         self._error_message(status)
-        return status
+        return status, self.exposure_time_actual.value, self.master_gain_actual.value
 
     def _get_spotfield_image(self, instrument_handle=None):
-        """TODO
+        """Get the reference to a spotfield image
 
-        This function
+        This function returns the reference to a spotfield image taken
+        by functions _take_spotfield_image() or
+        _take_spotfield_image_auto_exposure(). It returns also the
+        image size.
+        Note: This function is not available in Highspeed Mode!
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2165,6 +2218,14 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            image_buffer (Vi.uint8(int)): This parameter returns a
+                reference to the image buffer. Note: This buffer is
+                allocated by the camera driver and the actual image
+                size is Rows * Columns. Do not modify this buffer!
+            spotfield_rows (Vi.int32(int)): This parameter returns the
+                image height (rows) in pixels.
+            spotfield_columns (Vi.int32(int)): This parameter returns
+                the image width (columns) in pixels.
         """
         if instrument_handle is not None:
             try:
@@ -2180,16 +2241,20 @@ class WFS(object):
         log_wfs.info('Rows: {0}'.format(self.spotfield_rows.value))
         log_wfs.info('Columns: {0}'.format(self.spotfield_columns.value))
         self._error_message(status)
-        return status
+        return status, self.image_buffer.value, self.spotfield_rows.value, self.spotfield_columns.value
 
     def _get_spotfield_image_copy(self, instrument_handle=None):
-        """TODO
+        """Get a copy of the spotfield image as an array
 
-        This function
+        This function returns a copy of the spotfield image taken by
+        functions _take_spotfield_image() or
+        _take_spotfield_image_auto_exposure() into the user provided
+        buffer array_image_buffer. It returns also the image size.
+        Note: This function is not available in Highspeed Mode!
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2197,6 +2262,14 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            array_image_buffer (Vi.uint8(int)): This parameter accepts
+                an user provided image buffer. Note: This buffer needs
+                to be allocated by the user. The required size is
+                CAM_MAX_PIX_X * CAM_MAX_PIX_Y bytes.
+            spotfield_rows (Vi.int32(int)): This parameter returns the
+                image height (rows) in pixels.
+            spotfield_columns (Vi.int32(int)): This parameter returns
+                the image width (columns) in pixels.
         """
         if instrument_handle is not None:
             try:
@@ -2213,16 +2286,26 @@ class WFS(object):
         log_wfs.info('Rows: {0}'.format(self.spotfield_rows.value))
         log_wfs.info('Columns: {0}'.format(self.spotfield_columns.value))
         self._error_message(status)
-        return status
+        return status, self.array_image_buffer, self.spotfield_rows.value, self.spotfield_columns.value
 
     def _average_image(self, average_count=None, instrument_handle=None):
-        """TODO
+        """Generate an averaged image from a number of images in buffer
 
-        This function
+        This function generates an averaged image from a number of
+        input camera images in image_buffer. The function returns
+        after each call and the summarized image is stored in
+        ImageBufAveraged. As soon as the desired number of averages in
+        average_count is reached image_buffer and ImageBufAveraged
+        return both the averaged image data and AverageDataReady
+        returns 1 instead of 0. Note: As soon as the image size is
+        changed by function _configure_cam the averaging process is
+        re-started. This function is not available in Highspeed Mode!
 
         Args:
+            average_count (Vi.int32(int)): This parameter defines the
+                number of averages. Valid range: 1 ... 256
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2230,6 +2313,9 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            average_data_ready (Vi.int32(int)): This parameter returns
+                0 if the averaging process is going on and 1 when the
+                target average count is reached.
         """
         if instrument_handle is not None:
             try:
@@ -2248,16 +2334,29 @@ class WFS(object):
         log_wfs.info('Average Count: {0}'.format(self.average_count.value))
         log_wfs.info('Average Data Ready: {0}'.format(self.average_data_ready.value))
         self._error_message(status)
-        return status
+        return status, self.average_data_ready.value
 
     def _average_image_rolling(self, average_count=None, rolling_reset=None, instrument_handle=None):
-        """TODO
+        """Generate a rolling averaged image from a number of images
 
-        This function
+        This function generates a rolling averaged image based on all
+        previously entered camera images in image_buffer. The function
+        returns after each call and the averaged image is returned in
+        image_buffer and also stored in ImageBufAveraged. The new
+        rolling averaged image is calculated pixel by pixel according
+        to the formula: ((average_count - 1) * ImageBufAveraged +
+                         image_buffer) / average_count
+        Note: As soon as the image size is changed by function
+        _configure_cam the averaging process is re-started. This
+        function is not available in Highspeed Mode!
 
         Args:
+            average_count (Vi.int32(int)): This parameter defines the
+                number of averages. Valid range: 1 ... 256
+            rolling_reset (Vi.int32(int)): This parameter resets the
+                rolling averaging process for Reset != 0.
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2291,13 +2390,20 @@ class WFS(object):
         return status
 
     def _cut_image_noise_floor(self, intensity_limit=None, instrument_handle=None):
-        """TODO
+        """Set all pixels under an intensity limit to zero
 
-        This function
+        This function sets all pixels with intensities < Limit to zero
+        which cuts the noise floor of the camera.
+        Note: This function is not available in Highspeed Mode!
 
         Args:
+            intensity_limit (Vi.int32(int)): This parameter defines
+                the intensity limit. All image pixels with intensities
+                < Limit are set to zero. Valid range: 1 ... 256
+                Note: The limit must not be set too high to clear the
+                spots within the WFS camera image.
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2324,13 +2430,16 @@ class WFS(object):
         return status
 
     def _calc_image_min_max(self, instrument_handle=None):
-        """TODO
+        """Calculate the min and max pixel intensity and saturation
 
-        This function
+        This function returns minimum and maximum pixel intensities in
+        image_buffer as well as the number of saturated pixels in
+        percent.
+        Note: This function is not available in Highspeed Mode!
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2338,6 +2447,13 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            intensity_min (Vi.int32(int)): This parameter returns the
+                minimum pixel intensity within image_buffer.
+            intensity_max (Vi.int32(int)): This parameter returns the
+                maximum pixel intensity within image_buffer.
+            saturated_pixels_percent (Vi.real64(float)): This
+                parameter returns the percentage of saturated pixels
+                within image_buffer.
         """
         if instrument_handle is not None:
             try:
@@ -2353,16 +2469,18 @@ class WFS(object):
         log_wfs.info('Intensity Maximum: {0}'.format(self.intensity_max.value))
         log_wfs.info('Saturated Pixels Percent: {0}'.format(self.saturated_pixels_percent.value))
         self._error_message(status)
-        return status
+        return status, self.intensity_min.value, self.intensity_max.value, self.saturated_pixels_percent.value
 
     def _calc_mean_rms_noise(self, instrument_handle=None):
-        """TODO
+        """Calculate the mean average and rms of pixel intensities
 
-        This function
+        This function returns the mean average and rms variations of
+        the pixel intensities in image_buffer.
+        Note: This function is not available in Highspeed Mode!
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2370,6 +2488,12 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            intensity_mean (Vi.real64(float)): This parameter returns
+                the mean average of the pixel intensities in
+                image_buffer.
+            intensity_rms (Vi.real64(float)): This parameter returns
+                the rms variations of the pixel intensities in
+                image_buffer.
         """
         if instrument_handle is not None:
             try:
@@ -2383,16 +2507,21 @@ class WFS(object):
         log_wfs.info('Intensity Mean: {0}'.format(self.intensity_mean.value))
         log_wfs.info('Intensity RMS: {0}'.format(self.intensity_rms.value))
         self._error_message(status)
-        return status
+        return status, self.intensity_mean.value, self.intensity_rms.value
 
     def _get_line(self, line=None, instrument_handle=None):
-        """TODO
+        """Get a single horizontal line of the image in a linear array
 
-        This function
+        This function returns a single horizontal line of the image in
+        a linear array.
+        Note: This function is not available in Highspeed Mode!
 
         Args:
+            line (Vi.int32(int)): This parameter defines the
+                horizontal line to be selected within image_buffer.
+                Valid range: 0 .. rows-1
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2400,6 +2529,14 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            array_line_selected ((ctypes.c_float * SIZE)()): This
+                parameter returns a linear array of floats containing
+                the pixel intensities along the selected line in
+                image_buffer. The required array size corresponds to
+                the selected image width in function _configure_cam():
+                max. 1280 for WFS150/WFS300
+                max.  640 for WFS10
+                max. 1440 for WFS20
         """
         if instrument_handle is not None:
             try:
@@ -2419,16 +2556,18 @@ class WFS(object):
         log_wfs.info('Line Selected: ' +
                      ''.join(['{:6}'.format(item) for item in self.array_line_selected]))
         self._error_message(status)
-        return status
+        return status, self.array_line_selected
 
     def _get_line_view(self, instrument_handle=None):
-        """TODO
+        """Get the linear arrays with the min and max intensities
 
-        This function
+        This function returns two linear arrays containing the minimum
+        and maximum intensities within the image columns, respectively.
+        Note: This function is not available in Highspeed Mode!
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2436,6 +2575,22 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            array_line_min ((ctypes.c_float * SIZE)()): This parameter
+                returns a linear array of floats containing the
+                minimum pixel intensities within all columns of
+                image_buffer. The required array size corresponds to
+                the selected image width in function _configure_cam():
+                max. 1280 for WFS150/WFS300
+                max.  640 for WFS10
+                max. 1440 for WFS20
+            array_line_max ((ctypes.c_float * SIZE)()): This parameter
+                returns a linear array of floats containing the
+                maximum pixel intensities within all columns of
+                image_buffer. The required array size corresponds to
+                the selected image width in function _configure_cam():
+                max. 1280 for WFS150/WFS300
+                max.  640 for WFS10
+                max. 1440 for WFS20
         """
         if instrument_handle is not None:
             try:
@@ -2451,16 +2606,25 @@ class WFS(object):
         log_wfs.info('Line Maximum: ' +
                      ''.join(['{:6}'.format(item) for item in self.array_line_max]))
         self._error_message(status)
-        return status
+        return status, self.array_line_min, self.array_line_max
 
     def _calc_beam_centroid_diameter(self, instrument_handle=None):
-        """TODO
+        """Calclate the beam centroid and diameter in mm
 
-        This function
+        This function calculates and returns the beam centroid and
+        diameter data based on the intensity distribution of the WFS
+        camera image in mm.
+        Note: The beam centroid is highly sensitive to an increased
+        black level of the camera image. For good accuracy it is
+        recommended to set it as low as needed using function
+        _set_black_level_offset. The beam diameter is calculated by
+        the second moment formula. The initial beam is split into many
+        spots by the lenslets which reduces accuracy also.
+        This function is not available in Highspeed Mode!
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2468,6 +2632,14 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            beam_centroid_x_mm (Vi.real64(float)): This parameter
+                returns the beam centroid X in mm.
+            beam_centroid_y_mm (Vi.real64(float)): This parameter
+                returns the beam centroid Y in mm.
+            beam_diameter_x_mm (Vi.real64(float)): This parameter
+                returns the beam diameter X in mm.
+            beam_diameter_y_mm (Vi.real64(float)): This parameter
+                returns the beam diameter Y in mm.
         """
         if instrument_handle is not None:
             try:
@@ -2481,21 +2653,40 @@ class WFS(object):
                                                  ctypes.byref(self.beam_diameter_y_mm))
         log_wfs.debug('Calc Beam Centroid Diameter: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Beam Centroid X (mm): {0}'.format(self.beam_centroid_x_mm.value))
-        log_wfs.info('Beam Diameter X (mm): {0}'.format(self.beam_diameter_y_mm.value))
         log_wfs.info('Beam Centroid Y (mm): {0}'.format(self.beam_centroid_y_mm.value))
+        log_wfs.info('Beam Diameter X (mm): {0}'.format(self.beam_diameter_y_mm.value))
         log_wfs.info('Beam Diameter Y (mm): {0}'.format(self.beam_diameter_x_mm.value))
         self._error_message(status)
-        return status
+        return (status, self.beam_centroid_x_mm.value, self.beam_centroid_y_mm.value,
+                self.beam_diameter_y_mm.value, self.beam_diameter_x_mm.value)
 
     def _calc_spots_centroid_diameter_intensity(self, dynamic_noise_cut=None, calculate_diameters=None,
                                                 instrument_handle=None):
-        """TODO
+        """Calculate the spot centroids, diameters, and intensities
 
-        This function
+        This function calculates the centroids, diameters (optional)
+        and intensities of all spots generated by the lenslets.
+        Data arrays are returned by separate functions:
+        _get_spot_centroids()
+        _get_spot_diameters()
+        _get_spot_intensities()
+        Note: This function is not available in Highspeed Mode!
 
         Args:
+            dynamic_noise_cut (Vi.int32(int)): This parameter
+                activates the dynamic noise cut function if (=1). In
+                this case each detected spot is analyzed using an
+                individual optimized minimum intensity limit. If it is
+                not used (=0) it is recommended to use function
+                _cut_image_noise_floor() prior to this function in
+                order to clear lower intensity pixels at a fixed level.
+            calculate_diameters (Vi.int32(int)): This parameter
+                activates (=1) or deactivates (=0) the calculation of
+                the spot diameters. Only when activated the function
+                _get_spot_diameters can subsequently return valid spot
+                diameters.
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2529,13 +2720,17 @@ class WFS(object):
         return status
 
     def _get_spot_centroids(self, instrument_handle=None):
-        """TODO
+        """Get the spot centroids in X and Y in pixels
 
-        This function
+        This function returns two two-dimensional arrays containing the
+        centroid X and Y positions in pixels calculated by function
+        _calc_spots_centroid_diameter_intensity. Note: Function
+        _calc_spots_centroid_diameter_intensity is required to run
+        successfully before calculated data can be retrieved.
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2543,6 +2738,18 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            array_centroid_x (((ctypes.c_float * X) * Y)()): This
+                parameter returns a two-dimensional array of floats
+                containing the centroid X spot positions in pixels.
+                The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+                Note: First array index is the spot number in Y,
+                second index the spot number in X direction.
+            array_centroid_y (((ctypes.c_float * X) * Y)()): This
+                parameter returns a two-dimensional array of floats
+                containing the centroid Y spot positions in pixels.
+                The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+                Note: First array index is the spot number in Y,
+                second index the spot number in X direction.
         """
         if instrument_handle is not None:
             try:
@@ -2558,16 +2765,22 @@ class WFS(object):
         log_wfs.debug('Centroid Y: \n' +
                       '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_centroid_y]))
         self._error_message(status)
-        return status
+        return status, self.array_centroid_x, self.array_centroid_y
 
     def _get_spot_diameters(self, instrument_handle=None):
-        """TODO
+        """Get the spot diameters in X and Y in pixels
 
-        This function
+        This function returns two two-dimensional arrays containing the
+        spot diameters in X and Y direction in pixels calculated by
+        function _calc_spots_centroid_diameter_intensity(). Note:
+        Function _calc_spots_centroid_diameter_intensity() is required
+        to run successfully with option calculate_diameters = 1 before
+        calculated data can be retrieved.
+        This function is not available in Highspeed Mode!
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2575,6 +2788,18 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            array_diameter_x (((ctypes.c_float * X) * Y)()): This
+                parameter returns a two-dimensional array of floats
+                containing the spot diameters X positions in pixels.
+                The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+                Note: First array index is the spot number in Y,
+                second index the spot number in X direction.
+            array_diameter_y (((ctypes.c_float * X) * Y)()): This
+                parameter returns a two-dimensional array of floats
+                containing the spot diameters Y positions in pixels.
+                The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+                Note: First array index is the spot number in Y,
+                second index the spot number in X direction.
         """
         if instrument_handle is not None:
             try:
@@ -2590,16 +2815,20 @@ class WFS(object):
         log_wfs.debug('Diameter Y: \n' +
                       '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_diameter_y]))
         self._error_message(status)
-        return status
+        return status, self.array_diameter_x, self.array_diameter_y
 
     def _get_spot_diameters_statistics(self, instrument_handle=None):
-        """TODO
+        """Get the calculated statistic parameters of the wavefront
 
-        This function
+        This function calculates statistic parameters of the wavefront
+        calculated in function _calc_wavefront().
+        Note: Function _calc_wavefront() is required to run prior to
+        this function.
+        This function is not available in Highspeed Mode!
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2607,6 +2836,12 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            diameter_min (Vi.real64(float)): This parameter returns
+                the Minimum spot diameter.
+            diameter_max (Vi.real64(float)): This parameter returns
+                the Maximum spot diameter.
+            diameter_mean (Vi.real64(float)): This parameter returns
+                the Mean average of spot diameters.
         """
         if instrument_handle is not None:
             try:
@@ -2625,13 +2860,17 @@ class WFS(object):
         return status
 
     def _get_spot_intensities(self, instrument_handle=None):
-        """TODO
+        """Get the spot intensities in X and Y in arbitrary units
 
-        This function
+        This function returns a two-dimensional array containing the
+        spot intensities in arbitrary unit calculated by function
+        _calc_spots_centroid_diameter_intensity(). Note: Function
+        _calc_spots_centroid_diameter_intensity() is required to run
+        successfully before calculated data can be retrieved.
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2639,6 +2878,12 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            array_intensity (((ctypes.c_float * X) * Y)()): This
+                parameter returns a two-dimensional array of floats
+                containing the spot intensities in arbitrary units.
+                The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+                Note: First array index is the spot number in Y,
+                second index the spot number in X direction.
         """
         if instrument_handle is not None:
             try:
@@ -2651,16 +2896,30 @@ class WFS(object):
         log_wfs.debug('Intensity: \n' +
                       '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_intensity]))
         self._error_message(status)
-        return status
+        return status, self.array_intensity
 
     def _calc_spot_to_reference_deviations(self, cancel_wavefront_tilt=None, instrument_handle=None):
-        """TODO
+        """Calculate reference positions and deviations for all spots
 
-        This function
+        This function calculates reference positions and deviations
+        for all spots depending on the setting reference_index
+        (internal/user) set by function _set_reference_plane().
+        When option cancel_wavefront_tilt is enabled the mean
+        deviation in X and Y direction is subtracted from the
+        deviation data arrays. Reference positions can be retrieved
+        using function _get_spot_reference_positions() and calculated
+        deviations by function _get_spot_deviations().
 
         Args:
+            cancel_wavefront_tilt (Vi.int32(int)): This parameter
+                forces the mean spot deviations to be canceled so that
+                the average wavefront tilt will disappear when
+                calculated with function _calc_wavefront().
+                Valid values:
+                0 - calculate deviations normal
+                1 - subtract mean deviation from all spot deviations
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2687,13 +2946,16 @@ class WFS(object):
         return status
 
     def _get_spot_reference_positions(self, instrument_handle=None):
-        """TODO
+        """Get the arrays with actual X and Y spot positions in pixels
 
-        This function
+        This function returns two two-dimensional arrays containing
+        the actual X and Y reference spot positions in pixels. A prior
+        call to function _set_reference_plane() determines whether the
+        internal or user defined reference positions are returned.
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2701,6 +2963,18 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            array_reference_x (((ctypes.c_float * X) * Y)()): This
+                parameter returns a two-dimensional array of floats
+                containing the reference X spot positions in pixels.
+                The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+                Note: First array index is the spot number in Y,
+                second index the spot number in X direction.
+            array_reference_y (((ctypes.c_float * X) * Y)()): This
+                parameter returns a two-dimensional array of floats
+                containing the reference Y spot positions in pixels.
+                The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+                Note: First array index is the spot number in Y,
+                second index the spot number in X direction.
         """
         if instrument_handle is not None:
             try:
@@ -2716,16 +2990,21 @@ class WFS(object):
         log_wfs.debug('Reference Y: \n' +
                       '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_reference_y]))
         self._error_message(status)
-        return status
+        return status, self.array_reference_x, self.array_reference_y
 
     def _get_spot_deviations(self, instrument_handle=None):
-        """TODO
+        """Get the arrays with actual X and Y spot deviations in pixels
 
-        This function
+        This function returns two two-dimensional arrays containing
+        the actual X and Y spot deviations between centroid and
+        reference spot positions in pixels calculated by function
+        _calc_spot_to_reference_deviations(). Note: Function
+        _calc_spot_to_reference_deviations() needs to run prior to
+        this function.
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2733,6 +3012,18 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            array_deviations_x (((ctypes.c_float * X) * Y)()): This
+                parameter returns a two-dimensional array of floats
+                containing the reference X spot positions in pixels.
+                The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+                Note: First array index is the spot number in Y,
+                second index the spot number in X direction.
+            array_deviations_y (((ctypes.c_float * X) * Y)()): This
+                parameter returns a two-dimensional array of floats
+                containing the reference Y spot positions in pixels.
+                The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+                Note: First array index is the spot number in Y,
+                second index the spot number in X direction.
         """
         if instrument_handle is not None:
             try:
@@ -2748,16 +3039,21 @@ class WFS(object):
         log_wfs.debug('Deviations Y: \n' +
                       '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_deviations_y]))
         self._error_message(status)
-        return status
+        return status, self.array_deviations_x, self.array_deviations_y
 
     def _zernike_lsf(self, instrument_handle=None):
-        """TODO
+        """Calculate Zernike coefficients and Radius of Curvature in mm
 
-        This function
+        This function calculates the spot deviations (centroid with
+        respect to its reference) and performs a least square fit to
+        the desired number of Zernike functions. Output results are
+        the Zernike coefficients up to the desired number of Zernike
+        modes and an array summarizing these coefficients to rms
+        amplitudes for each Zernike order.
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2765,6 +3061,39 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            zernike_orders (Vi.int32(int)): This parameter sets and
+                returns the number of desired Zernike modes to fit.
+                An input value 0 sets the number of calculated modes
+                automatically, depending on the number of available
+                spot deviations, and returns it. Input values in the
+                range 2 ... 10 define the number of calculated Zernike
+                modes according to this table:
+                Input Zernike Order  Calculated Zernike Modes
+                0 = auto             auto
+                2                      6
+                3                     10
+                4                     15
+                5                     21
+                6                     28
+                7                     36
+                8                     45
+                9                     55
+                10                    66
+            array_zernike_um ((ctypes.c_float * SIZE)(): This
+                parameter returns a one-dimensional array of float
+                containing the calculated Zernike coefficients. The
+                required array size is [MAX_ZERNIKE_MODES+1] because
+                indices [1..66] are used instead of [0 .. 65].
+            array_zernike_orders_um ((ctypes.c_float * SIZE)(): This
+                parameter returns a one-dimensional array of float
+                containing the calculated Zernike coefficients
+                summarizing these coefficients to rms amplitudes for
+                each Zernike order. The required array size is
+                [MAX_ZERNIKE_ORDERS+1] because indices [1..10] are
+                used instead of [0 .. 9].
+            roc_mm (Vi.real64(float)): This parameter returns the
+                Radius of Curvature RoC for a spherical wavefront
+                in mm, derived from Zernike coefficient Z[5].
         """
         if instrument_handle is not None:
             try:
@@ -2782,17 +3111,30 @@ class WFS(object):
         log_wfs.info('Zernike Orders: {0}'.format(self.zernike_orders.value))
         log_wfs.info('RoC (mm): {0}'.format(self.roc_mm.value))
         self._error_message(status)
-        return status
+        return (status, self.zernike_orders.value, self.array_zernike_um,
+                self.array_zernike_orders_um, self.roc_mm.value)
 
     def _calc_fourier_optometric(self, zernike_orders=None, fourier_orders=None,
                                  instrument_handle=None):
-        """TODO
+        """Calculate the Fourier and Optometric notations from Zernikes
 
-        This function
+        This function calculates the Fourier and Optometric notations
+        from the Zernike coefficients calculated in function
+        _zernike_lsf(). Note: Function _zernike_lsf() is required to
+        run prior to this function.
 
         Args:
+            zernike_orders (Vi.int32(int)): This parameter is the
+                calculated number of Zernike orders in function
+                _zernike_lsf(). Use the value returned from this
+                function.
+            fourier_orders (Vi.int32(int)): This parameter defines the
+                highest Zernike order considered for calculating
+                Fourier coefficients M, J0 and J45 as well as the
+                Optometric parameters Sphere, Cylinder and Axis.
+                Valid settings: 2, 4 or 6
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2800,6 +3142,18 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            fourier_m (Vi.real64(float)): This parameter returns
+                Fourier coefficient M.
+            fourier_j0 (Vi.real64(float)): This parameter returns
+                Fourier coefficient J0.
+            fourier_j45 (Vi.real64(float)): This parameter returns
+                Fourier coefficient J45.
+            optometric_sphere (Vi.real64(float)): This parameter
+                returnsOptometric parameter Sphere in diopters.
+            optometric_cylinder (Vi.real64(float)): This parameter
+                returns Optometric parameter Cylinder in diopters.
+            optometric_axis (Vi.real64(float)): This parameter returns
+                Optometric parameter Axis in deg.
         """
         if instrument_handle is not None:
             try:
@@ -2835,17 +3189,42 @@ class WFS(object):
         log_wfs.info('Optometric Parameter Cylinder (diopters): {0}'.format(self.optometric_cylinder.value))
         log_wfs.info('Optometric Parameter Axis (°): {0}'.format(self.optometric_axis.value))
         self._error_message(status)
-        return status
+        return (status, self.fourier_m.value, self.fourier_j0.value, self.fourier_j45.value,
+                self.optometric_sphere.value, self.optometric_cylinder.value, self.optometric_axis.value)
 
     def _calc_reconstructed_deviations(self, zernike_orders=None, array_zernike_reconstructed=None,
                                        do_spherical_reference=None, instrument_handle=None):
-        """TODO
+        """Calculate the reconstructed spot deviations from Zernikes
 
-        This function
+        This function calculates the reconstructed spot deviations
+        based on the calculated Zernike coefficients. Note: This
+        function needs to run prior to function _calc_wavefront() when
+        the reconstructed or difference Wavefront should be calculated.
 
         Args:
+            zernike_orders (Vi.int32(int)): This parameter is the
+                calculated number of Zernike orders in function
+                _zernike_lsf(). Use the value returned from this
+                function.
+            array_zernike_reconstructed ((ctypes.c_float * SIZE)():
+                This parameter accepts a one-dimensional array of
+                content 0 or 1 indicating if the appropriate Zernike
+                mode is checked for reconstruction or not. Note:
+                Required array dimension is [MAX_ZERNIKE_MODES+1]
+                because valid indices are [1 ... 66] instead of
+                [0 ... 65]. Valid array values:
+                0 - ignore this Zernike mode in reconstruction
+                1 - reconstruct this Zernike mode
+            do_spherical_reference (Vi.int32(int)): This parameter
+                forces only Zernike mode Z[5] to be reconstructed in
+                order to get deviations based on a pure spherical
+                wavefront. Set parameter to 1 to perform a Spherical
+                Reference calibration. Valid values:
+                0 - use all Zernike Modes checked in
+                    array_zernike_reconstructed
+                1 - use only Z[5] for pure spherical reconstruction
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2853,6 +3232,10 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            fit_error_mean (Vi.real64(float)): This parameter returns
+                the Mean Fit error in arcmin.
+            fit_error_stdev (Vi.real64(float)): This parameter returns
+                the Standard Deviation Fit error in arcmin.
         """
         if instrument_handle is not None:
             try:
@@ -2886,16 +3269,32 @@ class WFS(object):
         log_wfs.info('Fit Error Mean: {0}'.format(self.fit_error_mean.value))
         log_wfs.info('Fit Error Standard Deviation: {0}'.format(self.fit_error_stdev.value))
         self._error_message(status)
-        return status
+        return status, self.fit_error_mean.value, self.fit_error_stdev.value
 
     def _calc_wavefront(self, wavefront_type=None, limit_to_pupil=None, instrument_handle=None):
-        """TODO
+        """Calculate the wavefront based on the spot deviations
 
-        This function
+        This function calculates the wavefront based on the spot deviations.
 
         Args:
+            wavefront_type (Vi.int32(int)): This parameter defines the
+                type of wavefront to calculate. Valid settings:
+                0 - Measured Wavefront
+                1 - Reconstructed Wavefront based on Zernike
+                    coefficients
+                2 - Difference between measured and reconstructed
+                    Wavefront
+                Note: Function _calc_reconstructed_deviations() needs
+                to be called prior to this function in case of
+                Wavefront type 1 and 2.
+            limit_to_pupil (Vi.int32(int)): This parameter defines if
+                the Wavefront should be calculated based on all
+                detected spots or only within the defined pupil.
+                Valid settings:
+                0 - Calculate Wavefront for all spots
+                1 - Limit Wavefront to pupil interior
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2903,6 +3302,15 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            array_wavefront (((ctypes.c_float * X) * Y)()): This
+                parameter returns a two-dimensional array of floats
+                containing wavefront data in µm.
+                The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
+                Note: First array index is the spot number in Y,
+                second index the spot number in X direction.
+                You may used function _flip_2d_array() to flip the
+                index order prior to display by a graphical tool.
+
         """
         if instrument_handle is not None:
             try:
@@ -2929,16 +3337,19 @@ class WFS(object):
         log_wfs.debug('Wavefront: \n' +
                       '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_wavefront]))
         self._error_message(status)
-        return status
+        return status, self.array_wavefront
 
     def _calc_wavefront_statistics(self, instrument_handle=None):
-        """TODO
+        """Calculate statistic parameters of the wavefront in µm
 
-        This function
+        This function returns statistic parameters of the wavefront
+        in µm calculated by function _calc_wavefront().
+        Note: Function _calc_wavefront() is required to run prior
+        to this function.
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -2946,6 +3357,20 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            wavefront_min (Vi.real64(float)): This parameter returns
+                the minimum value of the wavefront.
+            wavefront_max (Vi.real64(float)): This parameter returns
+                the maximum value of the wavefront.
+            wavefront_diff (Vi.real64(float)): This parameter returns
+                the difference between maximum and minimum of the
+                wavefront.
+            wavefront_mean (Vi.real64(float)): This parameter returns
+                the mean value of the wavefront.
+            wavefront_rms (Vi.real64(float)): This parameter returns
+                the RMS value of the wavefront.
+            wavefront_weighted_rms (Vi.real64(float)): This parameter
+                returns the weighted RMS value of the wavefront. The
+                weighting is based on the individual spot intensity.
         """
         if instrument_handle is not None:
             try:
@@ -2967,7 +3392,8 @@ class WFS(object):
         log_wfs.info('RMS: {0}'.format(self.wavefront_rms.value))
         log_wfs.info('Weighted RMS: {0}'.format(self.wavefront_weighted_rms.value))
         self._error_message(status)
-        return status
+        return (status, self.wavefront_min.value, self.wavefront_max.value, self.wavefront_diff.value,
+                self.wavefront_mean.value, self.wavefront_rms.value, self.wavefront_weighted_rms.value)
 
     # Utility Functions
     def _self_test(self, instrument_handle=None):
@@ -2978,7 +3404,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -3014,7 +3440,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -3046,7 +3472,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -3088,7 +3514,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -3130,7 +3556,7 @@ class WFS(object):
         Args:
             error_code (Vi.status(int)): Instrument driver error code.
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -3279,7 +3705,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -3323,7 +3749,7 @@ class WFS(object):
                 wavefront data in µm.
                 The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -3381,7 +3807,7 @@ class WFS(object):
                 accepts a two-dimensional array of float and array size
                 [MAX_SPOTS_Y][MAX_SPOTS_X].
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -3427,7 +3853,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -3478,7 +3904,7 @@ class WFS(object):
                 Note: First array index is the spot number in Y, second
                 index the spot number in X direction.
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -3531,7 +3957,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -3570,7 +3996,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -3609,7 +4035,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
@@ -3644,7 +4070,7 @@ class WFS(object):
 
         Args:
             instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init
+                accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
                 session.
 
