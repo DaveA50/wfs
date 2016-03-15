@@ -14,7 +14,7 @@ import sys
 
 import yaml
 
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 PY2 = sys.version_info[0] == 2
 
 
