@@ -77,6 +77,40 @@ class Vi:
         pass
 
     @staticmethod
+    def array_uint8(x, y):
+        """((ctypes.c_ubyte * self.CAM_MAX_PIX_X) * self.CAM_MAX_PIX_Y)()
+        Args:
+            x (int): Size of array in X
+            y (int): Size of array in Y
+        """
+        try:
+            return ((ctypes.c_ubyte * int(x)) * int(y))()
+        except ValueError as e:
+            log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
+            return ctypes.c_ubyte(0)
+
+    @staticmethod
+    def array_float(x, y=None):
+        """((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        Args:
+            x (int): Size of array in X
+            y (int): Size of array in Y (optional)
+        """
+        if y is not None:
+            try:
+                return ((ctypes.c_float * int(x)) * int(y))()
+            except ValueError as e:
+                log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
+                return ctypes.c_float(0)
+        else:
+            try:
+                return (ctypes.c_float * int(x))()
+            except ValueError as e:
+                log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
+                return ctypes.c_float(0)
+
+
+    @staticmethod
     def char(n):
         """
         Create a ctypes char array of size n
@@ -464,28 +498,50 @@ class WFS(object):
     def __init__(self):
         self.adapt_centroids = Vi.int32(0)
         self.allow_auto_exposure = Vi.int32(1)
-        self.array_centroid_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        self.array_centroid_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        self.array_deviations_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        self.array_deviations_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        self.array_diameter_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        self.array_diameter_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        self.array_image_buffer = ((ctypes.c_ubyte * self.CAM_MAX_PIX_X) * self.CAM_MAX_PIX_Y)()
-        self.array_intensity = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        self.array_line_max = (ctypes.c_float * 1280)()
-        self.array_line_min = (ctypes.c_float * 1280)()
-        self.array_line_selected = (ctypes.c_float * 1280)()
-        self.array_reference_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        self.array_reference_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        self.array_scale_x = (ctypes.c_float * self.MAX_SPOTS_X)()
-        self.array_scale_y = (ctypes.c_float * self.MAX_SPOTS_Y)()
-        self.array_wavefront = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        self.array_wavefront_wave = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        self.array_wavefront_xy = ((ctypes.c_float * self.MAX_SPOTS_Y) * self.MAX_SPOTS_X)()
-        self.array_wavefront_yx = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        self.array_zernike_orders_um = (ctypes.c_float * (self.MAX_ZERNIKE_ORDERS + 1))()
-        self.array_zernike_reconstructed = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        self.array_zernike_um = (ctypes.c_float * (self.MAX_ZERNIKE_MODES + 1))()
+        self.array_centroid_x = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
+        self.array_centroid_y = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
+        self.array_deviations_x = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
+        self.array_deviations_y = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
+        self.array_diameter_x = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
+        self.array_diameter_y = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
+        self.array_image_buffer = Vi.array_uint8(self.CAM_MAX_PIX_X, self.CAM_MAX_PIX_Y)
+        self.array_intensity = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
+        self.array_line_max = Vi.array_float(self.CAM_MAX_PIX_X)
+        self.array_line_min = Vi.array_float(self.CAM_MAX_PIX_X)
+        self.array_line_selected = Vi.array_float(self.CAM_MAX_PIX_X)
+        self.array_reference_x = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
+        self.array_reference_y = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
+        self.array_scale_x = Vi.array_float(self.MAX_SPOTS_X)
+        self.array_scale_y = Vi.array_float(self.MAX_SPOTS_Y)
+        self.array_wavefront = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
+        self.array_wavefront_wave = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
+        self.array_wavefront_xy = Vi.array_float(self.MAX_SPOTS_Y, self.MAX_SPOTS_X)
+        self.array_wavefront_yx = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
+        self.array_zernike_orders_um = Vi.array_float((self.MAX_ZERNIKE_ORDERS + 1))
+        self.array_zernike_reconstructed = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
+        self.array_zernike_um = Vi.array_float(self.MAX_ZERNIKE_MODES + 1)
+        # self.array_centroid_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        # self.array_centroid_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        # self.array_deviations_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        # self.array_deviations_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        # self.array_diameter_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        # self.array_diameter_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        # self.array_image_buffer = ((ctypes.c_ubyte * self.CAM_MAX_PIX_X) * self.CAM_MAX_PIX_Y)()
+        # self.array_intensity = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        # self.array_line_max = (ctypes.c_float * self.CAM_MAX_PIX_X)()
+        # self.array_line_min = (ctypes.c_float * self.CAM_MAX_PIX_X)()
+        # self.array_line_selected = (ctypes.c_float * self.CAM_MAX_PIX_X)()
+        # self.array_reference_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        # self.array_reference_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        # self.array_scale_x = (ctypes.c_float * self.MAX_SPOTS_X)()
+        # self.array_scale_y = (ctypes.c_float * self.MAX_SPOTS_Y)()
+        # self.array_wavefront = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        # self.array_wavefront_wave = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        # self.array_wavefront_xy = ((ctypes.c_float * self.MAX_SPOTS_Y) * self.MAX_SPOTS_X)()
+        # self.array_wavefront_yx = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        # self.array_zernike_orders_um = (ctypes.c_float * (self.MAX_ZERNIKE_ORDERS + 1))()
+        # self.array_zernike_reconstructed = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        # self.array_zernike_um = (ctypes.c_float * (self.MAX_ZERNIKE_MODES + 1))()
         self.average_count = Vi.int32(1)
         self.average_data_ready = Vi.int32(0)
         self.aoi_center_x_mm = Vi.real64(0)
