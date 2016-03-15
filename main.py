@@ -6,23 +6,52 @@ Wrapper for interfacing with the Thorlabs Wavefront Sensor (WFS)
 
 from __future__ import print_function
 from __future__ import absolute_import
+import logging
+import logging.config
 import os
 import subprocess
 import sys
 
-from wfs import WFS
+import yaml
 
+from wfs import WFS
 __version__ = '0.2.0'
 PY2 = sys.version_info[0] == 2
-try:
-    FileNotFoundError  # noinspection PyUnboundLocalVariable
-except NameError:
-    FileNotFoundError = IOError
+
+
+def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
+    """Setup logging configuration
+
+    Uses logging.yaml for the default configuration
+
+    Args:
+        path:
+        level:
+        env_key:
+    """
+    path = path
+    value = os.getenv(env_key, None)
+    if value:
+        path = value
+    if os.path.exists(path):
+        with open(path, 'rt') as f:
+            config = yaml.load(f.read())
+        logging.config.dictConfig(config)
+    else:
+        logging.basicConfig(level=level)
+
+
+setup_logging()
+log_ui = logging.getLogger('UI')
 
 abs_path = os.path.dirname(os.path.abspath(__file__))
 gui_path = os.path.join(abs_path, 'gui')
 design_path = os.path.join(gui_path, 'design.ui')
 debug_path = os.path.join(gui_path, 'debug.ui')
+try:
+    FileNotFoundError  # noinspection PyUnboundLocalVariable
+except NameError:
+    FileNotFoundError = IOError
 if 'pyside' in sys.argv[1]:
     from PySide import QtCore, QtGui
     import pysideuic as uic

@@ -11,6 +11,7 @@ import logging
 import logging.config
 import os
 import sys
+
 import yaml
 
 __version__ = '0.2.0'
@@ -18,14 +19,14 @@ PY2 = sys.version_info[0] == 2
 
 
 def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
-    """
-    Setup logging configuration
-    uses logging.yaml for the default configuration
+    """Setup logging configuration
+
+    Uses logging.yaml for the default configuration
 
     Args:
-        env_key:
-        level:
         path:
+        level:
+        env_key:
     """
     path = path
     value = os.getenv(env_key, None)
@@ -41,7 +42,6 @@ def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
 
 setup_logging()
 log_wfs = logging.getLogger('WFS')
-log_ui = logging.getLogger('UI')
 
 is_64bits = sys.maxsize > 2 ** 32
 if is_64bits:
