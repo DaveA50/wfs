@@ -109,7 +109,6 @@ class Vi:
                 log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
                 return ctypes.c_float(0)
 
-
     @staticmethod
     def char(n):
         """
