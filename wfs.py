@@ -211,14 +211,14 @@ class Vi:
         return Vi.int32(n)
 
     @staticmethod
-    def string(s):
-        str_buffer = Vi.char(256)
+    def string(n, s):
+        str_buffer = Vi.char(n)
         str_buffer.value = s
         return str_buffer
 
     @staticmethod
-    def rsrc(s):
-        return Vi.string(s)
+    def rsrc(n, s):
+        return Vi.string(n, s)
 
 
 class WFS(object):
@@ -309,13 +309,13 @@ class WFS(object):
     WFS_STATBIT_ATR = 0x00000080  # Camera is still awaiting a trigger
     WFS_STATBIT_CFG = 0x00000100  # Camera is configured, ready to use
     WFS_STATBIT_PUD = 0x00000200  # Pupil is defined
-    WFS_STATBIT_SPC = 0x00000400  # No. of spots or pupil or aoi has been changed
+    WFS_STATBIT_SPC = 0x00000400  # Number of spots or pupil or aoi has been changed
     WFS_STATBIT_RDA = 0x00000800  # Reconstructed spot deviations available
     WFS_STATBIT_URF = 0x00001000  # User reference data available
     WFS_STATBIT_HSP = 0x00002000  # Camera is in Highspeed Mode
     WFS_STATBIT_MIS = 0x00004000  # Mismatched centroids in Highspeed Mode
-    WFS_STATBIT_LOS = 0x00008000  # low number of detected spots, warning: reduced Zernike accuracy
-    WFS_STATBIT_FIL = 0x00010000  # pupil is badly filled with spots, warning: reduced Zernike accuracy
+    WFS_STATBIT_LOS = 0x00008000  # Low number of detected spots, warning: reduced Zernike accuracy
+    WFS_STATBIT_FIL = 0x00010000  # Pupil is badly filled with spots, warning: reduced Zernike accuracy
     WFS_DRIVER_STATUS = {WFS_STATBIT_CON: 'USB connection lost, set by driver',
                          WFS_STATBIT_PTH: 'Power too high (cam saturated)',
                          WFS_STATBIT_PTL: 'Power too low (low cam digits)',
@@ -563,9 +563,7 @@ class WFS(object):
         self.pupil_diameter_y_mm = Vi.real64(4.76)  # Max diameter without clipping edges
         self.reference_index = Vi.int32(0)
         self.reset_device = Vi.boolean(0)
-        self.resource_name = Vi.rsrc(b'USB::0x1313::0x0000::1')  # resource_name='USB::0x1313::0x0000::1'
-        # self.resource_name = Vi.char(self.WFS_BUFFER_SIZE)
-        # self.resource_name.value = b'USB::0x1313::0x0000::1'
+        self.resource_name = Vi.rsrc(self.WFS_BUFFER_SIZE, b'USB::0x1313::0x0000::1')
         self.roc_mm = Vi.real64(0)
         self.rolling_reset = Vi.int32(1)
         self.saturated_pixels_percent = Vi.real64(0)
@@ -619,7 +617,7 @@ class WFS(object):
             between different sessions of this instrument driver.
 
         Args:
-            resource_name (Vi.rsrc(str)): This parameter specifies the
+            resource_name (Vi.rsrc(int, str)): This parameter specifies the
                 interface of the device that is to be initialized. The
                 resource name has to follow the syntax:
                 "USB::0x1313::0x0000::" followed by the Device ID.
@@ -652,7 +650,7 @@ class WFS(object):
         """
         if resource_name is not None:
             try:
-                self.resource_name = Vi.rsrc(resource_name)
+                self.resource_name = Vi.rsrc(self.WFS_BUFFER_SIZE, resource_name)
             except TypeError:
                 self.resource_name = resource_name
         if id_query is not None:
@@ -2096,7 +2094,6 @@ class WFS(object):
         return status, self.reference_index.value
 
     # Data Functions
-    # TODO Docstrings
     def _take_spotfield_image(self, instrument_handle=None):
         """TODO
 
@@ -3235,9 +3232,10 @@ class WFS(object):
                 the Serial Number of the selected instrument.
                 Note: The string must contain at least WFS_BUFFER_SIZE
                 (256) elements (Vi.char(WFS_BUFFER_SIZE)).
-            resource_name (Vi.char(int)): 	This resource name can be
-                used for the _int function. The string has the format:
-                "USB::0x1313::0x0000::" followed by the device ID.
+            resource_name (Vi.rsrc(int, str)): 	This resource name can
+                be used for the _int function. The string has the
+                format: "USB::0x1313::0x0000::" followed by the device
+                ID.
         """
         if instrument_index is not None:
             try:
