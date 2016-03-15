@@ -2609,7 +2609,7 @@ class WFS(object):
         return status, self.array_line_min, self.array_line_max
 
     def _calc_beam_centroid_diameter(self, instrument_handle=None):
-        """Calclate the beam centroid and diameter in mm
+        """Calculate the beam centroid and diameter in mm
 
         This function calculates and returns the beam centroid and
         diameter data based on the intensity distribution of the WFS
