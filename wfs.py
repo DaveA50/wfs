@@ -78,7 +78,7 @@ class Vi:
 
     @staticmethod
     def array_uint8(x, y):
-        """((ctypes.c_ubyte * self.CAM_MAX_PIX_X) * self.CAM_MAX_PIX_Y)()
+        """
         Args:
             x (int): Size of array in X
             y (int): Size of array in Y
@@ -91,7 +91,7 @@ class Vi:
 
     @staticmethod
     def array_float(x, y=None):
-        """((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
+        """
         Args:
             x (int): Size of array in X
             y (int): Size of array in Y (optional)
