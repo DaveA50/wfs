@@ -126,6 +126,7 @@ class WFSApp(design_base, design_ui):
     @Slot()
     def on_connect_click(self):
         self.wfs.connect()
+        self.wfs.config()
         self.action_disconnect.setEnabled(True)
         self.action_connect.setEnabled(False)
 

@@ -4137,10 +4137,17 @@ class WFS(object):
         self._get_instrument_info()
         self._get_mla_count()
         self._get_mla_data()
-        self._select_mla()
-        self._configure_cam()
+
+    def config(self):
+        self._select_mla(0)
+        self._configure_cam(0)
+        self.intensity_limit.value = 10
+        self.allow_auto_exposure.value = 1
+        self._set_pupil(0, 0, 1.7, 1.7)
+        self._set_aoi(0, 0, 0, 0)
+        self._set_master_gain(1)
+        self._set_black_level_offset(0)
         self._set_reference_plane(0)
-        self._set_pupil()
         self._get_status()
 
     def update(self):
@@ -4149,6 +4156,7 @@ class WFS(object):
         else:
             self._take_spotfield_image()
         self._get_status()
+        self._cut_image_noise_floor()
         self._get_spotfield_image()
         self._calc_spots_centroid_diameter_intensity()
         self._get_spot_centroids()
