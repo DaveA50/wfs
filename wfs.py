@@ -865,10 +865,6 @@ class WFS(object):
         Note: This function is not available in Highspeed Mode!
 
         Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
             cam_resolution_index (Vi.int32(int)): This parameter
                 selects the camera resolution in pixels. Only the
                 following pre-defined settings are supported:
@@ -902,6 +898,10 @@ class WFS(object):
                 bit width per pixel of the returned camera image.
                 Thorlabs WFS instruments currently support only 8 bit
                 format.
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init()
+                function to select the desired instrument driver
+                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -916,11 +916,6 @@ class WFS(object):
                 on the selected camera resolution and Microlens Array
                 in function _select_mla.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if cam_resolution_index is not None:
             try:
                 self.cam_resolution_index = Vi.int32(cam_resolution_index)
@@ -931,6 +926,11 @@ class WFS(object):
                 self.pixel_format = Vi.int32(pixel_format)
             except TypeError:
                 self.pixel_format = pixel_format
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_ConfigureCam(self.instrument_handle,
                                           self.pixel_format,
                                           self.cam_resolution_index,
@@ -942,7 +942,7 @@ class WFS(object):
         log_wfs.info('Spots X: {0}'.format(self.spots_x.value))
         log_wfs.info('Spots Y: {0}'.format(self.spots_y.value))
         self._error_message(status)
-        return status
+        return status, self.spots_x.value, self.spots_y.value
 
     def _set_highspeed_mode(self, highspeed_mode=None, adapt_centroids=None, subtract_offset=None,
                             allow_auto_exposure=None, instrument_handle=None):
@@ -991,11 +991,6 @@ class WFS(object):
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if highspeed_mode is not None:
             try:
                 self.highspeed_mode = Vi.int32(highspeed_mode)
@@ -1016,6 +1011,11 @@ class WFS(object):
                 self.allow_auto_exposure = Vi.int32(allow_auto_exposure)
             except TypeError:
                 self.allow_auto_exposure = allow_auto_exposure
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetHighspeedMode(self.instrument_handle,
                                               self.highspeed_mode,
                                               self.adapt_centroids,
@@ -1027,8 +1027,7 @@ class WFS(object):
         log_wfs.info('Subtract Offset: {0}'.format(self.subtract_offset.value))
         log_wfs.info('Allow Auto Exposure: {0}'.format(self.allow_auto_exposure.value))
         self._error_message(status)
-        return (status, self.highspeed_mode.value, self.adapt_centroids.value,
-                self.subtract_offset.value, self.allow_auto_exposure.value)
+        return status
 
     def _get_highspeed_windows(self, instrument_handle=None):
         """Get the data from spot detection in Highspeed Mode
@@ -1190,16 +1189,16 @@ class WFS(object):
                 returns the actual exposure time of the WFS camera in
                 ms.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if exposure_time_set is not None:
             try:
                 self.exposure_time_set = Vi.real64(exposure_time_set)
             except TypeError:
                 self.exposure_time_set = exposure_time_set
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetExposureTime(self.instrument_handle,
                                              self.exposure_time_set,
                                              ctypes.byref(self.exposure_time_actual))
@@ -1303,16 +1302,16 @@ class WFS(object):
                 returns the actual linear master gain of the WFS
                 camera.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if master_gain_set is not None:
             try:
                 self.master_gain_set = Vi.real64(master_gain_set)
             except TypeError:
                 self.master_gain_set = master_gain_set
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetMasterGain(self.instrument_handle,
                                            self.master_gain_set,
                                            ctypes.byref(self.master_gain_actual))
@@ -1375,16 +1374,16 @@ class WFS(object):
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if black_level_offset_set is not None:
             try:
                 self.black_level_offset_set = Vi.int32(black_level_offset_set)
             except TypeError:
                 self.black_level_offset_set = black_level_offset_set
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetBlackLevelOffset(self.instrument_handle,
                                                  self.black_level_offset_set)
         log_wfs.debug('Set Black Level Offset: {0}'.format(self.instrument_handle.value))
@@ -1450,16 +1449,16 @@ class WFS(object):
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if trigger_mode is not None:
             try:
                 self.trigger_mode = Vi.int32(trigger_mode)
             except TypeError:
                 self.trigger_mode = trigger_mode
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetTriggerMode(self.instrument_handle,
                                             self.trigger_mode)
         log_wfs.debug('Set Trigger Mode: {0}'.format(self.instrument_handle.value))
@@ -1524,16 +1523,16 @@ class WFS(object):
                 returns the actual trigger delay in µs which may
                 differ from the target value.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if trigger_delay_set is not None:
             try:
                 self.trigger_delay_set = Vi.int32(trigger_delay_set)
             except TypeError:
                 self.trigger_delay_set = trigger_delay_set
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetTriggerDelay(self.instrument_handle,
                                              self.trigger_delay_set,
                                              ctypes.byref(self.trigger_delay_actual))
@@ -1658,16 +1657,16 @@ class WFS(object):
                 returns the calibrated correction value for
                 astigmatism 45° of the Microlens Array in ppm.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if mla_index is not None:
             try:
                 self.mla_index = Vi.int32(mla_index)
             except TypeError:
                 self.mla_index = mla_index
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetMlaData(self.instrument_handle,
                                         self.mla_index,
                                         self.mla_name,
@@ -1745,16 +1744,16 @@ class WFS(object):
                 returns the calibrated correction value for pitch of
                 the Microlens Array in ppm.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if mla_index is not None:
             try:
                 self.mla_index = Vi.int32(mla_index)
             except TypeError:
                 self.mla_index = mla_index
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetMlaData2(self.instrument_handle,
                                          self.mla_index,
                                          self.mla_name,
@@ -1806,16 +1805,16 @@ class WFS(object):
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if mla_index is not None:
             try:
                 self.mla_index = Vi.int32(mla_index)
             except TypeError:
                 self.mla_index = mla_index
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SelectMla(self.instrument_handle,
                                        self.mla_index)
         log_wfs.debug('Select MLA: {0}'.format(self.instrument_handle.value))
@@ -1835,10 +1834,6 @@ class WFS(object):
         values to 0.0.
 
         Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
             aoi_center_x_mm (Vi.real64(int)): This parameter defines
                 the AOI center X position in mm. It needs to be within
                 the active camera area defined by function
@@ -1858,17 +1853,16 @@ class WFS(object):
                 active camera area defined by function _configure_cam.
                 Note: The parameter must fit to the selected camera
                 area.
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init()
+                function to select the desired instrument driver
+                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if aoi_center_x_mm is not None:
             try:
                 self.aoi_center_x_mm = Vi.real64(aoi_center_x_mm)
@@ -1889,6 +1883,11 @@ class WFS(object):
                 self.aoi_size_y_mm = Vi.real64(aoi_size_y_mm)
             except TypeError:
                 self.aoi_size_y_mm = aoi_size_y_mm
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetAoi(self.instrument_handle,
                                     self.aoi_center_x_mm,
                                     self.aoi_center_y_mm,
@@ -1950,15 +1949,11 @@ class WFS(object):
 
     def _set_pupil(self, pupil_center_x_mm=None, pupil_center_y_mm=None,
                    pupil_diameter_x_mm=None, pupil_diameter_y_mm=None, instrument_handle=None):
-        """
+        """Set the pupil position and size in mm
 
-        This function
+        This function defines the pupil in position and size.
 
         Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
             pupil_center_x_mm (Vi.real64(int)): This parameter defines
                 the pupil center X position in mm. It needs to be
                 within the active camera area defined by function
@@ -1979,17 +1974,16 @@ class WFS(object):
                 needs to be within the active camera area defined by
                 function _configure_cam.
                 Valid range: 0.1 ... +10.0 mm
+            instrument_handle (Vi.session(int)): This parameter
+                accepts the Instrument Handle returned by the _init()
+                function to select the desired instrument driver
+                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if pupil_center_x_mm is not None:
             try:
                 self.pupil_center_x_mm = Vi.real64(pupil_center_x_mm)
@@ -2010,7 +2004,11 @@ class WFS(object):
                 self.pupil_diameter_y_mm = Vi.real64(pupil_diameter_y_mm)
             except TypeError:
                 self.pupil_diameter_y_mm = pupil_diameter_y_mm
-
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetPupil(self.instrument_handle,
                                       self.pupil_center_x_mm,
                                       self.pupil_center_y_mm,
@@ -2097,16 +2095,16 @@ class WFS(object):
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if reference_index is not None:
             try:
                 self.reference_index = Vi.int32(reference_index)
             except TypeError:
                 self.reference_index = reference_index
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetReferencePlane(self.instrument_handle,
                                                self.reference_index)
         log_wfs.debug('Set Reference Plane: {0}'.format(self.instrument_handle.value))
@@ -2317,10 +2315,10 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
-            array_image_buffer (Vi.uint8(int)): This parameter accepts
-                an user provided image buffer. Note: This buffer needs
-                to be allocated by the user. The required size is
-                CAM_MAX_PIX_X * CAM_MAX_PIX_Y bytes.
+            array_image_buffer (Vi.array_uint8(int, int)): This
+                parameter accepts an user provided image buffer. Note:
+                This buffer needs to be allocated by the user. The
+                required size is CAM_MAX_PIX_X * CAM_MAX_PIX_Y bytes.
             spotfield_rows (Vi.int32(int)): This parameter returns the
                 image height (rows) in pixels.
             spotfield_columns (Vi.int32(int)): This parameter returns
@@ -2372,16 +2370,16 @@ class WFS(object):
                 0 if the averaging process is going on and 1 when the
                 target average count is reached.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if average_count is not None:
             try:
                 self.average_count = Vi.int32(average_count)
             except TypeError:
                 self.average_count = average_count
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_AverageImage(self.instrument_handle,
                                           self.average_count,
                                           ctypes.byref(self.average_data_ready))
@@ -2420,11 +2418,6 @@ class WFS(object):
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if average_count is not None:
             try:
                 self.average_count = Vi.int32(average_count)
@@ -2435,6 +2428,11 @@ class WFS(object):
                 self.rolling_reset = Vi.int32(rolling_reset)
             except TypeError:
                 self.rolling_reset = rolling_reset
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_AverageImageRolling(self.instrument_handle,
                                                  self.average_count,
                                                  self.rolling_reset)
@@ -2467,16 +2465,16 @@ class WFS(object):
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if intensity_limit is not None:
             try:
                 self.intensity_limit = Vi.int32(intensity_limit)
             except TypeError:
                 self.intensity_limit = intensity_limit
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CutImageNoiseFloor(self.instrument_handle,
                                                 self.intensity_limit)
         log_wfs.debug('Cut Image Noise Floor: {0}'.format(self.instrument_handle.value))
@@ -2584,7 +2582,7 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
-            array_line_selected ((ctypes.c_float * SIZE)()): This
+            array_line_selected (Vi.array_float(int)): This
                 parameter returns a linear array of floats containing
                 the pixel intensities along the selected line in
                 image_buffer. The required array size corresponds to
@@ -2593,16 +2591,16 @@ class WFS(object):
                 max.  640 for WFS10
                 max. 1440 for WFS20
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if line is not None:
             try:
                 self.line = Vi.int32(line)
             except TypeError:
                 self.line = line
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetLine(self.instrument_handle,
                                      self.line,
                                      self.array_line_selected)
@@ -2630,7 +2628,7 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
-            array_line_min ((ctypes.c_float * SIZE)()): This parameter
+            array_line_min (Vi.array_float(int)): This parameter
                 returns a linear array of floats containing the
                 minimum pixel intensities within all columns of
                 image_buffer. The required array size corresponds to
@@ -2638,7 +2636,7 @@ class WFS(object):
                 max. 1280 for WFS150/WFS300
                 max.  640 for WFS10
                 max. 1440 for WFS20
-            array_line_max ((ctypes.c_float * SIZE)()): This parameter
+            array_line_max (Vi.array_float(int)): This parameter
                 returns a linear array of floats containing the
                 maximum pixel intensities within all columns of
                 image_buffer. The required array size corresponds to
@@ -2750,11 +2748,6 @@ class WFS(object):
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if dynamic_noise_cut is not None:
             try:
                 self.dynamic_noise_cut = Vi.int32(dynamic_noise_cut)
@@ -2765,6 +2758,11 @@ class WFS(object):
                 self.calculate_diameters = Vi.int32(calculate_diameters)
             except TypeError:
                 self.calculate_diameters = calculate_diameters
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CalcSpotsCentrDiaIntens(self.instrument_handle,
                                                      self.dynamic_noise_cut,
                                                      self.calculate_diameters)
@@ -2793,13 +2791,13 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
-            array_centroid_x (((ctypes.c_float * X) * Y)()): This
+            array_centroid_x (Vi.array_float(int, int)): This
                 parameter returns a two-dimensional array of floats
                 containing the centroid X spot positions in pixels.
                 The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
                 Note: First array index is the spot number in Y,
                 second index the spot number in X direction.
-            array_centroid_y (((ctypes.c_float * X) * Y)()): This
+            array_centroid_y (Vi.array_float(int, int)): This
                 parameter returns a two-dimensional array of floats
                 containing the centroid Y spot positions in pixels.
                 The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
@@ -2843,13 +2841,13 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
-            array_diameter_x (((ctypes.c_float * X) * Y)()): This
+            array_diameter_x (Vi.array_float(int, int)): This
                 parameter returns a two-dimensional array of floats
                 containing the spot diameters X positions in pixels.
                 The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
                 Note: First array index is the spot number in Y,
                 second index the spot number in X direction.
-            array_diameter_y (((ctypes.c_float * X) * Y)()): This
+            array_diameter_y (Vi.array_float(int, int)): This
                 parameter returns a two-dimensional array of floats
                 containing the spot diameters Y positions in pixels.
                 The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
@@ -2912,7 +2910,7 @@ class WFS(object):
         log_wfs.info('Diameter Maximum: {0}'.format(self.diameter_max.value))
         log_wfs.info('Diameter Mean: {0}'.format(self.diameter_mean.value))
         self._error_message(status)
-        return status
+        return status, self.diameter_min.value, self.diameter_max.value, self.diameter_mean.value
 
     def _get_spot_intensities(self, instrument_handle=None):
         """Get the spot intensities in X and Y in arbitrary units
@@ -2933,7 +2931,7 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
-            array_intensity (((ctypes.c_float * X) * Y)()): This
+            array_intensity (Vi.array_float(int, int)): This
                 parameter returns a two-dimensional array of floats
                 containing the spot intensities in arbitrary units.
                 The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
@@ -2983,16 +2981,16 @@ class WFS(object):
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if cancel_wavefront_tilt is not None:
             try:
                 self.cancel_wavefront_tilt = Vi.int32(cancel_wavefront_tilt)
             except TypeError:
                 self.cancel_wavefront_tilt = cancel_wavefront_tilt
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CalcSpotToReferenceDeviations(self.instrument_handle,
                                                            self.cancel_wavefront_tilt)
         log_wfs.debug('Calc Spot to Reference Deviations: {0}'.format(self.instrument_handle.value))
@@ -3018,13 +3016,13 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
-            array_reference_x (((ctypes.c_float * X) * Y)()): This
+            array_reference_x (Vi.array_float(int, int)): This
                 parameter returns a two-dimensional array of floats
                 containing the reference X spot positions in pixels.
                 The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
                 Note: First array index is the spot number in Y,
                 second index the spot number in X direction.
-            array_reference_y (((ctypes.c_float * X) * Y)()): This
+            array_reference_y (Vi.array_float(int, int)): This
                 parameter returns a two-dimensional array of floats
                 containing the reference Y spot positions in pixels.
                 The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
@@ -3067,13 +3065,13 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
-            array_deviations_x (((ctypes.c_float * X) * Y)()): This
+            array_deviations_x (Vi.array_float(int, int)): This
                 parameter returns a two-dimensional array of floats
                 containing the reference X spot positions in pixels.
                 The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
                 Note: First array index is the spot number in Y,
                 second index the spot number in X direction.
-            array_deviations_y (((ctypes.c_float * X) * Y)()): This
+            array_deviations_y (Vi.array_float(int, int)): This
                 parameter returns a two-dimensional array of floats
                 containing the reference Y spot positions in pixels.
                 The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
@@ -3116,6 +3114,9 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
+            roc_mm (Vi.real64(float)): This parameter returns the
+                Radius of Curvature RoC for a spherical wavefront
+                in mm, derived from Zernike coefficient Z[5].
             zernike_orders (Vi.int32(int)): This parameter sets and
                 returns the number of desired Zernike modes to fit.
                 An input value 0 sets the number of calculated modes
@@ -3134,21 +3135,18 @@ class WFS(object):
                 8                     45
                 9                     55
                 10                    66
-            array_zernike_um ((ctypes.c_float * SIZE)(): This
+            array_zernike_um (Vi.array_float(int)): This
                 parameter returns a one-dimensional array of float
                 containing the calculated Zernike coefficients. The
                 required array size is [MAX_ZERNIKE_MODES+1] because
                 indices [1..66] are used instead of [0 .. 65].
-            array_zernike_orders_um ((ctypes.c_float * SIZE)(): This
+            array_zernike_orders_um (Vi.array_float(int)): This
                 parameter returns a one-dimensional array of float
                 containing the calculated Zernike coefficients
                 summarizing these coefficients to rms amplitudes for
                 each Zernike order. The required array size is
                 [MAX_ZERNIKE_ORDERS+1] because indices [1..10] are
                 used instead of [0 .. 9].
-            roc_mm (Vi.real64(float)): This parameter returns the
-                Radius of Curvature RoC for a spherical wavefront
-                in mm, derived from Zernike coefficient Z[5].
         """
         if instrument_handle is not None:
             try:
@@ -3161,13 +3159,13 @@ class WFS(object):
                                         self.array_zernike_orders_um,
                                         ctypes.byref(self.roc_mm))
         log_wfs.debug('Zernike Least Square Fit: {0}'.format(self.instrument_handle.value))
+        log_wfs.info('RoC (mm): {0}'.format(self.roc_mm.value))
+        log_wfs.info('Zernike Orders: {0}'.format(self.zernike_orders.value))
         log_wfs.info('Zernike (µm):' + ''.join(['{:18}'.format(item) for item in self.array_zernike_um]))
         log_wfs.info('Zernike Orders (µm)' + ''.join(['{:18}'.format(item) for item in self.array_zernike_orders_um]))
-        log_wfs.info('Zernike Orders: {0}'.format(self.zernike_orders.value))
-        log_wfs.info('RoC (mm): {0}'.format(self.roc_mm.value))
         self._error_message(status)
-        return (status, self.zernike_orders.value, self.array_zernike_um,
-                self.array_zernike_orders_um, self.roc_mm.value)
+        return (status, self.roc_mm.value, self.zernike_orders.value,
+                self.array_zernike_um, self.array_zernike_orders_um)
 
     def _calc_fourier_optometric(self, zernike_orders=None, fourier_orders=None,
                                  instrument_handle=None):
@@ -3210,11 +3208,6 @@ class WFS(object):
             optometric_axis (Vi.real64(float)): This parameter returns
                 Optometric parameter Axis in deg.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if zernike_orders is not None:
             try:
                 self.zernike_orders = Vi.int32(zernike_orders)
@@ -3225,6 +3218,11 @@ class WFS(object):
                 self.fourier_orders = Vi.int32(fourier_orders)
             except TypeError:
                 self.fourier_orders = fourier_orders
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CalcFourierOptometric(self.instrument_handle,
                                                    self.zernike_orders,
                                                    self.fourier_orders,
@@ -3261,7 +3259,7 @@ class WFS(object):
                 calculated number of Zernike orders in function
                 _zernike_lsf(). Use the value returned from this
                 function.
-            array_zernike_reconstructed ((ctypes.c_float * SIZE)():
+            array_zernike_reconstructed (Vi.array_float(int)):
                 This parameter accepts a one-dimensional array of
                 content 0 or 1 indicating if the appropriate Zernike
                 mode is checked for reconstruction or not. Note:
@@ -3292,11 +3290,6 @@ class WFS(object):
             fit_error_stdev (Vi.real64(float)): This parameter returns
                 the Standard Deviation Fit error in arcmin.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if zernike_orders is not None:
             try:
                 self.zernike_orders = Vi.int32(zernike_orders)
@@ -3309,6 +3302,11 @@ class WFS(object):
                 self.do_spherical_reference = Vi.int32(do_spherical_reference)
             except TypeError:
                 self.do_spherical_reference = do_spherical_reference
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CalcReconstrDeviations(self.instrument_handle,
                                                     self.zernike_orders,
                                                     self.array_zernike_reconstructed,
@@ -3357,7 +3355,7 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
-            array_wavefront (((ctypes.c_float * X) * Y)()): This
+            array_wavefront (Vi.array_float(int, int)): This
                 parameter returns a two-dimensional array of floats
                 containing wavefront data in µm.
                 The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
@@ -3367,11 +3365,6 @@ class WFS(object):
                 index order prior to display by a graphical tool.
 
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if wavefront_type is not None:
             try:
                 self.wavefront_type = Vi.int32(wavefront_type)
@@ -3382,6 +3375,11 @@ class WFS(object):
                 self.limit_to_pupil = Vi.int32(limit_to_pupil)
             except TypeError:
                 self.limit_to_pupil = limit_to_pupil
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CalcWavefront(self.instrument_handle,
                                            self.wavefront_type,
                                            self.limit_to_pupil,
@@ -3623,16 +3621,16 @@ class WFS(object):
                 error message. The message buffer has to be initialized
                 with 256 bytes.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if error_code is not None:
             try:
                 self.error_code = Vi.status(error_code)
             except TypeError:
                 self.error_code = error_code
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         if self.error_code.value == 0:
             log_wfs.debug('No error: {0}'.format(self.error_code.value))
             self.error_message.value = 'No errors'
@@ -3817,22 +3815,18 @@ class WFS(object):
                 containing the wavefront data in waves. The required
                 array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if wavelength is not None:
             try:
                 self.wavelength = Vi.real64(wavelength)
             except TypeError:
                 self.wavelength = wavelength
         if array_wavefront is not None:
-            # try:
-            #     self.array_wavefront = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-            # except TypeError:
-            #     self.array_wavefront = array_wavefront
             self.array_wavefront = array_wavefront
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_ConvertWavefrontWaves(self.instrument_handle,
                                                    self.wavelength,
                                                    self.array_wavefront,
@@ -3876,17 +3870,13 @@ class WFS(object):
                 flipped compared to input ArrayYX
                 Note: Array XY must not be the same as Array YX!
         """
+        if array_wavefront_yx is not None:
+            self.array_wavefront_yx = array_wavefront_yx
         if instrument_handle is not None:
             try:
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
-        if array_wavefront_yx is not None:
-            # try:
-            #     self.array_wavefront_yx = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-            # except TypeError:
-            #     self.array_wavefront_yx = array_wavefront_yx
-            self.array_wavefront_yx = array_wavefront_yx
         status = lib_wfs.WFS_Flip2DArray(self.instrument_handle,
                                          self.array_wavefront_yx,
                                          self.array_wavefront_xy)
@@ -3968,28 +3958,20 @@ class WFS(object):
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if spot_ref_type is not None:
             try:
                 self.spot_ref_type = Vi.int32(spot_ref_type)
             except TypeError:
                 self.spot_ref_type = spot_ref_type
         if array_reference_x is not None:
-            # try:
-            #     self.array_reference_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-            # except TypeError:
-            #     self.array_reference_x = array_reference_x
             self.array_reference_x = array_reference_x
         if array_reference_y is not None:
-            # try:
-            #     self.array_reference_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-            # except TypeError:
-            #     self.array_reference_y = array_reference_y
             self.array_reference_y = array_reference_y
+        if instrument_handle is not None:
+            try:
+                self.instrument_handle = Vi.session(instrument_handle)
+            except TypeError:
+                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetCalcSpotsToUserReference(self.instrument_handle,
                                                          self.spot_ref_type,
                                                          self.array_reference_x,
