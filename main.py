@@ -15,6 +15,7 @@ import sys
 import yaml
 
 from wfs import WFS
+
 __version__ = '0.2.0'
 PY2 = sys.version_info[0] == 2
 
@@ -49,9 +50,15 @@ gui_path = os.path.join(abs_path, 'gui')
 design_path = os.path.join(gui_path, 'design.ui')
 debug_path = os.path.join(gui_path, 'debug.ui')
 try:
-    FileNotFoundError  # noinspection PyUnboundLocalVariable
+    # noinspection PyUnboundLocalVariable
+    FileNotFoundError
 except NameError:
     FileNotFoundError = IOError
+try:
+    # noinspection PyUnboundLocalVariable
+    WindowsError
+except NameError:
+    WindowsError = IOError
 if 'pyside' in sys.argv[1]:
     from PySide import QtCore, QtGui
     import pysideuic as uic
@@ -91,10 +98,8 @@ class WFSThread(QtCore.QThread):
     def __del__(self):
         self.wait()
 
-    def update(self):  # A slot takes no params
-        self.wfs.update()
-        roc = str(self.wfs.roc_mm.value)
-        self.roc_ready.emit(roc)
+    def update(self):
+        # self.roc_ready.emit(str(self.wfs.update()))
         self.terminate()
 
 
