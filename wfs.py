@@ -50,15 +50,15 @@ else:
     libname = 'WFS_32'
 lib = find_library(libname)
 if lib is None:
-    if os.name == 'posix':
-        log_wfs.critical('No WFS_32/64 library exists')
-        raise ImportError('No WFS_32/64 library exists')
     if os.name == 'nt' and is_64bits:
         log_wfs.critical('WFS_64.dll not found')
         raise ImportError('WFS_64.dll not found')
     if os.name == 'nt' and not is_64bits:
         log_wfs.critical('WFS_32.dll not found')
         raise ImportError('WFS_32.dll not found')
+    else:
+        log_wfs.critical('No WFS_32/64 library exists')
+        raise ImportError('No WFS_32/64 library exists')
 if os.name == 'nt' and is_64bits:
     lib_wfs = ctypes.windll.LoadLibrary(lib)
     log_wfs.debug('WFS_64.dll loaded')
