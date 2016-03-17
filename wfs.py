@@ -4166,6 +4166,7 @@ class WFS(object):
         self._calc_wavefront()
         self._calc_wavefront_statistics()
         self._zernike_lsf()
+        return self.roc_mm.value
 
 
 if __name__ == '__main__':

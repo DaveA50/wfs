@@ -142,10 +142,8 @@ class WFSApp(design_base, design_ui):
 
     @Slot()
     def on_test_click(self):
-        for i in range(3):
-            self.wfs.update()
-            roc = str(self.wfs.roc_mm.value)
-            self.text_browser.append(roc)
+        for i in range(1):
+            self.text_browser.append(str(self.wfs.update()))
 
     @Slot()
     def on_debug_click(self):
