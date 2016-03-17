@@ -15,7 +15,7 @@
     <p class="body">
     This function calculates reference positions and deviations for all spots depending on the setting ref_idx(internal/user) set by function SetWavefrontReference.
     <br/>
-    When option CancelWavefrontTilt is enabled the mean deviation in X and Y direction is subtracted from the deviation data arrays.
+    When option CancelWavefrontTilt is enabled the mean deviation in X and Y direction, which is measured within the pupil, is subtracted from the deviation data arrays.
     <br/>
     Reference positions can be retrieved using function GetSpotReferencePositions and calculated deviations by function GetSpotDeviations.
     </p>
@@ -40,13 +40,13 @@
         <td class="paramName">cancelWavefrontTilt</td>
         <td class="paramDataType">ViInt32</td>
         <td>
-    This parameter forces the mean spot deviations to be canceled so that the average wavefront tilt will disappear when calculated with function CalcWavefront.
+    This parameter forces the mean spot deviations, which are measured within the pupil, to be canceled so that the average wavefront tilt will disappear when calculated with function CalcWavefront.
     <br/>
     Valid values:
     <br/>
     0&nbsp;&nbsp;&nbsp;calculate deviations normal
     <br/>
-    1&nbsp;&nbsp;&nbsp;subtract mean deviation from all spot deviations
+    1&nbsp;&nbsp;&nbsp;subtract mean deviation in pupil from all spot deviations
         </td>
       </tr>
     </table>

@@ -50,8 +50,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <utility.h>
-#include <userint.h>
+//#include <utility.h>
+//#include <userint.h>
 
 
 /*===============================================================================================================================
@@ -96,6 +96,8 @@
 
 #define  SAMPLE_OUTPUT_FILE_NAME       "WFS_sample_output.txt"
 
+#define VAL_ESC_VKEY                   (3L << 8)
+
 
 /*===============================================================================================================================
   Data type definitions
@@ -137,6 +139,9 @@ typedef struct
 void handle_errors (int);
 int select_instrument (int *selection, ViChar resourceName[]);
 int select_mla (int *selection);
+
+int CVIFUNC    KeyHit (void);
+int CVIFUNC    GetKey (void);
 
 
 /*===============================================================================================================================

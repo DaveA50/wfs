@@ -12,9 +12,9 @@
     </p>
     <h2 class="purpose">Purpose</h2>
     <p class="body">
-    This function sets the hardware trigger mode.
+    This function sets the hardware/software trigger mode.
     <br/>
-    When the trigger capability is activated, functions TakeSpotfieldImage() and TakeSpotfieldImageAutoExpos() will wait for a trigger event for a short period of time (WFS_TIMEOUT_CAPTURE_TRIGGER = 0.1 sec.) prior to start exposure and will return with error WFS_ERROR_AWAITING_TRIGGER if no trigger event occured.
+    When the hardware trigger capability is activated, functions TakeSpotfieldImage() and TakeSpotfieldImageAutoExpos() will wait for a trigger event for a short period of time (WFS_TIMEOUT_CAPTURE_TRIGGER = 0.1 sec.) prior to start exposure and will return with error WFS_ERROR_AWAITING_TRIGGER if no trigger event occured.
     <br/>
     Use function SetTriggerDelay() to define an extra trigger delay time.
     </p>
@@ -43,11 +43,21 @@
     <br/>
     Valid settings:
     <br/>
-    WFS_HW_TRIGGER_OFF&nbsp;&nbsp;Trigger input disabled
+    WFS_HW_TRIGGER_OFF&nbsp;&nbsp;No HW Trigger, continuous measurement
+    <br/>
+    with highest speed
     <br/>
     WFS_HW_TRIGGER_HL&nbsp;&nbsp;&nbsp;Trigger on high-&gt;low edge
     <br/>
     WFS_HW_TRIGGER_LH&nbsp;&nbsp;&nbsp;Trigger on low-&gt;high edge
+    <br/>
+    WFS_SW_TRIGGER&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Software trigger
+    <br/>
+    Note: When WFS_SW_TRIGGER is used, a new measurement is started&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;whenever WFS_TakeSpotfieldImage() or&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WFS_TakeSpotfieldImageAutoExpos() is called,
+    <br/>
+    Compared to WFS_HW_TRIGGER_OFF lower measurememnt speed is achieved.
+    <br/>
+    Note: For WFS150 and WFS300 modes WFS_HW_TRIGGER_OFF and WFS_SW_TRIGGER are identical.
         </td>
       </tr>
     </table>

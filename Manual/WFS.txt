@@ -1,5 +1,5 @@
 
-             Thorlabs Wavefront Sensor Instrument Driver V4.2
+                               Wavefront Sensor
 ________________________________________________________________________________
 
   Introduction:
@@ -654,7 +654,8 @@ ________________________________________________________________________________
       depending on the setting ref_idx(internal/user) set by function
       SetWavefrontReference.
       When option CancelWavefrontTilt is enabled the mean deviation in X and Y
-      direction is subtracted from the deviation data arrays.
+      direction, which is measured within the pupil, is subtracted from the
+      deviation data arrays.
       
       Reference positions can be retrieved using function
       GetSpotReferencePositions and calculated deviations by function
@@ -674,13 +675,13 @@ ________________________________________________________________________________
 
           Variable Type       ViInt32
 
-          This parameter forces the mean spot deviations to be canceled so that
-          the average wavefront tilt will disappear when calculated with
-          function CalcWavefront.
+          This parameter forces the mean spot deviations, which are measured
+          within the pupil, to be canceled so that the average wavefront tilt
+          will disappear when calculated with function CalcWavefront.
           
           Valid values:
              0   calculate deviations normal
-             1   subtract mean deviation from all spot deviations
+             1   subtract mean deviation in pupil from all spot deviations
 
   Return Value
 
@@ -2869,7 +2870,7 @@ ________________________________________________________________________________
 
   Purpose
 
-      This function returns the actual hardware trigger mode.
+      This function returns the actual hardware/software trigger mode.
       
 
   Parameter List
@@ -2889,10 +2890,20 @@ ________________________________________________________________________________
           This parameter returns the actual trigger mode.
           
           Valid trigger modes:
-             WFS_HW_TRIGGER_OFF  Trigger input disabled
+             WFS_HW_TRIGGER_OFF  No HW Trigger, continuous measurement
+                                 with highest speed
              WFS_HW_TRIGGER_HL   Trigger on high->low edge
              WFS_HW_TRIGGER_LH   Trigger on low->high edge
+             WFS_SW_TRIGGER      Software trigger
           
+          
+          Note: When WFS_SW_TRIGGER is used, a new measurement is started
+          whenever WFS_TakeSpotfieldImage() or
+          WFS_TakeSpotfieldImageAutoExpos() is called,
+          Compared to WFS_HW_TRIGGER_OFF lower measurememnt speed is achieved.
+          
+          Note: For WFS150 and WFS300 modes WFS_HW_TRIGGER_OFF and
+          WFS_SW_TRIGGER are identical.
 
   Return Value
 
@@ -3838,12 +3849,12 @@ ________________________________________________________________________________
 
   Purpose
 
-      This function sets the hardware trigger mode.
-      When the trigger capability is activated, functions TakeSpotfieldImage()
-      and TakeSpotfieldImageAutoExpos() will wait for a trigger event for a
-      short period of time (WFS_TIMEOUT_CAPTURE_TRIGGER = 0.1 sec.) prior to
-      start exposure and will return with error WFS_ERROR_AWAITING_TRIGGER if
-      no trigger event occured.
+      This function sets the hardware/software trigger mode.
+      When the hardware trigger capability is activated, functions
+      TakeSpotfieldImage() and TakeSpotfieldImageAutoExpos() will wait for a
+      trigger event for a short period of time (WFS_TIMEOUT_CAPTURE_TRIGGER =
+      0.1 sec.) prior to start exposure and will return with error
+      WFS_ERROR_AWAITING_TRIGGER if no trigger event occured.
       
       Use function SetTriggerDelay() to define an extra trigger delay time.
       
@@ -3865,10 +3876,20 @@ ________________________________________________________________________________
           This parameter defines and activates the trigger mode.
           
           Valid settings:
-             WFS_HW_TRIGGER_OFF  Trigger input disabled
+             WFS_HW_TRIGGER_OFF  No HW Trigger, continuous measurement
+                                 with highest speed
              WFS_HW_TRIGGER_HL   Trigger on high->low edge
              WFS_HW_TRIGGER_LH   Trigger on low->high edge
+             WFS_SW_TRIGGER      Software trigger
           
+          
+          Note: When WFS_SW_TRIGGER is used, a new measurement is started
+          whenever WFS_TakeSpotfieldImage() or
+          WFS_TakeSpotfieldImageAutoExpos() is called,
+          Compared to WFS_HW_TRIGGER_OFF lower measurememnt speed is achieved.
+          
+          Note: For WFS150 and WFS300 modes WFS_HW_TRIGGER_OFF and
+          WFS_SW_TRIGGER are identical.
 
   Return Value
 
