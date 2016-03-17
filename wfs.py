@@ -59,10 +59,10 @@ if lib is None:
     else:
         log_wfs.critical('No WFS_32/64 library exists')
         raise ImportError('No WFS_32/64 library exists')
-if os.name == 'nt' and is_64bits:
+if is_64bits:
     lib_wfs = ctypes.windll.LoadLibrary(lib)
     log_wfs.debug('WFS_64.dll loaded')
-elif os.name == 'nt' and not is_64bits:
+elif not is_64bits:
     lib_wfs = ctypes.windll.LoadLibrary(lib)
     log_wfs.debug('WFS_32.dll loaded')
 
