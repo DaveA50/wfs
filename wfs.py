@@ -16,6 +16,7 @@ import yaml
 
 __version__ = '0.2.1'
 PY2 = sys.version_info[0] == 2
+is_64bit = sys.maxsize > 2 ** 32
 
 
 def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
@@ -43,26 +44,25 @@ def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
 setup_logging()
 log_wfs = logging.getLogger('WFS')
 
-is_64bits = sys.maxsize > 2 ** 32
-if is_64bits:
-    libname = 'WFS_64'
+if is_64bit:
+    lib = find_library('WFS_64')
 else:
-    libname = 'WFS_32'
-lib = find_library(libname)
+    lib = find_library('WFS_32')
 if lib is None:
-    if os.name == 'nt' and is_64bits:
-        log_wfs.critical('WFS_64.dll not found')
-        raise ImportError('WFS_64.dll not found')
-    if os.name == 'nt' and not is_64bits:
-        log_wfs.critical('WFS_32.dll not found')
-        raise ImportError('WFS_32.dll not found')
+    if os.name == 'nt':
+        if is_64bit:
+            log_wfs.critical('WFS_64.dll not found')
+            raise ImportError('WFS_64.dll not found')
+        else:
+            log_wfs.critical('WFS_32.dll not found')
+            raise ImportError('WFS_32.dll not found')
     else:
         log_wfs.critical('No WFS_32/64 library exists')
         raise ImportError('No WFS_32/64 library exists')
-if is_64bits:
+if is_64bit:
     lib_wfs = ctypes.windll.LoadLibrary(lib)
     log_wfs.debug('WFS_64.dll loaded')
-elif not is_64bits:
+else:
     lib_wfs = ctypes.windll.LoadLibrary(lib)
     log_wfs.debug('WFS_32.dll loaded')
 
@@ -519,28 +519,6 @@ class WFS(object):
         self.array_zernike_orders_um = Vi.array_float((self.MAX_ZERNIKE_ORDERS + 1))
         self.array_zernike_reconstructed = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
         self.array_zernike_um = Vi.array_float(self.MAX_ZERNIKE_MODES + 1)
-        # self.array_centroid_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        # self.array_centroid_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        # self.array_deviations_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        # self.array_deviations_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        # self.array_diameter_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        # self.array_diameter_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        # self.array_image_buffer = ((ctypes.c_ubyte * self.CAM_MAX_PIX_X) * self.CAM_MAX_PIX_Y)()
-        # self.array_intensity = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        # self.array_line_max = (ctypes.c_float * self.CAM_MAX_PIX_X)()
-        # self.array_line_min = (ctypes.c_float * self.CAM_MAX_PIX_X)()
-        # self.array_line_selected = (ctypes.c_float * self.CAM_MAX_PIX_X)()
-        # self.array_reference_x = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        # self.array_reference_y = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        # self.array_scale_x = (ctypes.c_float * self.MAX_SPOTS_X)()
-        # self.array_scale_y = (ctypes.c_float * self.MAX_SPOTS_Y)()
-        # self.array_wavefront = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        # self.array_wavefront_wave = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        # self.array_wavefront_xy = ((ctypes.c_float * self.MAX_SPOTS_Y) * self.MAX_SPOTS_X)()
-        # self.array_wavefront_yx = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        # self.array_zernike_orders_um = (ctypes.c_float * (self.MAX_ZERNIKE_ORDERS + 1))()
-        # self.array_zernike_reconstructed = ((ctypes.c_float * self.MAX_SPOTS_X) * self.MAX_SPOTS_Y)()
-        # self.array_zernike_um = (ctypes.c_float * (self.MAX_ZERNIKE_MODES + 1))()
         self.average_count = Vi.int32(1)
         self.average_data_ready = Vi.int32(0)
         self.aoi_center_x_mm = Vi.real64(0)
