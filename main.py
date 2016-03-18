@@ -12,6 +12,8 @@ import os
 import subprocess
 import sys
 
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
 import yaml
 
 from wfs import WFS
@@ -89,18 +91,32 @@ else:
     debug_ui, debug_base = uic.loadUiType(debug_path)
 
 
+class MatplotlibWidget(QtGui.QWidget):
+    def __init__(self, parent=None):
+        super(MatplotlibWidget, self).__init__(parent)
+
+        self.figure = Figure()
+        self.canvas = FigureCanvasQTAgg(self.figure)
+
+        self.axis = self.figure.add_subplot(111)
+
+        self.layoutVertical = QtGui.QVBoxLayout(self)
+        self.layoutVertical.addWidget(self.canvas)
+
+
 class WFSThread(QtCore.QThread):
+    roc_ready = Signal(str)
+
     def __init__(self, parent=None, wfs=WFS()):
         super(WFSThread, self).__init__(parent)
         self.wfs = wfs
-        self.roc_ready = Signal(str)
 
     def __del__(self):
         self.wait()
 
-    def update(self):
-        # self.roc_ready.emit(str(self.wfs.update()))
-        self.terminate()
+    def run(self):
+        # noinspection PyUnresolvedReferences
+        self.roc_ready.emit(str(self.wfs.update()))
 
 
 class WFSApp(design_base, design_ui):
@@ -118,14 +134,32 @@ class WFSApp(design_base, design_ui):
         self.action_settings.triggered.connect(lambda: self.on_settings_click('Settings'))
         self.btn_debug.clicked.connect(self.on_debug_click)
         self.btn_test.clicked.connect(self.on_test_click)
+        self.btn_start.clicked.connect(self.on_start_click)
+        self.btn_stop.clicked.connect(self.on_stop_click)
 
-        # self.worker = WFSThread()
-        # self.worker.roc_ready.connect(self.on_test_click)
-        # self.worker.finished.connect(self.on_test_click)
-        # self.worker.start()
+        self.running = False
+        self.wfs_thread = WFSThread(wfs=self.wfs)
+        # noinspection PyUnresolvedReferences
+        self.wfs_thread.roc_ready.connect(self.on_wfs_thread_update)
+        # noinspection PyUnresolvedReferences
+        self.wfs_thread.finished.connect(self.on_wfs_thread_finished)
+        self.graphics_view = MatplotlibWidget(self.central_widget)
+        self.grid_layout_central.addWidget(self.graphics_view)
+
+    @Slot(str)
+    def on_wfs_thread_update(self, roc):
+        self.text_browser.append(roc)
+    #     self.graphics_view.axis.plot(sample)
+    #     self.graphics_view.canvas.draw()
+
+    @Slot()
+    def on_wfs_thread_finished(self):
+        if self.running:
+            self.wfs_thread.start()
 
     @Slot()
     def on_quit_trigger(self):
+        self.wfs._close()
         self.close()
 
     @Slot()
@@ -134,12 +168,29 @@ class WFSApp(design_base, design_ui):
         self.wfs.config()
         self.action_disconnect.setEnabled(True)
         self.action_connect.setEnabled(False)
+        self.on_start_click()
 
     @Slot()
     def on_disconnect_click(self):
+        self.on_stop_click()
+        self.wfs_thread.wait()
         if self.wfs._close() == 0:
             self.action_connect.setEnabled(True)
             self.action_disconnect.setEnabled(False)
+
+    @Slot()
+    def on_start_click(self):
+        if self.wfs.instrument_handle.value != 0:
+            self.running = True
+            self.wfs_thread.start()
+            self.btn_stop.setEnabled(True)
+            self.btn_start.setEnabled(False)
+
+    @Slot()
+    def on_stop_click(self):
+        self.running = False
+        self.btn_start.setEnabled(True)
+        self.btn_stop.setEnabled(False)
 
     @Slot(str)
     def on_settings_click(self, arg1):
@@ -147,8 +198,7 @@ class WFSApp(design_base, design_ui):
 
     @Slot()
     def on_test_click(self):
-        for i in range(1):
-            self.text_browser.append(str(self.wfs.update()))
+        pass
 
     @Slot()
     def on_debug_click(self):

@@ -13,14 +13,17 @@
   <property name="windowTitle">
    <string>WFS Application</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="2">
+  <widget class="QWidget" name="central_widget">
+   <layout class="QGridLayout" name="grid_layout_central">
+    <item row="1" column="0">
+     <widget class="QTextBrowser" name="text_browser"/>
+    </item>
+    <item row="0" column="0">
      <widget class="QGroupBox" name="group_box">
       <property name="title">
        <string>Buttons</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QGridLayout" name="grid_group_box">
        <item row="0" column="2">
         <widget class="QPushButton" name="btn_debug">
          <property name="text">
@@ -42,11 +45,25 @@
          </property>
         </widget>
        </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="btn_start">
+         <property name="text">
+          <string>Start</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="btn_stop">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Stop</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QTextBrowser" name="text_browser"/>
     </item>
    </layout>
   </widget>
