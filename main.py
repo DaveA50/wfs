@@ -16,7 +16,7 @@ import yaml
 
 from wfs import WFS
 
-__version__ = '0.2.0'
+__version__ = '0.2.2'
 PY2 = sys.version_info[0] == 2
 
 
