@@ -12,8 +12,9 @@ import os
 import subprocess
 import sys
 
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
+import numpy as np
+import pyqtgraph as pg
+import pyqtgraph.opengl as gl
 import yaml
 
 from wfs import WFS
@@ -70,7 +71,6 @@ if 'pyside' in sys.argv[1]:
         subprocess.call("pyside-uic.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
     except (WindowsError, FileNotFoundError):
         pass
-    # uic.compileUi()
     with open(os.path.join(gui_path, 'design.py'), 'w') as outfile:
         uic.compileUi(design_path, outfile, from_imports=True)
     with open(os.path.join(gui_path, 'debug.py'), 'w') as outfile:
@@ -91,19 +91,6 @@ else:
     debug_ui, debug_base = uic.loadUiType(debug_path)
 
 
-class MatplotlibWidget(QtGui.QWidget):
-    def __init__(self, parent=None):
-        super(MatplotlibWidget, self).__init__(parent)
-
-        self.figure = Figure()
-        self.canvas = FigureCanvasQTAgg(self.figure)
-
-        self.axis = self.figure.add_subplot(111)
-
-        self.layoutVertical = QtGui.QVBoxLayout(self)
-        self.layoutVertical.addWidget(self.canvas)
-
-
 class WFSThread(QtCore.QThread):
     roc_ready = Signal(str)
 
@@ -115,8 +102,9 @@ class WFSThread(QtCore.QThread):
         self.wait()
 
     def run(self):
+        roc = str(self.wfs.update())
         # noinspection PyUnresolvedReferences
-        self.roc_ready.emit(str(self.wfs.update()))
+        self.roc_ready.emit(roc)
 
 
 class WFSApp(design_base, design_ui):
@@ -126,6 +114,7 @@ class WFSApp(design_base, design_ui):
         self.wfs = wfs
 
         self.debug_window = None
+        self.settings_window = None
 
         self.action_quit.triggered.connect(self.on_quit_trigger)
         self.action_connect.triggered.connect(self.on_connect_click)
@@ -137,20 +126,50 @@ class WFSApp(design_base, design_ui):
         self.btn_start.clicked.connect(self.on_start_click)
         self.btn_stop.clicked.connect(self.on_stop_click)
 
+        # self.zernike_plot = MatplotlibWidget()
+        self.zernike_plot = pg.PlotWidget()
+        self.grid_layout_central.addWidget(self.zernike_plot)
+        self.zernike_plot.setXRange(0, 16)
+        self.zernike_plot_xlist = []
+        for i in range(0, 16):
+            self.zernike_plot_xlist.append(i + 0.5)
+
+        self.roc_plot = pg.PlotWidget()
+        self.grid_layout_central.addWidget(self.roc_plot)
+        self.roc_list = [0] * 100
+
+        self.wavefront_plot = pg.PlotWidget()
+        self.grid_layout_central.addWidget(self.wavefront_plot)
+
         self.running = False
         self.wfs_thread = WFSThread(wfs=self.wfs)
         # noinspection PyUnresolvedReferences
         self.wfs_thread.roc_ready.connect(self.on_wfs_thread_update)
         # noinspection PyUnresolvedReferences
         self.wfs_thread.finished.connect(self.on_wfs_thread_finished)
-        self.graphics_view = MatplotlibWidget(self.central_widget)
-        self.grid_layout_central.addWidget(self.graphics_view)
+        self.on_connect_click()
 
     @Slot(str)
     def on_wfs_thread_update(self, roc):
-        self.text_browser.append(roc)
-    #     self.graphics_view.axis.plot(sample)
-    #     self.graphics_view.canvas.draw()
+        # self.text_browser.append(roc)
+        self.plot_zernike_coefficients()
+        self.plot_roc()
+        self.plot_wavefront()
+
+    def plot_wavefront(self):
+        pass
+
+    def plot_roc(self):
+        self.roc_list.pop(0)
+        self.roc_list.append(self.wfs.roc_mm.value)
+        self.roc_plot.plot(self.roc_list, clear=True)
+
+    def plot_zernike_coefficients(self):
+        z = []
+        for i in self.wfs.array_zernike_um:
+            z.append(i)
+        self.zernike_plot.plot(self.zernike_plot_xlist, z[1:16], stepMode=True, fillLevel=0,
+                               brush=(0, 0, 255, 150), clear=True)
 
     @Slot()
     def on_wfs_thread_finished(self):
@@ -195,6 +214,9 @@ class WFSApp(design_base, design_ui):
     @Slot(str)
     def on_settings_click(self, arg1):
         print(arg1)
+        if self.settings_window is None:
+            self.settings_window = WFSSettingsApp(wfs=self.wfs)
+        self.settings_window.show()
 
     @Slot()
     def on_test_click(self):
@@ -205,6 +227,13 @@ class WFSApp(design_base, design_ui):
         if self.debug_window is None:
             self.debug_window = WFSDebugApp(wfs=self.wfs)
         self.debug_window.show()
+
+
+class WFSSettingsApp(debug_base, debug_ui):
+    def __init__(self, parent=None, wfs=WFS()):
+        super(WFSSettingsApp, self).__init__(parent)
+        self.setupUi(self)
+        self.wfs = wfs
 
 
 class WFSDebugApp(debug_base, debug_ui):
@@ -769,9 +798,6 @@ class WFSDebugApp(debug_base, debug_ui):
         arg2 = str(self.line_arg2.text())
         if arg2 == '':
             arg2 = None
-        else:
-            # print('Array input not implemented')
-            arg2 = None
         arg3 = str(self.line_arg3.text())
         if arg3 == '':
             arg3 = None
@@ -870,9 +896,6 @@ class WFSDebugApp(debug_base, debug_ui):
         arg2 = str(self.line_arg2.text())
         if arg2 == '':
             arg2 = None
-        else:
-            # print('Array input not implemented')
-            arg2 = None
         arg5 = str(self.line_arg5.text())
         if arg5 == '':
             arg5 = None
@@ -884,9 +907,6 @@ class WFSDebugApp(debug_base, debug_ui):
     def on_flip_2d_array_click(self):
         arg1 = str(self.line_arg1.text())
         if arg1 == '':
-            arg1 = None
-        else:
-            # print('Array input not implemented')
             arg1 = None
         arg5 = str(self.line_arg5.text())
         if arg5 == '':
@@ -909,14 +929,8 @@ class WFSDebugApp(debug_base, debug_ui):
         arg2 = str(self.line_arg2.text())
         if arg2 == '':
             arg2 = None
-        else:
-            # print('Array input not implemented')
-            arg2 = None
         arg3 = str(self.line_arg3.text())
         if arg3 == '':
-            arg3 = None
-        else:
-            # print('Array input not implemented')
             arg3 = None
         arg5 = str(self.line_arg5.text())
         if arg5 == '':
