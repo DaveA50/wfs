@@ -93,6 +93,7 @@ class Vi(object):
             y (int): Size of array in Y
         """
         try:
+            # noinspection PyCallingNonCallable
             return ((ctypes.c_ubyte * int(x)) * int(y))()
         except ValueError as e:
             log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
@@ -107,12 +108,14 @@ class Vi(object):
         """
         if y is not None:
             try:
+                # noinspection PyCallingNonCallable
                 return ((ctypes.c_float * int(x)) * int(y))()
             except ValueError as e:
                 log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
                 return ctypes.c_float(0)
         else:
             try:
+                # noinspection PyCallingNonCallable
                 return (ctypes.c_float * int(x))()
             except ValueError as e:
                 log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
@@ -4215,6 +4218,9 @@ class WFS(object):
         self._zernike_lsf()
         return self.roc_mm.value
 
+    def disconnect(self):
+        """Disconnect from the WFS"""
+        return self._close()
 
 if __name__ == '__main__':
     wfs = WFS()

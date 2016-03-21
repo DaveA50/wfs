@@ -1,5 +1,6 @@
 matplotlib
 pyaml
-pytest
 PyQt4
+pyqtgraph
 PySide
+pytest
