@@ -41,33 +41,42 @@ def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
         logging.basicConfig(level=level)
 
 
+def find_wfs_library():
+    """Find and load the WFS .dll in the system
+
+    Returns:
+        ctypes.windll.LoadLibrary(WFS_32/64.dll)
+    """
+    if is_64bit:
+        lib = find_library('WFS_64')
+    else:
+        lib = find_library('WFS_32')
+    if lib is None:
+        if os.name == 'nt':
+            if is_64bit:
+                log_wfs.critical('WFS_64.dll not found')
+                raise ImportError('WFS_64.dll not found')
+            else:
+                log_wfs.critical('WFS_32.dll not found')
+                raise ImportError('WFS_32.dll not found')
+        else:
+            log_wfs.critical('No WFS_32/64 library exists')
+            raise ImportError('No WFS_32/64 library exists')
+    if is_64bit:
+        _lib_wfs = ctypes.windll.LoadLibrary(lib)
+        log_wfs.debug('WFS_64.dll loaded')
+    else:
+        _lib_wfs = ctypes.windll.LoadLibrary(lib)
+        log_wfs.debug('WFS_32.dll loaded')
+    return _lib_wfs
+
 setup_logging()
 log_wfs = logging.getLogger('WFS')
-
-if is_64bit:
-    lib = find_library('WFS_64')
-else:
-    lib = find_library('WFS_32')
-if lib is None:
-    if os.name == 'nt':
-        if is_64bit:
-            log_wfs.critical('WFS_64.dll not found')
-            raise ImportError('WFS_64.dll not found')
-        else:
-            log_wfs.critical('WFS_32.dll not found')
-            raise ImportError('WFS_32.dll not found')
-    else:
-        log_wfs.critical('No WFS_32/64 library exists')
-        raise ImportError('No WFS_32/64 library exists')
-if is_64bit:
-    lib_wfs = ctypes.windll.LoadLibrary(lib)
-    log_wfs.debug('WFS_64.dll loaded')
-else:
-    lib_wfs = ctypes.windll.LoadLibrary(lib)
-    log_wfs.debug('WFS_32.dll loaded')
+lib_wfs = find_wfs_library()
 
 
-class Vi:
+class Vi(object):
+    """Container for ctypes conversion to Vi"""
     true = 1
     false = 0
     null = 0
@@ -221,6 +230,15 @@ class Vi:
 
     @staticmethod
     def boolean(n):
+        """
+
+        Args:
+            n (int):
+
+        Returns:
+            Vi.uint16(n) or Vi.uint16(0)
+
+        """
         if n is True:
             n = Vi.true
         elif n is False:
@@ -233,28 +251,71 @@ class Vi:
 
     @staticmethod
     def object(n):
+        """
+
+        Args:
+            n (int):
+
+        Returns:
+            Vi.uint16(n) or Vi.uint16(0)
+        """
         return Vi.uint32(n)
 
     @staticmethod
     def session(n):
+        """
+
+        Args:
+            n (int):
+
+        Returns:
+            Vi.object(n)
+        """
         return Vi.object(n)
 
     @staticmethod
     def status(n):
+        """
+
+        Args:
+            n (int):
+
+        Returns:
+            Vi.int32(n)
+        """
         return Vi.int32(n)
 
     @staticmethod
     def string(n, s):
+        """
+
+        Args:
+            n (int):
+            s (str):
+
+        Returns:
+            Vi.char(n).value = s
+        """
         str_buffer = Vi.char(n)
         str_buffer.value = s
         return str_buffer
 
     @staticmethod
     def rsrc(n, s):
+        """
+
+        Args:
+            n (int):
+            s (str):
+
+        Returns:
+            Vi.string(n, s)
+        """
         return Vi.string(n, s)
 
 
 class WFS(object):
+    """Thorlabs Shack-Hartmann Wavefront Sensor Interface"""
     # Constants declared in WFS.h header file
     # Buffers
     WFS_BUFFER_SIZE = 256  # General buffer size
@@ -4105,6 +4166,7 @@ class WFS(object):
         return status
 
     def connect(self):
+        """Connect to the WFS automatically"""
         self._get_instrument_list_len()
         self._get_instrument_list_info()
         self._init(id_query=1, reset_device=1)
@@ -4120,6 +4182,7 @@ class WFS(object):
         self._get_mla_data()
 
     def config(self):
+        """Configure default WFS settings"""
         self._select_mla(0)
         self._configure_cam(0)
         self.intensity_limit.value = 10
@@ -4132,6 +4195,7 @@ class WFS(object):
         self._get_status()
 
     def update(self):
+        """Update the WFS and calculate values and RoC"""
         if self.allow_auto_exposure.value == 1:
             self._take_spotfield_image_auto_exposure()
         else:
@@ -4139,6 +4203,7 @@ class WFS(object):
         self._get_status()
         self._cut_image_noise_floor()
         self._get_spotfield_image()
+        # self._get_spotfield_image_copy()  # Takes a significant amount of time to run
         self._calc_spots_centroid_diameter_intensity()
         self._get_spot_centroids()
         self._calc_beam_centroid_diameter()
@@ -4146,6 +4211,7 @@ class WFS(object):
         self._get_spot_deviations()
         self._calc_wavefront()
         self._calc_wavefront_statistics()
+        self._get_line_view()
         self._zernike_lsf()
         return self.roc_mm.value
 
