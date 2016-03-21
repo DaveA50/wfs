@@ -2376,8 +2376,8 @@ class WFS(object):
                                                    ctypes.byref(self.spotfield_rows),
                                                    ctypes.byref(self.spotfield_columns))
         log_wfs.debug('Get Spotfield Image Copy: {0}'.format(self.instrument_handle.value))
-        log_wfs.info('Image Buffer Copy: ' +
-                     '\n'.join([''.join(['{:6}'.format(item) for item in row]) for row in self.array_image_buffer]))
+        log_wfs.debug('Image Buffer Copy: ' +
+                      '\n'.join([''.join(['{:6}'.format(item) for item in row]) for row in self.array_image_buffer]))
         log_wfs.info('Rows: {0}'.format(self.spotfield_rows.value))
         log_wfs.info('Columns: {0}'.format(self.spotfield_columns.value))
         self._error_message(status)
