@@ -4109,8 +4109,11 @@ class WFS(object):
         self._get_instrument_list_info()
         self._init(id_query=1, reset_device=1)
         if self.in_use.value == 1:
-            log_wfs.warning('Instrument is being used!')
-            return
+            log_wfs.error('Instrument is being used!')
+            raise IOError
+        if self.instrument_handle.value == 0:
+            log_wfs.error('Instrument not found!')
+            raise IOError
         self._revision_query()
         self._get_instrument_info()
         self._get_mla_count()
