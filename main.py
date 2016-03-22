@@ -179,7 +179,11 @@ class WFSApp(design_base, design_ui):
 
     @Slot(str)
     def on_wfs_thread_update(self, roc):
-        """Update the GUI when the WFS Thread updates"""
+        """Update the GUI when the WFS Thread updates
+
+        Args:
+            roc (str): Radius of Curvature in mm
+        """
         self.text_browser.append(roc)
         self.plot_zernike_coefficients()
         self.plot_roc()
@@ -260,7 +264,10 @@ class WFSApp(design_base, design_ui):
 
     @Slot(str)
     def on_settings_click(self, arg1):
-        """Open the Settings window"""
+        """Open the Settings window
+
+        Args:
+            arg1 (str): Test string"""
         print(arg1)
         # if self.settings_window is None:
         #     self.settings_window = WFSSettingsApp(wfs=self.wfs)
