@@ -53,12 +53,12 @@ gui_path = os.path.join(abs_path, 'gui')
 design_path = os.path.join(gui_path, 'design.ui')
 debug_path = os.path.join(gui_path, 'debug.ui')
 try:
-    # noinspection PyUnboundLocalVariable
+    # noinspection PyUnboundLocalVariable,PyUnresolvedReferences
     FileNotFoundError
 except NameError:
     FileNotFoundError = IOError
 try:
-    # noinspection PyUnboundLocalVariable
+    # noinspection PyUnboundLocalVariable,PyUnresolvedReferences
     WindowsError
 except NameError:
     WindowsError = IOError
@@ -85,7 +85,7 @@ else:
     try:
         subprocess.call("pyuic4.bat gui/design.ui -o gui/design.py")  # Compile .py from .ui
         subprocess.call("pyuic4.bat gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
-    except (WindowsError, FileNotFoundError):
+    except (WindowsError, FileNotFoundError, OSError):
         pass
     design_ui, design_base = uic.loadUiType(design_path)
     debug_ui, debug_base = uic.loadUiType(debug_path)
@@ -179,7 +179,11 @@ class WFSApp(design_base, design_ui):
 
     @Slot(str)
     def on_wfs_thread_update(self, roc):
-        """Update the GUI when the WFS Thread updates"""
+        """Update the GUI when the WFS Thread updates
+
+        Args:
+            roc (str): Radius of Curvature in mm
+        """
         self.text_browser.append(roc)
         self.plot_zernike_coefficients()
         self.plot_roc()
@@ -260,7 +264,10 @@ class WFSApp(design_base, design_ui):
 
     @Slot(str)
     def on_settings_click(self, arg1):
-        """Open the Settings window"""
+        """Open the Settings window
+
+        Args:
+            arg1 (str): Test string"""
         print(arg1)
         # if self.settings_window is None:
         #     self.settings_window = WFSSettingsApp(wfs=self.wfs)
