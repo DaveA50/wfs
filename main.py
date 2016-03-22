@@ -85,7 +85,7 @@ else:
     try:
         subprocess.call("pyuic4.bat gui/design.ui -o gui/design.py")  # Compile .py from .ui
         subprocess.call("pyuic4.bat gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
-    except (WindowsError, FileNotFoundError):
+    except (WindowsError, FileNotFoundError, OSError):
         pass
     design_ui, design_base = uic.loadUiType(design_path)
     debug_ui, debug_base = uic.loadUiType(debug_path)
