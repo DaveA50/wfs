@@ -303,16 +303,16 @@ class TestWFS(object):
 
     # Utility Functions
     def test_self_test(self, wfs):
-        # Self-test not supported
-        assert wfs._self_test()[0] == 1073479939
+        # Self-test not supported! # 1073479939
+        assert wfs._self_test()[0] in (0, wfs.WFS_WARN_NSUP_SELF_TEST)
 
     def test_reset(self, wfs):
-        # Reset not supported
-        assert wfs._reset() == 1073479938
+        # Reset not supported! # 1073479938
+        assert wfs._reset() in (0, wfs.WFS_WARN_NSUP_RESET)
 
     def test_error_query(self, wfs):
-        # Error query not supported
-        assert wfs._error_query()[0] == 1073479940
+        # Error query not supported! # 1073479940
+        assert wfs._error_query()[0] in (0, wfs.WFS_WARN_NSUP_ERROR_QUERY)
 
     def test_error_message(self, wfs):
         assert wfs._error_message(wfs.WFS_ERROR_PARAMETER1) == (0, 'Parameter 1 out of range!')
