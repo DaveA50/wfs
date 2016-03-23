@@ -389,11 +389,11 @@ class WFS(object):
     WFS_WARN_NSUP_SELF_TEST = 0x3FFC0103  # 1073479939
     WFS_WARN_NSUP_ERROR_QUERY = 0x3FFC0104  # 1073479940
     WFS_WARN_NSUP_REV_QUERY = 0x3FFC0105  # 1073479941
-    WFS_WARNING_CODES = {WFS_WARN_NSUP_ID_QUERY: 'Identification query not supported',
-                         WFS_WARN_NSUP_RESET: 'Reset not supported',
-                         WFS_WARN_NSUP_SELF_TEST: 'Self-test not supported',
-                         WFS_WARN_NSUP_ERROR_QUERY: 'Error query not supported',
-                         WFS_WARN_NSUP_REV_QUERY: 'Instrument revision query not supported'}
+    WFS_WARNING_CODES = {WFS_WARN_NSUP_ID_QUERY: 'Identification query not supported!',
+                         WFS_WARN_NSUP_RESET: 'Reset not supported!',
+                         WFS_WARN_NSUP_SELF_TEST: 'Self-test not supported!',
+                         WFS_WARN_NSUP_ERROR_QUERY: 'Error query not supported!',
+                         WFS_WARN_NSUP_REV_QUERY: 'Instrument revision query not supported!'}
 
     # Driver Status reporting (lower 24 bits)
     WFS_STATBIT_CON = 0x00000001  # USB connection lost, set by driver
@@ -3679,13 +3679,16 @@ class WFS(object):
             status = 0
             return status, self.error_message.value
         elif self.error_code.value in self.WFS_WARNING_CODES:
-            log_wfs.warning('Unsupported: {0}'.format(self.WFS_WARNING_CODES[self.error_code.value]))
-            self.error_message.value = 'Unsupported: {0}'.format(self.WFS_WARNING_CODES[self.error_code.value])
+            log_wfs.warning(self.WFS_WARNING_CODES[self.error_code.value])
+            self.error_message.value = self.WFS_WARNING_CODES[self.error_code.value]
             status = 0
             return status, self.error_message.value
         status = lib_wfs.WFS_error_message(self.instrument_handle,
                                            self.error_code,
                                            self.error_message)
+        if self.error_code.value == self.WFS_ERROR_CORRUPT_REF_FILE:
+            # Typo in reference is expected in normal return message
+            self.error_message.value = b'Corrupt reference file!'
         # log_wfs.debug('Error Message: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Error Code: {0}'.format(self.error_code.value))
         log_wfs.error('Error Message: {0}'.format(self.error_message.value))
