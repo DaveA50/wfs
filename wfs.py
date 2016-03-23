@@ -587,8 +587,8 @@ class WFS(object):
         self.average_data_ready = Vi.int32(0)
         self.aoi_center_x_mm = Vi.real64(0)
         self.aoi_center_y_mm = Vi.real64(0)
-        self.aoi_size_x_mm = Vi.real64(0)
-        self.aoi_size_y_mm = Vi.real64(0)
+        self.aoi_size_x_mm = Vi.real64(0)  # 0 is full sensor size
+        self.aoi_size_y_mm = Vi.real64(0)  # 0 is full sensor size
         self.beam_centroid_x_mm = Vi.real64(0)
         self.beam_centroid_y_mm = Vi.real64(0)
         self.beam_diameter_x_mm = Vi.real64(0)
@@ -2648,8 +2648,8 @@ class WFS(object):
                                      self.array_line_selected)
         log_wfs.debug('Get Line: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Line: {0}'.format(self.line.value))
-        log_wfs.info('Line Selected: ' +
-                     ''.join(['{:6}'.format(item) for item in self.array_line_selected]))
+        log_wfs.debug('Line Selected: ' +
+                      ''.join(['{:6}'.format(item) for item in self.array_line_selected]))
         self._error_message(status)
         return status, self.array_line_selected
 
@@ -2696,10 +2696,10 @@ class WFS(object):
                                          self.array_line_min,
                                          self.array_line_max)
         log_wfs.debug('Get Line View: {0}'.format(self.instrument_handle.value))
-        log_wfs.info('Line Minimum: ' +
-                     ''.join(['{:6}'.format(item) for item in self.array_line_min]))
-        log_wfs.info('Line Maximum: ' +
-                     ''.join(['{:6}'.format(item) for item in self.array_line_max]))
+        log_wfs.debug('Line Minimum: ' +
+                      ''.join(['{:6}'.format(item) for item in self.array_line_min]))
+        log_wfs.debug('Line Maximum: ' +
+                      ''.join(['{:6}'.format(item) for item in self.array_line_max]))
         self._error_message(status)
         return status, self.array_line_min, self.array_line_max
 
@@ -3875,7 +3875,7 @@ class WFS(object):
                                                    self.array_wavefront_wave)
         log_wfs.debug('Convert Wavefront to Waves: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Wavelength: {0}'.format(self.wavelength.value))
-        log_wfs.debug('Wavefront (um): \n' +
+        log_wfs.debug('Wavefront (µm): \n' +
                       '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_wavefront]))
         log_wfs.debug('Wavefront (waves): \n' +
                       '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_wavefront_wave]))
