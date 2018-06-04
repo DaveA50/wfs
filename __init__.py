@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+"""Init WFS"""
+
 from __future__ import absolute_import
 from . import wfs
 

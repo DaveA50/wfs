@@ -6,46 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>555</width>
-    <height>541</height>
+    <width>618</width>
+    <height>610</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>WFS Application</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="2">
-     <widget class="QGroupBox" name="group_box">
-      <property name="title">
-       <string>Buttons</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="2">
-        <widget class="QPushButton" name="btn_debug">
-         <property name="text">
-          <string>Debug</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QPushButton" name="btn_settings">
-         <property name="text">
-          <string>Settings</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="btn_test">
-         <property name="text">
-          <string>Test</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="1" column="2">
+  <widget class="QWidget" name="central_widget">
+   <layout class="QGridLayout" name="grid_central">
+    <item row="0" column="0">
      <widget class="QTextBrowser" name="text_browser"/>
     </item>
    </layout>
@@ -55,7 +25,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>555</width>
+     <width>618</width>
      <height>21</height>
     </rect>
    </property>
@@ -65,9 +35,9 @@
     </property>
     <addaction name="action_connect"/>
     <addaction name="action_disconnect"/>
-    <addaction name="action_settings"/>
     <addaction name="separator"/>
-    <addaction name="action_save_measurement_data"/>
+    <addaction name="action_settings"/>
+    <addaction name="action_debug"/>
     <addaction name="separator"/>
     <addaction name="action_quit"/>
    </widget>
@@ -86,18 +56,13 @@
    </attribute>
    <addaction name="action_connect"/>
    <addaction name="action_disconnect"/>
+   <addaction name="action_start"/>
+   <addaction name="action_stop"/>
+   <addaction name="action_test"/>
   </widget>
   <action name="action_quit">
    <property name="text">
     <string>&amp;Quit</string>
-   </property>
-  </action>
-  <action name="action_save_measurement_data">
-   <property name="text">
-    <string>Save &amp;Measurement Data</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="action_settings">
@@ -112,6 +77,9 @@
    <property name="text">
     <string>&amp;Connect</string>
    </property>
+   <property name="toolTip">
+    <string>Connect to the WFS</string>
+   </property>
    <property name="shortcut">
     <string>F1</string>
    </property>
@@ -123,8 +91,52 @@
    <property name="text">
     <string>&amp;Disconnect</string>
    </property>
+   <property name="toolTip">
+    <string>Disconnect from the WFS</string>
+   </property>
    <property name="shortcut">
     <string>F2</string>
+   </property>
+  </action>
+  <action name="action_stop">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Stop</string>
+   </property>
+   <property name="toolTip">
+    <string>Stop updating the WFS</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F2</string>
+   </property>
+  </action>
+  <action name="action_start">
+   <property name="text">
+    <string>Start</string>
+   </property>
+   <property name="toolTip">
+    <string>Start updating the WFS</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F1</string>
+   </property>
+  </action>
+  <action name="action_debug">
+   <property name="text">
+    <string>Debug</string>
+   </property>
+   <property name="toolTip">
+    <string>Debug command window</string>
+   </property>
+  </action>
+  <action name="action_test">
+   <property name="text">
+    <string>Test</string>
+   </property>
+   <property name="toolTip">
+    <string>Test Function</string>
    </property>
   </action>
  </widget>

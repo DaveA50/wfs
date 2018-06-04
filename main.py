@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Wrapper for interfacing with the Thorlabs Wavefront Sensor (WFS)
+GUI for Thorlabs Shack-Hartmann Wavefront Sensor Wrapper
 """
 
 from __future__ import print_function
@@ -12,6 +12,9 @@ import os
 import subprocess
 import sys
 
+import numpy as np
+import pyqtgraph as pg
+import pyqtgraph.opengl as gl
 import yaml
 
 from wfs import WFS
@@ -50,12 +53,12 @@ gui_path = os.path.join(abs_path, 'gui')
 design_path = os.path.join(gui_path, 'design.ui')
 debug_path = os.path.join(gui_path, 'debug.ui')
 try:
-    # noinspection PyUnboundLocalVariable
+    # noinspection PyUnboundLocalVariable,PyUnresolvedReferences
     FileNotFoundError
 except NameError:
     FileNotFoundError = IOError
 try:
-    # noinspection PyUnboundLocalVariable
+    # noinspection PyUnboundLocalVariable,PyUnresolvedReferences
     WindowsError
 except NameError:
     WindowsError = IOError
@@ -68,7 +71,6 @@ if 'pyside' in sys.argv[1]:
         subprocess.call("pyside-uic.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
     except (WindowsError, FileNotFoundError):
         pass
-    # uic.compileUi()
     with open(os.path.join(gui_path, 'design.py'), 'w') as outfile:
         uic.compileUi(design_path, outfile, from_imports=True)
     with open(os.path.join(gui_path, 'debug.py'), 'w') as outfile:
@@ -83,81 +85,218 @@ else:
     try:
         subprocess.call("pyuic4.bat gui/design.ui -o gui/design.py")  # Compile .py from .ui
         subprocess.call("pyuic4.bat gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
-    except (WindowsError, FileNotFoundError):
+    except (WindowsError, FileNotFoundError, OSError):
         pass
     design_ui, design_base = uic.loadUiType(design_path)
     debug_ui, debug_base = uic.loadUiType(debug_path)
 
 
 class WFSThread(QtCore.QThread):
+    """Separate thread for WFS updating"""
+    roc_ready = Signal(str)
+
     def __init__(self, parent=None, wfs=WFS()):
         super(WFSThread, self).__init__(parent)
         self.wfs = wfs
-        self.roc_ready = Signal(str)
 
     def __del__(self):
         self.wait()
 
-    def update(self):
-        # self.roc_ready.emit(str(self.wfs.update()))
-        self.terminate()
+    def run(self):
+        """Run and update on the WFS"""
+        roc = str(self.wfs.update())
+        # noinspection PyUnresolvedReferences
+        self.roc_ready.emit(roc)
 
 
 class WFSApp(design_base, design_ui):
+    """
+    Main GUI for the WFS
+    """
+
     def __init__(self, parent=None, wfs=WFS()):
         super(WFSApp, self).__init__(parent)
         self.setupUi(self)
         self.wfs = wfs
 
         self.debug_window = None
+        self.settings_window = None
 
         self.action_quit.triggered.connect(self.on_quit_trigger)
         self.action_connect.triggered.connect(self.on_connect_click)
         self.action_disconnect.triggered.connect(self.on_disconnect_click)
-        self.btn_settings.clicked.connect(lambda: self.on_settings_click('Settings'))
         self.action_settings.triggered.connect(lambda: self.on_settings_click('Settings'))
-        self.btn_debug.clicked.connect(self.on_debug_click)
-        self.btn_test.clicked.connect(self.on_test_click)
+        self.action_debug.triggered.connect(self.on_debug_click)
+        self.action_test.triggered.connect(self.on_test_click)
+        self.action_start.triggered.connect(self.on_start_click)
+        self.action_stop.triggered.connect(self.on_stop_click)
 
-        # self.worker = WFSThread()
-        # self.worker.roc_ready.connect(self.on_test_click)
-        # self.worker.finished.connect(self.on_test_click)
-        # self.worker.start()
+        self.zernike_plot = pg.PlotWidget()
+        self.grid_central.addWidget(self.zernike_plot)
+        self.zernike_plot.setXRange(0, 16)
+        self.zernike_plot_xrange = np.linspace(0.5, 15.5, 16)
+
+        self.roc_plot = pg.PlotWidget()
+        self.grid_central.addWidget(self.roc_plot)
+        self.roc_list = [0] * 100
+        self.roc_list_X = [x for x in range(-100, 0)]
+
+        self.line_view_plot = pg.PlotWidget()
+        self.grid_central.addWidget(self.line_view_plot)
+
+        self.wavefront_grid_X = np.linspace(-2.4, 2.4, 33)
+        self.wavefront_grid_Y = np.linspace(-3, 3, 41)
+        self.gl_widget = gl.GLViewWidget()
+        self.gl_grid = gl.GLGridItem()
+        self.gl_grid.scale(.5, .5, .05)
+        self.gl_grid.setDepthValue(10)
+        self.gl_widget.addItem(self.gl_grid)
+        self.wavefront_plot = gl.GLSurfacePlotItem(x=self.wavefront_grid_X, y=self.wavefront_grid_Y,
+                                                   shader='heightColor')
+        self.wavefront_plot.shader()['colorMap'] = np.array([0.2, 2, 0.5, 0.2, 1, 1, 0.2, 0, 2])
+        self.gl_widget.addItem(self.wavefront_plot)
+        # self.gl_widget.show()
+
+        self.running = False
+        self.wfs_thread = WFSThread(wfs=self.wfs)
+        # noinspection PyUnresolvedReferences
+        self.wfs_thread.roc_ready.connect(self.on_wfs_thread_update)
+        # noinspection PyUnresolvedReferences
+        self.wfs_thread.finished.connect(self.on_wfs_thread_finished)
+        self.on_connect_click()
+
+    # noinspection PyPep8Naming
+    def closeEvent(self, event):
+        """
+
+        Args:
+            event:
+        """
+        self.running = False
+        self.wfs_thread.wait()
+        self.wfs.disconnect()
+        event.accept()
+
+    @Slot(str)
+    def on_wfs_thread_update(self, roc):
+        """Update the GUI when the WFS Thread updates
+
+        Args:
+            roc (str): Radius of Curvature in mm
+        """
+        self.text_browser.append(roc)
+        self.plot_zernike_coefficients()
+        self.plot_roc()
+        self.plot_line_view()
+        # self.plot_wavefront()
+
+    def plot_line_view(self):
+        """Plot the min and max lines"""
+        line_min = np.ctypeslib.as_array(self.wfs.array_line_min)
+        line_max = np.ctypeslib.as_array(self.wfs.array_line_max)
+        self.line_view_plot.plot(y=line_min, clear=True)
+        self.line_view_plot.plot(y=line_max)
+
+    def plot_wavefront(self):
+        """Plot a 3D wavefront"""
+        z = np.ctypeslib.as_array(self.wfs.array_wavefront)
+        self.wavefront_plot.setData(z=z)
+
+    def plot_roc(self):
+        """Plot the last 100 RoC measurements in mm"""
+        self.roc_list.pop(0)
+        self.roc_list.append(self.wfs.roc_mm.value)
+        self.roc_plot.plot(x=self.roc_list_X, y=self.roc_list, clear=True)
+
+    def plot_zernike_coefficients(self):
+        """Plot the Zernike coefficients as a bar graph"""
+        z = np.ctypeslib.as_array(self.wfs.array_zernike_um)
+        self.zernike_plot.plot(self.zernike_plot_xrange, z[1:16], stepMode=True, fillLevel=0,
+                               brush=(0, 0, 255, 150), clear=True)
+
+    @Slot()
+    def on_wfs_thread_finished(self):
+        """Restart WFS Thread when finished"""
+        if self.running:
+            self.wfs_thread.start()
 
     @Slot()
     def on_quit_trigger(self):
+        """Exit the program"""
+        self.running = False
+        self.wfs_thread.wait()
+        self.wfs.disconnect()
         self.close()
 
     @Slot()
     def on_connect_click(self):
+        """Connect to the WFS"""
         self.wfs.connect()
         self.wfs.config()
         self.action_disconnect.setEnabled(True)
         self.action_connect.setEnabled(False)
+        self.on_start_click()
 
     @Slot()
     def on_disconnect_click(self):
-        if self.wfs._close() == 0:
+        """Disconnect from the WFS"""
+        self.on_stop_click()
+        self.wfs_thread.wait()
+        if self.wfs.disconnect() == 0:
             self.action_connect.setEnabled(True)
             self.action_disconnect.setEnabled(False)
 
+    @Slot()
+    def on_start_click(self):
+        """Start the thread to update the WFS"""
+        if self.wfs.instrument_handle.value != 0:
+            self.running = True
+            self.wfs_thread.start()
+            self.action_stop.setEnabled(True)
+            self.action_start.setEnabled(False)
+
+    @Slot()
+    def on_stop_click(self):
+        """Stop the thread to update the WFS"""
+        self.running = False
+        self.action_start.setEnabled(True)
+        self.action_stop.setEnabled(False)
+
     @Slot(str)
     def on_settings_click(self, arg1):
+        """Open the Settings window
+
+        Args:
+            arg1 (str): Test string"""
         print(arg1)
+        # if self.settings_window is None:
+        #     self.settings_window = WFSSettingsApp(wfs=self.wfs)
+        # self.settings_window.show()
 
     @Slot()
     def on_test_click(self):
-        for i in range(1):
-            self.text_browser.append(str(self.wfs.update()))
+        """Run a test function"""
+        pass
 
     @Slot()
     def on_debug_click(self):
+        """Show the debug command window"""
         if self.debug_window is None:
             self.debug_window = WFSDebugApp(wfs=self.wfs)
         self.debug_window.show()
 
 
+class WFSSettingsApp(debug_base, debug_ui):
+    """GUI for easy configuration of the WFS"""
+    def __init__(self, parent=None, wfs=WFS()):
+        super(WFSSettingsApp, self).__init__(parent)
+        self.setupUi(self)
+        self.wfs = wfs
+
+
+# noinspection PyProtectedMember,PyMissingOrEmptyDocstring
 class WFSDebugApp(debug_base, debug_ui):
+    """GUI with all WFS commands and arguments"""
     def __init__(self, parent=None, wfs=WFS()):
         super(WFSDebugApp, self).__init__(parent)
         self.setupUi(self)
@@ -238,6 +377,9 @@ class WFSDebugApp(debug_base, debug_ui):
 
     @Slot()
     def on_get_instrument_info_click(self):
+        """
+        TODO
+        """
         arg5 = str(self.line_arg5.text())
         if arg5 == '':
             arg5 = None
@@ -245,6 +387,9 @@ class WFSDebugApp(debug_base, debug_ui):
 
     @Slot()
     def on_configure_cam_click(self):
+        """
+        TODO
+        """
         arg1 = str(self.line_arg1.text())
         if arg1 == '':
             arg1 = None
@@ -260,6 +405,9 @@ class WFSDebugApp(debug_base, debug_ui):
 
     @Slot()
     def on_set_highspeed_mode_click(self):
+        """
+        TODO
+        """
         arg1 = str(self.line_arg1.text())
         if arg1 == '':
             arg1 = None
@@ -719,9 +867,6 @@ class WFSDebugApp(debug_base, debug_ui):
         arg2 = str(self.line_arg2.text())
         if arg2 == '':
             arg2 = None
-        else:
-            # print('Array input not implemented')
-            arg2 = None
         arg3 = str(self.line_arg3.text())
         if arg3 == '':
             arg3 = None
@@ -820,9 +965,6 @@ class WFSDebugApp(debug_base, debug_ui):
         arg2 = str(self.line_arg2.text())
         if arg2 == '':
             arg2 = None
-        else:
-            # print('Array input not implemented')
-            arg2 = None
         arg5 = str(self.line_arg5.text())
         if arg5 == '':
             arg5 = None
@@ -834,9 +976,6 @@ class WFSDebugApp(debug_base, debug_ui):
     def on_flip_2d_array_click(self):
         arg1 = str(self.line_arg1.text())
         if arg1 == '':
-            arg1 = None
-        else:
-            # print('Array input not implemented')
             arg1 = None
         arg5 = str(self.line_arg5.text())
         if arg5 == '':
@@ -859,14 +998,8 @@ class WFSDebugApp(debug_base, debug_ui):
         arg2 = str(self.line_arg2.text())
         if arg2 == '':
             arg2 = None
-        else:
-            # print('Array input not implemented')
-            arg2 = None
         arg3 = str(self.line_arg3.text())
         if arg3 == '':
-            arg3 = None
-        else:
-            # print('Array input not implemented')
             arg3 = None
         arg5 = str(self.line_arg5.text())
         if arg5 == '':
@@ -935,11 +1068,18 @@ class WFSDebugApp(debug_base, debug_ui):
 
 
 def main(wfs):
+    """Main running function
+
+    Args:
+        wfs:
+    """
     app = QtGui.QApplication(sys.argv)
     form = WFSApp(wfs=wfs)
     form.show()
-    app.exec_()
+    ret = app.exec_()
+    # Add final cleanup here
+    sys.exit(ret)
 
 if __name__ == '__main__':
-    wfs = WFS()
-    main(wfs)
+    _wfs = WFS()
+    main(_wfs)

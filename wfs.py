@@ -41,33 +41,42 @@ def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
         logging.basicConfig(level=level)
 
 
+def find_wfs_library():
+    """Find and load the WFS .dll in the system
+
+    Returns:
+        ctypes.windll.LoadLibrary(WFS_32/64.dll)
+    """
+    if is_64bit:
+        lib = find_library('WFS_64')
+    else:
+        lib = find_library('WFS_32')
+    if lib is None:
+        if os.name == 'nt':
+            if is_64bit:
+                log_wfs.critical('WFS_64.dll not found')
+                raise ImportError('WFS_64.dll not found')
+            else:
+                log_wfs.critical('WFS_32.dll not found')
+                raise ImportError('WFS_32.dll not found')
+        else:
+            log_wfs.critical('No WFS_32/64 library exists')
+            raise ImportError('No WFS_32/64 library exists')
+    if is_64bit:
+        _lib_wfs = ctypes.windll.LoadLibrary(lib)
+        log_wfs.debug('WFS_64.dll loaded')
+    else:
+        _lib_wfs = ctypes.windll.LoadLibrary(lib)
+        log_wfs.debug('WFS_32.dll loaded')
+    return _lib_wfs
+
 setup_logging()
 log_wfs = logging.getLogger('WFS')
-
-if is_64bit:
-    lib = find_library('WFS_64')
-else:
-    lib = find_library('WFS_32')
-if lib is None:
-    if os.name == 'nt':
-        if is_64bit:
-            log_wfs.critical('WFS_64.dll not found')
-            raise ImportError('WFS_64.dll not found')
-        else:
-            log_wfs.critical('WFS_32.dll not found')
-            raise ImportError('WFS_32.dll not found')
-    else:
-        log_wfs.critical('No WFS_32/64 library exists')
-        raise ImportError('No WFS_32/64 library exists')
-if is_64bit:
-    lib_wfs = ctypes.windll.LoadLibrary(lib)
-    log_wfs.debug('WFS_64.dll loaded')
-else:
-    lib_wfs = ctypes.windll.LoadLibrary(lib)
-    log_wfs.debug('WFS_32.dll loaded')
+lib_wfs = find_wfs_library()
 
 
-class Vi:
+class Vi(object):
+    """Container for ctypes conversion to Vi"""
     true = 1
     false = 0
     null = 0
@@ -84,6 +93,7 @@ class Vi:
             y (int): Size of array in Y
         """
         try:
+            # noinspection PyCallingNonCallable
             return ((ctypes.c_ubyte * int(x)) * int(y))()
         except ValueError as e:
             log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
@@ -98,12 +108,14 @@ class Vi:
         """
         if y is not None:
             try:
+                # noinspection PyCallingNonCallable
                 return ((ctypes.c_float * int(x)) * int(y))()
             except ValueError as e:
                 log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
                 return ctypes.c_float(0)
         else:
             try:
+                # noinspection PyCallingNonCallable
                 return (ctypes.c_float * int(x))()
             except ValueError as e:
                 log_wfs.warning('Must be an Int, setting to 0: {0}'.format(e))
@@ -221,6 +233,15 @@ class Vi:
 
     @staticmethod
     def boolean(n):
+        """
+
+        Args:
+            n (int):
+
+        Returns:
+            Vi.uint16(n) or Vi.uint16(0)
+
+        """
         if n is True:
             n = Vi.true
         elif n is False:
@@ -233,28 +254,71 @@ class Vi:
 
     @staticmethod
     def object(n):
+        """
+
+        Args:
+            n (int):
+
+        Returns:
+            Vi.uint16(n) or Vi.uint16(0)
+        """
         return Vi.uint32(n)
 
     @staticmethod
     def session(n):
+        """
+
+        Args:
+            n (int):
+
+        Returns:
+            Vi.object(n)
+        """
         return Vi.object(n)
 
     @staticmethod
     def status(n):
+        """
+
+        Args:
+            n (int):
+
+        Returns:
+            Vi.int32(n)
+        """
         return Vi.int32(n)
 
     @staticmethod
     def string(n, s):
+        """
+
+        Args:
+            n (int):
+            s (str):
+
+        Returns:
+            Vi.char(n).value = s
+        """
         str_buffer = Vi.char(n)
         str_buffer.value = s
         return str_buffer
 
     @staticmethod
     def rsrc(n, s):
+        """
+
+        Args:
+            n (int):
+            s (str):
+
+        Returns:
+            Vi.string(n, s)
+        """
         return Vi.string(n, s)
 
 
 class WFS(object):
+    """Thorlabs Shack-Hartmann Wavefront Sensor Interface"""
     # Constants declared in WFS.h header file
     # Buffers
     WFS_BUFFER_SIZE = 256  # General buffer size
@@ -267,69 +331,69 @@ class WFS(object):
     MAX_MLA_CALS = 7  # max. 7 MLA cals per device
 
     # Offsets
-    WFS_ERROR = (-2147483647 - 1)  # 0x80000000
-    WFS_INSTR_WARNING_OFFSET = 0x3FFC0900
-    WFS_INSTR_ERROR_OFFSET = WFS_ERROR + 0x3FFC0900  # 0xBFFC0900
+    WFS_ERROR = (-2147483647 - 1)  # 0x80000000, -2147483648
+    WFS_INSTR_WARNING_OFFSET = 0x3FFC0900  # 1073481984
+    WFS_INSTR_ERROR_OFFSET = WFS_ERROR + 0x3FFC0900  # 0xBFFC0900, -1074001664
 
     # WFS Driver Error Codes; error texts defined in WFS_ErrorMessage()
     WFS_SUCCESS = 0
 
-    WFS_ERROR_PARAMETER1 = WFS_ERROR + 0x3FFC0001
-    WFS_ERROR_PARAMETER2 = WFS_ERROR + 0x3FFC0002
-    WFS_ERROR_PARAMETER3 = WFS_ERROR + 0x3FFC0003
-    WFS_ERROR_PARAMETER4 = WFS_ERROR + 0x3FFC0004
-    WFS_ERROR_PARAMETER5 = WFS_ERROR + 0x3FFC0005
-    WFS_ERROR_PARAMETER6 = WFS_ERROR + 0x3FFC0006
-    WFS_ERROR_PARAMETER7 = WFS_ERROR + 0x3FFC0007
-    WFS_ERROR_PARAMETER8 = WFS_ERROR + 0x3FFC0008
-    # WFS_ERROR_PARAMETER9 = WFS_ERROR + 0x3FFC0009
+    WFS_ERROR_PARAMETER1 = WFS_ERROR + 0x3FFC0001  # -1074003967
+    WFS_ERROR_PARAMETER2 = WFS_ERROR + 0x3FFC0002  # -1074003966
+    WFS_ERROR_PARAMETER3 = WFS_ERROR + 0x3FFC0003  # -1074003965
+    WFS_ERROR_PARAMETER4 = WFS_ERROR + 0x3FFC0004  # -1074003964
+    WFS_ERROR_PARAMETER5 = WFS_ERROR + 0x3FFC0005  # -1074003963
+    WFS_ERROR_PARAMETER6 = WFS_ERROR + 0x3FFC0006  # -1074003962
+    WFS_ERROR_PARAMETER7 = WFS_ERROR + 0x3FFC0007  # -1074003961
+    WFS_ERROR_PARAMETER8 = WFS_ERROR + 0x3FFC0008  # -1074003960
+    # WFS_ERROR_PARAMETER9 = WFS_ERROR + 0x3FFC0009  # -1074003959
 
-    WFS_ERROR_NO_SENSOR_CONNECTED = WFS_INSTR_ERROR_OFFSET + 0x00
-    WFS_ERROR_OUT_OF_MEMORY = WFS_INSTR_ERROR_OFFSET + 0x01
-    WFS_ERROR_INVALID_HANDLE = WFS_INSTR_ERROR_OFFSET + 0x02
-    WFS_ERROR_CAM_NOT_CONFIGURED = WFS_INSTR_ERROR_OFFSET + 0x03
-    WFS_ERROR_PIXEL_FORMAT = WFS_INSTR_ERROR_OFFSET + 0x04
-    WFS_ERROR_EEPROM_CHECKSUM = WFS_INSTR_ERROR_OFFSET + 0x05
-    WFS_ERROR_EEPROM_CAL_DATA = WFS_INSTR_ERROR_OFFSET + 0x06
-    WFS_ERROR_OLD_REF_FILE = WFS_INSTR_ERROR_OFFSET + 0x07
-    WFS_ERROR_NO_REF_FILE = WFS_INSTR_ERROR_OFFSET + 0x08
-    WFS_ERROR_CORRUPT_REF_FILE = WFS_INSTR_ERROR_OFFSET + 0x09
-    WFS_ERROR_WRITE_FILE = WFS_INSTR_ERROR_OFFSET + 0x0a
-    WFS_ERROR_INSUFF_SPOTS_FOR_ZERNFIT = WFS_INSTR_ERROR_OFFSET + 0x0b
-    WFS_ERROR_TOO_MANY_SPOTS_FOR_ZERNFIT = WFS_INSTR_ERROR_OFFSET + 0x0c
-    WFS_ERROR_FOURIER_ORDER = WFS_INSTR_ERROR_OFFSET + 0x0d
-    WFS_ERROR_NO_RECON_DEVIATIONS = WFS_INSTR_ERROR_OFFSET + 0x0e
-    WFS_ERROR_NO_PUPIL_DEFINED = WFS_INSTR_ERROR_OFFSET + 0x0f
-    WFS_ERROR_WRONG_PUPIL_DIA = WFS_INSTR_ERROR_OFFSET + 0x10
-    WFS_ERROR_WRONG_PUPIL_CTR = WFS_INSTR_ERROR_OFFSET + 0x11
-    WFS_ERROR_INVALID_CAL_DATA = WFS_INSTR_ERROR_OFFSET + 0x12
-    WFS_ERROR_INTERNAL_REQUIRED = WFS_INSTR_ERROR_OFFSET + 0x13
-    WFS_ERROR_ROC_RANGE = WFS_INSTR_ERROR_OFFSET + 0x14
-    WFS_ERROR_NO_USER_REFERENCE = WFS_INSTR_ERROR_OFFSET + 0x15
-    WFS_ERROR_AWAITING_TRIGGER = WFS_INSTR_ERROR_OFFSET + 0x16
-    WFS_ERROR_NO_HIGHSPEED = WFS_INSTR_ERROR_OFFSET + 0x17
-    WFS_ERROR_HIGHSPEED_ACTIVE = WFS_INSTR_ERROR_OFFSET + 0x18
-    WFS_ERROR_HIGHSPEED_NOT_ACTIVE = WFS_INSTR_ERROR_OFFSET + 0x19
-    WFS_ERROR_HIGHSPEED_WINDOW_MISMATCH = WFS_INSTR_ERROR_OFFSET + 0x1a
-    WFS_ERROR_NOT_SUPPORTED = WFS_INSTR_ERROR_OFFSET + 0x1b
+    WFS_ERROR_NO_SENSOR_CONNECTED = WFS_INSTR_ERROR_OFFSET + 0x00  # -1074001664
+    WFS_ERROR_OUT_OF_MEMORY = WFS_INSTR_ERROR_OFFSET + 0x01  # -1074001663
+    WFS_ERROR_INVALID_HANDLE = WFS_INSTR_ERROR_OFFSET + 0x02  # -1074001662
+    WFS_ERROR_CAM_NOT_CONFIGURED = WFS_INSTR_ERROR_OFFSET + 0x03  # -1074001661
+    WFS_ERROR_PIXEL_FORMAT = WFS_INSTR_ERROR_OFFSET + 0x04  # -1074001660
+    WFS_ERROR_EEPROM_CHECKSUM = WFS_INSTR_ERROR_OFFSET + 0x05  # -1074001659
+    WFS_ERROR_EEPROM_CAL_DATA = WFS_INSTR_ERROR_OFFSET + 0x06  # -1074001658
+    WFS_ERROR_OLD_REF_FILE = WFS_INSTR_ERROR_OFFSET + 0x07  # -1074001657
+    WFS_ERROR_NO_REF_FILE = WFS_INSTR_ERROR_OFFSET + 0x08  # -1074001656
+    WFS_ERROR_CORRUPT_REF_FILE = WFS_INSTR_ERROR_OFFSET + 0x09  # -1074001655
+    WFS_ERROR_WRITE_FILE = WFS_INSTR_ERROR_OFFSET + 0x0a  # -1074001654
+    WFS_ERROR_INSUFF_SPOTS_FOR_ZERNFIT = WFS_INSTR_ERROR_OFFSET + 0x0b  # -1074001653
+    WFS_ERROR_TOO_MANY_SPOTS_FOR_ZERNFIT = WFS_INSTR_ERROR_OFFSET + 0x0c  # -1074001652
+    WFS_ERROR_FOURIER_ORDER = WFS_INSTR_ERROR_OFFSET + 0x0d  # -1074001651
+    WFS_ERROR_NO_RECON_DEVIATIONS = WFS_INSTR_ERROR_OFFSET + 0x0e  # -1074001650
+    WFS_ERROR_NO_PUPIL_DEFINED = WFS_INSTR_ERROR_OFFSET + 0x0f  # -1074001649
+    WFS_ERROR_WRONG_PUPIL_DIA = WFS_INSTR_ERROR_OFFSET + 0x10  # -1074001648
+    WFS_ERROR_WRONG_PUPIL_CTR = WFS_INSTR_ERROR_OFFSET + 0x11  # -1074001647
+    WFS_ERROR_INVALID_CAL_DATA = WFS_INSTR_ERROR_OFFSET + 0x12  # -1074001646
+    WFS_ERROR_INTERNAL_REQUIRED = WFS_INSTR_ERROR_OFFSET + 0x13  # -1074001645
+    WFS_ERROR_ROC_RANGE = WFS_INSTR_ERROR_OFFSET + 0x14  # -1074001644
+    WFS_ERROR_NO_USER_REFERENCE = WFS_INSTR_ERROR_OFFSET + 0x15  # -1074001643
+    WFS_ERROR_AWAITING_TRIGGER = WFS_INSTR_ERROR_OFFSET + 0x16  # -1074001642
+    WFS_ERROR_NO_HIGHSPEED = WFS_INSTR_ERROR_OFFSET + 0x17  # -1074001641
+    WFS_ERROR_HIGHSPEED_ACTIVE = WFS_INSTR_ERROR_OFFSET + 0x18  # -1074001640
+    WFS_ERROR_HIGHSPEED_NOT_ACTIVE = WFS_INSTR_ERROR_OFFSET + 0x19  # -1074001639
+    WFS_ERROR_HIGHSPEED_WINDOW_MISMATCH = WFS_INSTR_ERROR_OFFSET + 0x1a  # -1074001638
+    WFS_ERROR_NOT_SUPPORTED = WFS_INSTR_ERROR_OFFSET + 0x1b  # -1074001637
 
     # returned from non-exported functions
-    WFS_ERROR_SPOT_TRUNCATED = WFS_INSTR_ERROR_OFFSET + 0x1b
-    WFS_ERROR_NO_SPOT_DETECTED = WFS_INSTR_ERROR_OFFSET + 0x1c
-    WFS_ERROR_TILT_CALCULATION = WFS_INSTR_ERROR_OFFSET + 0x1d
+    WFS_ERROR_SPOT_TRUNCATED = WFS_INSTR_ERROR_OFFSET + 0x1b  # -1074001637
+    WFS_ERROR_NO_SPOT_DETECTED = WFS_INSTR_ERROR_OFFSET + 0x1c  # -1074001636
+    WFS_ERROR_TILT_CALCULATION = WFS_INSTR_ERROR_OFFSET + 0x1d  # -1074001635
 
     # WFS Driver Warning Codes
-    WFS_WARNING = WFS_INSTR_WARNING_OFFSET + 0x00
-    WFS_WARN_NSUP_ID_QUERY = 0x3FFC0101
-    WFS_WARN_NSUP_RESET = 0x3FFC0102
-    WFS_WARN_NSUP_SELF_TEST = 0x3FFC0103
-    WFS_WARN_NSUP_ERROR_QUERY = 0x3FFC0104
-    WFS_WARN_NSUP_REV_QUERY = 0x3FFC0105
-    WFS_WARNING_CODES = {WFS_WARN_NSUP_ID_QUERY: 'Identification query not supported',
-                         WFS_WARN_NSUP_RESET: 'Reset not supported',
-                         WFS_WARN_NSUP_SELF_TEST: 'Self-test not supported',
-                         WFS_WARN_NSUP_ERROR_QUERY: 'Error query not supported',
-                         WFS_WARN_NSUP_REV_QUERY: 'Instrument revision query not supported'}
+    WFS_WARNING = WFS_INSTR_WARNING_OFFSET + 0x00  # 1073481984
+    WFS_WARN_NSUP_ID_QUERY = 0x3FFC0101  # 1073479937
+    WFS_WARN_NSUP_RESET = 0x3FFC0102  # 1073479938
+    WFS_WARN_NSUP_SELF_TEST = 0x3FFC0103  # 1073479939
+    WFS_WARN_NSUP_ERROR_QUERY = 0x3FFC0104  # 1073479940
+    WFS_WARN_NSUP_REV_QUERY = 0x3FFC0105  # 1073479941
+    WFS_WARNING_CODES = {WFS_WARN_NSUP_ID_QUERY: 'Identification query not supported!',
+                         WFS_WARN_NSUP_RESET: 'Reset not supported!',
+                         WFS_WARN_NSUP_SELF_TEST: 'Self-test not supported!',
+                         WFS_WARN_NSUP_ERROR_QUERY: 'Error query not supported!',
+                         WFS_WARN_NSUP_REV_QUERY: 'Instrument revision query not supported!'}
 
     # Driver Status reporting (lower 24 bits)
     WFS_STATBIT_CON = 0x00000001  # USB connection lost, set by driver
@@ -369,7 +433,7 @@ class WFS(object):
 
     # Timeout
     # * 10 ms = 24 hours, given to is_SetTimeout, after that time is_IsVideoFinish returns 'finish' without error
-    WFS_TRIG_TIMEOUT = 100 * 60 * 60 * 24
+    WFS_TRIG_TIMEOUT = 100 * 60 * 60 * 24  # 8640000
     WFS_TIMEOUT_CAPTURE_NORMAL = 1.0  # in seconds
     WFS_TIMEOUT_CAPTURE_TRIGGER = 0.1  # in seconds, allow fast return of functions WFS_TakeSpotfieldImage...
     WFS10_TIMEOUT_CAPTURE_NORMAL = 4000  # in ms, allow 500 ms exposure time + reserve
@@ -523,8 +587,8 @@ class WFS(object):
         self.average_data_ready = Vi.int32(0)
         self.aoi_center_x_mm = Vi.real64(0)
         self.aoi_center_y_mm = Vi.real64(0)
-        self.aoi_size_x_mm = Vi.real64(0)
-        self.aoi_size_y_mm = Vi.real64(0)
+        self.aoi_size_x_mm = Vi.real64(0)  # 0 is full sensor size
+        self.aoi_size_y_mm = Vi.real64(0)  # 0 is full sensor size
         self.beam_centroid_x_mm = Vi.real64(0)
         self.beam_centroid_y_mm = Vi.real64(0)
         self.beam_diameter_x_mm = Vi.real64(0)
@@ -2312,8 +2376,8 @@ class WFS(object):
                                                    ctypes.byref(self.spotfield_rows),
                                                    ctypes.byref(self.spotfield_columns))
         log_wfs.debug('Get Spotfield Image Copy: {0}'.format(self.instrument_handle.value))
-        log_wfs.info('Image Buffer Copy: ' +
-                     '\n'.join([''.join(['{:6}'.format(item) for item in row]) for row in self.array_image_buffer]))
+        log_wfs.debug('Image Buffer Copy: ' +
+                      '\n'.join([''.join(['{:6}'.format(item) for item in row]) for row in self.array_image_buffer]))
         log_wfs.info('Rows: {0}'.format(self.spotfield_rows.value))
         log_wfs.info('Columns: {0}'.format(self.spotfield_columns.value))
         self._error_message(status)
@@ -2584,8 +2648,8 @@ class WFS(object):
                                      self.array_line_selected)
         log_wfs.debug('Get Line: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Line: {0}'.format(self.line.value))
-        log_wfs.info('Line Selected: ' +
-                     ''.join(['{:6}'.format(item) for item in self.array_line_selected]))
+        log_wfs.debug('Line Selected: ' +
+                      ''.join(['{:6}'.format(item) for item in self.array_line_selected]))
         self._error_message(status)
         return status, self.array_line_selected
 
@@ -2632,10 +2696,10 @@ class WFS(object):
                                          self.array_line_min,
                                          self.array_line_max)
         log_wfs.debug('Get Line View: {0}'.format(self.instrument_handle.value))
-        log_wfs.info('Line Minimum: ' +
-                     ''.join(['{:6}'.format(item) for item in self.array_line_min]))
-        log_wfs.info('Line Maximum: ' +
-                     ''.join(['{:6}'.format(item) for item in self.array_line_max]))
+        log_wfs.debug('Line Minimum: ' +
+                      ''.join(['{:6}'.format(item) for item in self.array_line_min]))
+        log_wfs.debug('Line Maximum: ' +
+                      ''.join(['{:6}'.format(item) for item in self.array_line_max]))
         self._error_message(status)
         return status, self.array_line_min, self.array_line_max
 
@@ -3615,13 +3679,16 @@ class WFS(object):
             status = 0
             return status, self.error_message.value
         elif self.error_code.value in self.WFS_WARNING_CODES:
-            log_wfs.warning('Unsupported: {0}'.format(self.WFS_WARNING_CODES[self.error_code.value]))
-            self.error_message.value = 'Unsupported: {0}'.format(self.WFS_WARNING_CODES[self.error_code.value])
+            log_wfs.warning(self.WFS_WARNING_CODES[self.error_code.value])
+            self.error_message.value = self.WFS_WARNING_CODES[self.error_code.value]
             status = 0
             return status, self.error_message.value
         status = lib_wfs.WFS_error_message(self.instrument_handle,
                                            self.error_code,
                                            self.error_message)
+        if self.error_code.value == self.WFS_ERROR_CORRUPT_REF_FILE:
+            # Typo in reference is expected in normal return message
+            self.error_message.value = b'Corrupt reference file!'
         # log_wfs.debug('Error Message: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Error Code: {0}'.format(self.error_code.value))
         log_wfs.error('Error Message: {0}'.format(self.error_message.value))
@@ -3811,7 +3878,7 @@ class WFS(object):
                                                    self.array_wavefront_wave)
         log_wfs.debug('Convert Wavefront to Waves: {0}'.format(self.instrument_handle.value))
         log_wfs.info('Wavelength: {0}'.format(self.wavelength.value))
-        log_wfs.debug('Wavefront (um): \n' +
+        log_wfs.debug('Wavefront (µm): \n' +
                       '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_wavefront]))
         log_wfs.debug('Wavefront (waves): \n' +
                       '\n'.join([''.join(['{:16}'.format(item) for item in row]) for row in self.array_wavefront_wave]))
@@ -4105,18 +4172,23 @@ class WFS(object):
         return status
 
     def connect(self):
+        """Connect to the WFS automatically"""
         self._get_instrument_list_len()
         self._get_instrument_list_info()
         self._init(id_query=1, reset_device=1)
         if self.in_use.value == 1:
-            log_wfs.warning('Instrument is being used!')
-            return
+            log_wfs.error('Instrument is being used!')
+            raise IOError
+        if self.instrument_handle.value == 0:
+            log_wfs.error('Instrument not found!')
+            raise IOError
         self._revision_query()
         self._get_instrument_info()
         self._get_mla_count()
         self._get_mla_data()
 
     def config(self):
+        """Configure default WFS settings"""
         self._select_mla(0)
         self._configure_cam(0)
         self.intensity_limit.value = 10
@@ -4129,6 +4201,7 @@ class WFS(object):
         self._get_status()
 
     def update(self):
+        """Update the WFS and calculate values and RoC"""
         if self.allow_auto_exposure.value == 1:
             self._take_spotfield_image_auto_exposure()
         else:
@@ -4136,6 +4209,7 @@ class WFS(object):
         self._get_status()
         self._cut_image_noise_floor()
         self._get_spotfield_image()
+        # self._get_spotfield_image_copy()  # Takes a significant amount of time to run
         self._calc_spots_centroid_diameter_intensity()
         self._get_spot_centroids()
         self._calc_beam_centroid_diameter()
@@ -4143,9 +4217,13 @@ class WFS(object):
         self._get_spot_deviations()
         self._calc_wavefront()
         self._calc_wavefront_statistics()
+        self._get_line_view()
         self._zernike_lsf()
         return self.roc_mm.value
 
+    def disconnect(self):
+        """Disconnect from the WFS"""
+        return self._close()
 
 if __name__ == '__main__':
     wfs = WFS()
