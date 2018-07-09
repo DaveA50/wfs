@@ -4063,14 +4063,14 @@ class WFS(object):
 
         This function saves a User Reference spotfield file for the
         actual selected Microlens Array and image resolution to folder
-        C:\Users\<user>\Documents\Thorlabs\Wavefront Sensor\Reference
+        C:\\Users\\<user>\\Documents\\Thorlabs\\Wavefront Sensor\\Reference
         The file name is automatically set to:
         WFS_<serial_number_wfs>_<mla_name>_<cam_resolution_index>.ref
         or
         WFS10_<serial_number_wfs>_<mla_name>_<cam_resolution_index>.ref
         or
         WFS20_<serial_number_wfs>_<mla_name>_<cam_resolution_index>.ref
-        Example: "WFS_M00224955_MLA150M-5C_0.ref"
+        Example: 'WFS_M00224955_MLA150M-5C_0.ref'
 
         Note: Centroid positions stored as 0.0 are converted to NaN in
         the reference spotfield array because they denote undetected
@@ -4102,14 +4102,14 @@ class WFS(object):
 
         This function loads a User Reference spotfield file for the
         actual selected Microlens Array and image resolution from folder
-        C:\Users\<user>\Documents\Thorlabs\Wavefront Sensor\Reference
+        C:\\Users\\<user>\\Documents\\Thorlabs\\Wavefront Sensor\\Reference
         The file name is automatically set to:
         WFS_<serial_number_wfs>_<mla_name>_<cam_resolution_index>.ref
         or
         WFS10_<serial_number_wfs>_<mla_name>_<cam_resolution_index>.ref
         or
         WFS20_<serial_number_wfs>_<mla_name>_<cam_resolution_index>.ref
-        Example: "WFS_M00224955_MLA150M-5C_0.ref"
+        Example: 'WFS_M00224955_MLA150M-5C_0.ref'
 
         Note: Centroid positions stored as 0.0 are converted to NaN in
         the reference spotfield array because they denote undetected
