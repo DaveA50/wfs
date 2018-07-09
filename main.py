@@ -19,8 +19,7 @@ import yaml
 
 from wfs import WFS
 
-__version__ = '0.2.2'
-PY2 = sys.version_info[0] == 2
+__version__ = '0.2.3'
 
 
 def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
@@ -52,18 +51,8 @@ abs_path = os.path.dirname(os.path.abspath(__file__))
 gui_path = os.path.join(abs_path, 'gui')
 design_path = os.path.join(gui_path, 'design.ui')
 debug_path = os.path.join(gui_path, 'debug.ui')
-try:
-    # noinspection PyUnboundLocalVariable,PyUnresolvedReferences
-    FileNotFoundError
-except NameError:
-    FileNotFoundError = IOError
-try:
-    # noinspection PyUnboundLocalVariable,PyUnresolvedReferences
-    WindowsError
-except NameError:
-    WindowsError = IOError
 if 'pyside' in sys.argv[1]:
-    from PySide import QtCore, QtGui
+    from PySide2 import QtCore, QtGui
     import pysideuic as uic
     Signal = QtCore.Signal
     Slot = QtCore.Slot
@@ -79,7 +68,7 @@ if 'pyside' in sys.argv[1]:
     design_ui, design_base = gui.design.Ui_main_window, QtGui.QMainWindow
     debug_ui, debug_base = gui.debug.Ui_Form, QtGui.QMainWindow
 else:
-    from PyQt4 import QtCore, QtGui, uic
+    from PyQt5 import QtCore, QtGui, uic
     Signal = QtCore.pyqtSignal
     Slot = QtCore.pyqtSlot
     try:
@@ -1079,6 +1068,7 @@ def main(wfs):
     ret = app.exec_()
     # Add final cleanup here
     sys.exit(ret)
+
 
 if __name__ == '__main__':
     _wfs = WFS()
