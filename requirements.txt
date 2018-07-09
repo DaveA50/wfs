@@ -1,6 +1,7 @@
 matplotlib
-pyaml
-PyQt4
-pyqtgraph
-PySide
+pyyaml
+PySide2
+numpy
+pyopengl
+git+https://github.com/pyqtgraph/pyqtgraph.git
 pytest
