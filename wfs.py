@@ -15,7 +15,6 @@ import sys
 import yaml
 
 __version__ = '0.2.3'
-PY2 = sys.version_info[0] == 2
 is_64bit = sys.maxsize > 2 ** 32
 
 
@@ -69,6 +68,7 @@ def find_wfs_library():
         _lib_wfs = ctypes.windll.LoadLibrary(lib)
         log_wfs.debug('WFS_32.dll loaded')
     return _lib_wfs
+
 
 setup_logging()
 log_wfs = logging.getLogger('WFS')
@@ -309,7 +309,7 @@ class Vi(object):
 
         Args:
             n (int):
-            s (str):
+            s (bytes):
 
         Returns:
             Vi.string(n, s)
@@ -4224,6 +4224,7 @@ class WFS(object):
     def disconnect(self):
         """Disconnect from the WFS"""
         return self._close()
+
 
 if __name__ == '__main__':
     wfs = WFS()
