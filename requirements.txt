@@ -1,5 +1,6 @@
 matplotlib
 pyyaml
+PyQt5
 PySide2
 numpy
 pyopengl
