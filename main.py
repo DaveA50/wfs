@@ -70,7 +70,7 @@ if '-pyqt' in sys.argv:
     debug_form, debug_base = uic.loadUiType(debug_path)
 elif '-pyside' in sys.argv:
     from PySide2.QtCore import QThread, Signal, Slot
-    from PySide2.QtWidgets import QApplication, QMainWindow
+    from PySide2.QtWidgets import QApplication, QMainWindow, QWidget
     import pyside2uic as uic
     import pyqtgraph as pg
     import pyqtgraph.opengl as gl
@@ -85,7 +85,7 @@ elif '-pyside' in sys.argv:
     uic.compileUiDir(gui_path, from_imports=True)
     import gui
     design_form, design_base = gui.design.Ui_main_window, QMainWindow
-    debug_form, debug_base = gui.debug.Ui_Form, QMainWindow
+    debug_form, debug_base = gui.debug.Ui_Form, QWidget
 
 
 class WFSThread(QThread):
