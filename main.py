@@ -4,12 +4,9 @@
 GUI for Thorlabs Shack-Hartmann Wavefront Sensor Wrapper
 """
 
-from __future__ import print_function
-from __future__ import absolute_import
 import logging
 import logging.config
 import os
-import subprocess
 import sys
 
 import numpy as np
@@ -51,41 +48,45 @@ design_path = os.path.join(gui_path, 'design.ui')
 debug_path = os.path.join(gui_path, 'debug.ui')
 if '-pyqt' in sys.argv:
     from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
-    from PyQt5.QtWidgets import QApplication, QMainWindow
+    from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
     from PyQt5 import uic
-    import pyqtgraph as pg
-    import pyqtgraph.opengl as gl
     Signal = pyqtSignal
     Slot = pyqtSlot
 
     # External Tools to compile .ui files to .py
+    # import subprocess
     # try:
     #     subprocess.call("pyuic5.exe gui/design.ui -o gui/design.py")
     #     subprocess.call("pyuic5.exe gui/debug.ui -o gui/debug.py")
     # except (WindowsError, FileNotFoundError, OSError):
     #     pass
 
-    uic.compileUiDir(gui_path, from_imports=True)
-    design_form, design_base = uic.loadUiType(design_path)
-    debug_form, debug_base = uic.loadUiType(debug_path)
+    # Direct loading ui without compiling
+    # design_form, design_base = uic.loadUiType(design_path)
+    # debug_form, debug_base = uic.loadUiType(debug_path)
 elif '-pyside' in sys.argv:
     from PySide2.QtCore import QThread, Signal, Slot
     from PySide2.QtWidgets import QApplication, QMainWindow, QWidget
     import pyside2uic as uic
-    import pyqtgraph as pg
-    import pyqtgraph.opengl as gl
 
     # External Tools to compile .ui files to .py
+    # import subprocess
     # try:
     #     subprocess.call("pyside2-uic.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
     #     subprocess.call("pyside2-uic.exe gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
     # except (WindowsError, FileNotFoundError):
     #     pass
 
-    uic.compileUiDir(gui_path, from_imports=True)
-    import gui
-    design_form, design_base = gui.design.Ui_main_window, QMainWindow
-    debug_form, debug_base = gui.debug.Ui_Form, QWidget
+uic.compileUiDir(gui_path, from_imports=True)
+# noinspection PyPep8
+import gui
+# noinspection PyPep8
+import pyqtgraph as pg
+# noinspection PyPep8
+import pyqtgraph.opengl as gl
+
+design_form, design_base = gui.design.Ui_main_window, QMainWindow
+debug_form, debug_base = gui.debug.Ui_Form, QWidget
 
 
 class WFSThread(QThread):
@@ -1073,9 +1074,10 @@ def main(wfs):
     app = QApplication(sys.argv)
     form = WFSApp(wfs=wfs)
     form.show()
-    ret = app.exec_()
+    exit_code = app.exec_()
     # Add final cleanup here
-    sys.exit(ret)
+    print(f'Process unfinished with exit code {exit_code}')  # BUG PySide2 will not correctly call sys.exit()
+    sys.exit(exit_code)
 
 
 if __name__ == '__main__':
