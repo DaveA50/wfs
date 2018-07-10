@@ -15,7 +15,7 @@ import sys
 import yaml
 
 __version__ = '0.2.3'
-is_64bit = sys.maxsize > 2 ** 32
+bitness = ctypes.sizeof(ctypes.c_void_p) * 8  # =32 on x86, =64 on x64
 
 
 def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
@@ -46,27 +46,19 @@ def find_wfs_library():
     Returns:
         ctypes.windll.LoadLibrary(WFS_32/64.dll)
     """
-    if is_64bit:
-        lib = find_library('WFS_64')
-    else:
-        lib = find_library('WFS_32')
-    if lib is None:
-        if os.name == 'nt':
-            if is_64bit:
-                log_wfs.critical('WFS_64.dll not found')
-                raise ImportError('WFS_64.dll not found')
-            else:
-                log_wfs.critical('WFS_32.dll not found')
-                raise ImportError('WFS_32.dll not found')
-        else:
-            log_wfs.critical('No WFS_32/64 library exists')
-            raise ImportError('No WFS_32/64 library exists')
-    if is_64bit:
+    lib = find_library(f'WFS_{bitness}')
+    if os.name == 'nt':
+        if lib is None:
+            log_wfs.critical(f'WFS_{bitness}.dll not found')
+            raise ImportError(f'WFS_{bitness}.dll not found')
         _lib_wfs = ctypes.windll.LoadLibrary(lib)
-        log_wfs.debug('WFS_64.dll loaded')
+        log_wfs.debug(f'WFS_{bitness}.dll loaded')
     else:
-        _lib_wfs = ctypes.windll.LoadLibrary(lib)
-        log_wfs.debug('WFS_32.dll loaded')
+        if lib is None:
+            log_wfs.critical(f'No WFS_{bitness} library exists')
+            raise ImportError(f'No WFS_{bitness} library exists')
+        _lib_wfs = ctypes.cdll.LoadLibrary(lib)
+        log_wfs.debug(f'WFS_{bitness} library loaded loaded')
     return _lib_wfs
 
 
