@@ -2,7 +2,6 @@
 
 """Init WFS"""
 
-from __future__ import absolute_import
 from . import wfs
 
 __author__ = 'David Amrhein'
