@@ -14,7 +14,6 @@ import os
 import yaml
 
 __version__ = '0.2.3'
-bitness = ctypes.sizeof(ctypes.c_void_p) * 8  # =32 on x86, =64 on x64
 
 
 def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
@@ -45,6 +44,7 @@ def find_wfs_library():
     Returns:
         ctypes.windll.LoadLibrary(WFS_32/64.dll)
     """
+    bitness = ctypes.sizeof(ctypes.c_void_p) * 8  # =32 on x86, =64 on x64
     lib = find_library(f'WFS_{bitness}')
     if lib is None:
         log_wfs.critical(f'WFS_{bitness}.dll not found')
