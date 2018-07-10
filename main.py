@@ -13,8 +13,6 @@ import subprocess
 import sys
 
 import numpy as np
-import pyqtgraph as pg
-import pyqtgraph.opengl as gl
 import yaml
 
 from wfs import WFS
@@ -55,6 +53,8 @@ if '-pyqt' in sys.argv:
     from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
     from PyQt5.QtWidgets import QApplication, QMainWindow
     from PyQt5 import uic
+    import pyqtgraph as pg
+    import pyqtgraph.opengl as gl
     Signal = pyqtSignal
     Slot = pyqtSlot
     # try:
@@ -68,17 +68,18 @@ if '-pyqt' in sys.argv:
 elif '-pyside' in sys.argv:
     from PySide2.QtCore import QThread, Signal, Slot
     from PySide2.QtWidgets import QApplication, QMainWindow
-    from PySide2.QtUiTools import QtUiTools
-    from PySide2 import QtUiTools
+    from PySide2.QtUiTools import QUiLoader
+    import pyqtgraph as pg
+    import pyqtgraph.opengl as gl
     try:
         subprocess.call("pyside2-uic.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
         subprocess.call("pyside2-uic.exe gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
     except (WindowsError, FileNotFoundError):
         pass
-    with open(os.path.join(gui_path, 'design.py'), 'w') as outfile:
-        QtUiTools.uic.compileUi(design_path, outfile, from_imports=True)
-    with open(os.path.join(gui_path, 'debug.py'), 'w') as outfile:
-        QtUiTools.uic.compileUi(debug_path, outfile, from_imports=True)
+    # with open(os.path.join(gui_path, 'design.py'), 'w') as outfile:
+    #     QtUiTools.uic.compileUi(design_path, outfile, from_imports=True)
+    # with open(os.path.join(gui_path, 'debug.py'), 'w') as outfile:
+    #     QtUiTools.uic.compileUi(debug_path, outfile, from_imports=True)
     import gui
     design_ui, design_base = gui.design.Ui_main_window, QMainWindow
     debug_ui, debug_base = gui.debug.Ui_Form, QMainWindow
