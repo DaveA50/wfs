@@ -57,15 +57,12 @@ if '-pyqt' in sys.argv:
     from PyQt5 import uic
     Signal = pyqtSignal
     Slot = pyqtSlot
-    try:
-        subprocess.call("pyuic5.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
-        subprocess.call("pyuic5.exe gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
-    except (WindowsError, FileNotFoundError, OSError):
-        pass
-    # with open(os.path.join(gui_path, 'design.py'), 'w') as outfile:
-    #     uic.compileUi(design_path, outfile, from_imports=True)
-    # with open(os.path.join(gui_path, 'debug.py'), 'w') as outfile:
-    #     uic.compileUi(debug_path, outfile, from_imports=True)
+    # try:
+    #     subprocess.call("pyuic5.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
+    #     subprocess.call("pyuic5.exe gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
+    # except (WindowsError, FileNotFoundError, OSError):
+    #     pass
+    uic.compileUiDir(gui_path, from_imports=True)
     design_ui, design_base = uic.loadUiType(design_path)
     debug_ui, debug_base = uic.loadUiType(debug_path)
 elif '-pyside' in sys.argv:
