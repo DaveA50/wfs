@@ -57,32 +57,35 @@ if '-pyqt' in sys.argv:
     import pyqtgraph.opengl as gl
     Signal = pyqtSignal
     Slot = pyqtSlot
+
+    # External Tools to compile .ui files to .py
     # try:
-    #     subprocess.call("pyuic5.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
-    #     subprocess.call("pyuic5.exe gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
+    #     subprocess.call("pyuic5.exe gui/design.ui -o gui/design.py")
+    #     subprocess.call("pyuic5.exe gui/debug.ui -o gui/debug.py")
     # except (WindowsError, FileNotFoundError, OSError):
     #     pass
+
     uic.compileUiDir(gui_path, from_imports=True)
-    design_ui, design_base = uic.loadUiType(design_path)
-    debug_ui, debug_base = uic.loadUiType(debug_path)
+    design_form, design_base = uic.loadUiType(design_path)
+    debug_form, debug_base = uic.loadUiType(debug_path)
 elif '-pyside' in sys.argv:
     from PySide2.QtCore import QThread, Signal, Slot
     from PySide2.QtWidgets import QApplication, QMainWindow
-    from PySide2.QtUiTools import QUiLoader
+    import pyside2uic as uic
     import pyqtgraph as pg
     import pyqtgraph.opengl as gl
-    try:
-        subprocess.call("pyside2-uic.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
-        subprocess.call("pyside2-uic.exe gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
-    except (WindowsError, FileNotFoundError):
-        pass
-    # with open(os.path.join(gui_path, 'design.py'), 'w') as outfile:
-    #     QtUiTools.uic.compileUi(design_path, outfile, from_imports=True)
-    # with open(os.path.join(gui_path, 'debug.py'), 'w') as outfile:
-    #     QtUiTools.uic.compileUi(debug_path, outfile, from_imports=True)
+
+    # External Tools to compile .ui files to .py
+    # try:
+    #     subprocess.call("pyside2-uic.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
+    #     subprocess.call("pyside2-uic.exe gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
+    # except (WindowsError, FileNotFoundError):
+    #     pass
+
+    uic.compileUiDir(gui_path, from_imports=True)
     import gui
-    design_ui, design_base = gui.design.Ui_main_window, QMainWindow
-    debug_ui, debug_base = gui.debug.Ui_Form, QMainWindow
+    design_form, design_base = gui.design.Ui_main_window, QMainWindow
+    debug_form, debug_base = gui.debug.Ui_Form, QMainWindow
 
 
 class WFSThread(QThread):
@@ -103,7 +106,7 @@ class WFSThread(QThread):
         self.roc_ready.emit(roc)
 
 
-class WFSApp(design_base, design_ui):
+class WFSApp(design_base, design_form):
     """
     Main GUI for the WFS
     """
@@ -280,7 +283,7 @@ class WFSApp(design_base, design_ui):
         self.debug_window.show()
 
 
-class WFSSettingsApp(debug_base, debug_ui):
+class WFSSettingsApp(debug_base, debug_form):
     """GUI for easy configuration of the WFS"""
     def __init__(self, parent=None, wfs=WFS()):
         super(WFSSettingsApp, self).__init__(parent)
@@ -289,7 +292,7 @@ class WFSSettingsApp(debug_base, debug_ui):
 
 
 # noinspection PyProtectedMember,PyMissingOrEmptyDocstring
-class WFSDebugApp(debug_base, debug_ui):
+class WFSDebugApp(debug_base, debug_form):
     """GUI with all WFS commands and arguments"""
     def __init__(self, parent=None, wfs=WFS()):
         super(WFSDebugApp, self).__init__(parent)
