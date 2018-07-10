@@ -4,7 +4,6 @@
 Wrapper for interfacing with the Thorlabs Wavefront Sensor (WFS)
 """
 
-from __future__ import print_function
 import ctypes
 from ctypes.util import find_library
 import logging
@@ -14,6 +13,8 @@ import os
 import yaml
 
 __version__ = '0.2.3'
+__author__ = 'David Amrhein'
+__email__ = 'davea50@gmail.com'
 
 
 def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
