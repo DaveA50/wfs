@@ -3666,7 +3666,7 @@ class WFS(object):
                 self.instrument_handle = instrument_handle
         if self.error_code.value == 0:
             log_wfs.debug('No error: {0}'.format(self.error_code.value))
-            self.error_message.value = 'No errors'
+            self.error_message.value = b'No errors'
             status = 0
             return status, self.error_message.value
         elif self.error_code.value in self.WFS_WARNING_CODES:
@@ -4169,10 +4169,10 @@ class WFS(object):
         self._init(id_query=1, reset_device=1)
         if self.in_use.value == 1:
             log_wfs.error('Instrument is being used!')
-            raise IOError
+            # raise IOError
         if self.instrument_handle.value == 0:
             log_wfs.error('Instrument not found!')
-            raise IOError
+            # raise IOError
         self._revision_query()
         self._get_instrument_info()
         self._get_mla_count()
