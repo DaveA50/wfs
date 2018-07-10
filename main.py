@@ -51,36 +51,43 @@ abs_path = os.path.dirname(os.path.abspath(__file__))
 gui_path = os.path.join(abs_path, 'gui')
 design_path = os.path.join(gui_path, 'design.ui')
 debug_path = os.path.join(gui_path, 'debug.ui')
-if 'pyside' in sys.argv[1]:
-    from PySide2 import QtCore, QtGui
-    import pysideuic as uic
-    Signal = QtCore.Signal
-    Slot = QtCore.Slot
+if '-pyqt' in sys.argv:
+    from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
+    from PyQt5.QtWidgets import QApplication, QMainWindow
+    from PyQt5 import uic
+    Signal = pyqtSignal
+    Slot = pyqtSlot
     try:
-        subprocess.call("pyside-uic.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
+        subprocess.call("pyuic5.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
+        subprocess.call("pyuic5.exe gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
+    except (WindowsError, FileNotFoundError, OSError):
+        pass
+    # with open(os.path.join(gui_path, 'design.py'), 'w') as outfile:
+    #     uic.compileUi(design_path, outfile, from_imports=True)
+    # with open(os.path.join(gui_path, 'debug.py'), 'w') as outfile:
+    #     uic.compileUi(debug_path, outfile, from_imports=True)
+    design_ui, design_base = uic.loadUiType(design_path)
+    debug_ui, debug_base = uic.loadUiType(debug_path)
+elif '-pyside' in sys.argv:
+    from PySide2.QtCore import QThread, Signal, Slot
+    from PySide2.QtWidgets import QApplication, QMainWindow
+    from PySide2.QtUiTools import QtUiTools
+    from PySide2 import QtUiTools
+    try:
+        subprocess.call("pyside2-uic.exe gui/design.ui -o gui/design.py")  # Compile .py from .ui
+        subprocess.call("pyside2-uic.exe gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
     except (WindowsError, FileNotFoundError):
         pass
     with open(os.path.join(gui_path, 'design.py'), 'w') as outfile:
-        uic.compileUi(design_path, outfile, from_imports=True)
+        QtUiTools.uic.compileUi(design_path, outfile, from_imports=True)
     with open(os.path.join(gui_path, 'debug.py'), 'w') as outfile:
-        uic.compileUi(debug_path, outfile, from_imports=True)
+        QtUiTools.uic.compileUi(debug_path, outfile, from_imports=True)
     import gui
-    design_ui, design_base = gui.design.Ui_main_window, QtGui.QMainWindow
-    debug_ui, debug_base = gui.debug.Ui_Form, QtGui.QMainWindow
-else:
-    from PyQt5 import QtCore, QtGui, uic
-    Signal = QtCore.pyqtSignal
-    Slot = QtCore.pyqtSlot
-    try:
-        subprocess.call("pyuic4.bat gui/design.ui -o gui/design.py")  # Compile .py from .ui
-        subprocess.call("pyuic4.bat gui/debug.ui -o gui/debug.py")  # Compile .py from .ui
-    except (WindowsError, FileNotFoundError, OSError):
-        pass
-    design_ui, design_base = uic.loadUiType(design_path)
-    debug_ui, debug_base = uic.loadUiType(debug_path)
+    design_ui, design_base = gui.design.Ui_main_window, QMainWindow
+    debug_ui, debug_base = gui.debug.Ui_Form, QMainWindow
 
 
-class WFSThread(QtCore.QThread):
+class WFSThread(QThread):
     """Separate thread for WFS updating"""
     roc_ready = Signal(str)
 
@@ -152,7 +159,7 @@ class WFSApp(design_base, design_ui):
         self.wfs_thread.roc_ready.connect(self.on_wfs_thread_update)
         # noinspection PyUnresolvedReferences
         self.wfs_thread.finished.connect(self.on_wfs_thread_finished)
-        self.on_connect_click()
+        # self.on_connect_click()
 
     # noinspection PyPep8Naming
     def closeEvent(self, event):
@@ -1062,7 +1069,7 @@ def main(wfs):
     Args:
         wfs:
     """
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     form = WFSApp(wfs=wfs)
     form.show()
     ret = app.exec_()
