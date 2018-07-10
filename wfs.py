@@ -52,13 +52,12 @@ def find_wfs_library():
             log_wfs.critical(f'WFS_{bitness}.dll not found')
             raise ImportError(f'WFS_{bitness}.dll not found')
         _lib_wfs = ctypes.windll.LoadLibrary(lib)
-        log_wfs.debug(f'WFS_{bitness}.dll loaded')
     else:
         if lib is None:
             log_wfs.critical(f'No WFS_{bitness} library exists')
             raise ImportError(f'No WFS_{bitness} library exists')
         _lib_wfs = ctypes.cdll.LoadLibrary(lib)
-        log_wfs.debug(f'WFS_{bitness} library loaded loaded')
+    log_wfs.debug(f'{lib} loaded')
     return _lib_wfs
 
 
