@@ -4,7 +4,7 @@ disable_existing_loggers: False
 
 formatters:
     simple:
-        format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        format: '%(asctime)s - %(levelname)s - %(name)s.%(funcName)s: %(message)s'
 
 handlers:
     console:
@@ -33,7 +33,7 @@ handlers:
 
 loggers:
     WFS:
-        level: WARNING
+        level: DEBUG
         handlers: [console]
         propagate: no
     UI:
