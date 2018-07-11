@@ -2,7 +2,7 @@
 
 	Thorlabs WFS - WavefrontSensor Instrument Driver
 
-	Copyright:  Copyright(c) 2015, Thorlabs GmbH (www.thorlabs.com)
+	Copyright:  Copyright(c) 2016, Thorlabs GmbH (www.thorlabs.com)
 	Author:     Egbert Krause (ekrause@thorlabs.com)
 
 	Disclaimer: This software is protected by the Thorlabs End-user License Agreement in License.rtf.
@@ -10,9 +10,9 @@
 
 	Header file
 
-	Date:          Sep-11-2015
-	Software-Nr:   09.76.460
-	Version:       4.6.0
+	Date:          Feb-05-2016
+	Software-Nr:   09.76.463
+	Version:       4.6.3
 
 	Changelog:     see 'Readme.rtf'
 
