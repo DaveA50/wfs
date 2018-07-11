@@ -77,6 +77,9 @@ elif '-pyside' in sys.argv:
     # except (WindowsError, FileNotFoundError):
     #     pass
 
+    # Direct loading ui without compiling
+    # TODO
+
 uic.compileUiDir(gui_path, from_imports=True)
 # noinspection PyPep8
 import gui
