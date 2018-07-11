@@ -5,8 +5,8 @@
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /* Title   : VISA.H                                                          */
-/* Date    : 06-18-2012                                                      */
-/* Purpose : Include file for the VISA Library 5.1 specification             */
+/* Date    : 02-12-2016                                                      */
+/* Purpose : Include file for the VISA Library 5.7 specification             */
 /*                                                                           */
 /*---------------------------------------------------------------------------*/
 /* When using NI-VISA extensions, you must link with the VISA library that   */
@@ -34,7 +34,7 @@
 #include "visatype.h"
 #endif
 
-#define VI_SPEC_VERSION     (0x00500100UL)
+#define VI_SPEC_VERSION     (0x00500700UL)
 
 #if defined(__cplusplus) || defined(__cplusplus__)
    extern "C" {
@@ -159,7 +159,7 @@ ViStatus _VI_FUNC  viVSScanf       (ViSession vi, ViBuf buf, ViString readFmt,
                                     ViVAList parms);
 
 ViStatus _VI_FUNCC viQueryf        (ViSession vi, ViString writeFmt, ViString readFmt, ...);
-ViStatus _VI_FUNC  viVQueryf       (ViSession vi, ViString writeFmt, ViString readFmt, 
+ViStatus _VI_FUNC  viVQueryf       (ViSession vi, ViString writeFmt, ViString readFmt,
                                     ViVAList params);
 
 /*- Memory I/O Operations ---------------------------------------------------*/
@@ -239,22 +239,22 @@ ViStatus _VI_FUNC  viMoveOut64Ex   (ViSession vi, ViUInt16 space, ViBusAddress64
 #endif
 
 ViStatus _VI_FUNC  viMove          (ViSession vi, ViUInt16 srcSpace, ViBusAddress srcOffset,
-                                    ViUInt16 srcWidth, ViUInt16 destSpace, 
-                                    ViBusAddress destOffset, ViUInt16 destWidth, 
-                                    ViBusSize srcLength); 
+                                    ViUInt16 srcWidth, ViUInt16 destSpace,
+                                    ViBusAddress destOffset, ViUInt16 destWidth,
+                                    ViBusSize srcLength);
 ViStatus _VI_FUNC  viMoveAsync     (ViSession vi, ViUInt16 srcSpace, ViBusAddress srcOffset,
-                                    ViUInt16 srcWidth, ViUInt16 destSpace, 
-                                    ViBusAddress destOffset, ViUInt16 destWidth, 
+                                    ViUInt16 srcWidth, ViUInt16 destSpace,
+                                    ViBusAddress destOffset, ViUInt16 destWidth,
                                     ViBusSize srcLength, ViPJobId jobId);
 
 #if defined(_VI_INT64_UINT64_DEFINED)
 ViStatus _VI_FUNC  viMoveEx        (ViSession vi, ViUInt16 srcSpace, ViBusAddress64 srcOffset,
-                                    ViUInt16 srcWidth, ViUInt16 destSpace, 
-                                    ViBusAddress64 destOffset, ViUInt16 destWidth, 
-                                    ViBusSize srcLength); 
+                                    ViUInt16 srcWidth, ViUInt16 destSpace,
+                                    ViBusAddress64 destOffset, ViUInt16 destWidth,
+                                    ViBusSize srcLength);
 ViStatus _VI_FUNC  viMoveAsyncEx   (ViSession vi, ViUInt16 srcSpace, ViBusAddress64 srcOffset,
-                                    ViUInt16 srcWidth, ViUInt16 destSpace, 
-                                    ViBusAddress64 destOffset, ViUInt16 destWidth, 
+                                    ViUInt16 srcWidth, ViUInt16 destSpace,
+                                    ViBusAddress64 destOffset, ViUInt16 destWidth,
                                     ViBusSize srcLength, ViPJobId jobId);
 #endif
 
@@ -303,7 +303,7 @@ ViStatus _VI_FUNC  viVxiCommandQuery(ViSession vi, ViUInt16 mode, ViUInt32 cmd,
                                      ViPUInt32 response);
 ViStatus _VI_FUNC  viAssertUtilSignal(ViSession vi, ViUInt16 line);
 ViStatus _VI_FUNC  viAssertIntrSignal(ViSession vi, ViInt16 mode, ViUInt32 statusID);
-ViStatus _VI_FUNC  viMapTrigger    (ViSession vi, ViInt16 trigSrc, ViInt16 trigDest, 
+ViStatus _VI_FUNC  viMapTrigger    (ViSession vi, ViInt16 trigSrc, ViInt16 trigDest,
                                     ViUInt16 mode);
 ViStatus _VI_FUNC  viUnmapTrigger  (ViSession vi, ViInt16 trigSrc, ViInt16 trigDest);
 ViStatus _VI_FUNC  viUsbControlOut (ViSession vi, ViInt16 bmRequestType, ViInt16 bRequest,
@@ -540,7 +540,7 @@ ViStatus _VI_FUNC  viPxiReserveTriggers(ViSession vi, ViInt16 cnt, ViAInt16 trig
 #define VI_ATTR_PXI_MEM_SIZE_BAR3             (VI_ATTR_PXI_MEM_SIZE_BAR3_32)
 #define VI_ATTR_PXI_MEM_SIZE_BAR4             (VI_ATTR_PXI_MEM_SIZE_BAR4_32)
 #define VI_ATTR_PXI_MEM_SIZE_BAR5             (VI_ATTR_PXI_MEM_SIZE_BAR5_32)
-#endif 
+#endif
 
 /*- Event Types -------------------------------------------------------------*/
 
@@ -623,6 +623,7 @@ ViStatus _VI_FUNC  viPxiReserveTriggers(ViSession vi, ViInt16 cnt, ViAInt16 trig
 #define VI_ERROR_INV_FMT            (_VI_ERROR+0x3FFF003FL) /* BFFF003F, -1073807297 */
 #define VI_ERROR_NSUP_FMT           (_VI_ERROR+0x3FFF0041L) /* BFFF0041, -1073807295 */
 #define VI_ERROR_LINE_IN_USE        (_VI_ERROR+0x3FFF0042L) /* BFFF0042, -1073807294 */
+#define VI_ERROR_LINE_NRESERVED     (_VI_ERROR+0x3FFF0043L) /* BFFF0043, -1073807293 */
 #define VI_ERROR_NSUP_MODE          (_VI_ERROR+0x3FFF0046L) /* BFFF0046, -1073807290 */
 #define VI_ERROR_SRQ_NOCCURRED      (_VI_ERROR+0x3FFF004AL) /* BFFF004A, -1073807286 */
 #define VI_ERROR_INV_SPACE          (_VI_ERROR+0x3FFF004EL) /* BFFF004E, -1073807282 */
@@ -752,6 +753,10 @@ ViStatus _VI_FUNC  viPxiReserveTriggers(ViSession vi, ViInt16 cnt, ViAInt16 trig
 #define VI_TRIG_STAR_VXI0           (29)
 #define VI_TRIG_STAR_VXI1           (30)
 #define VI_TRIG_STAR_VXI2           (31)
+#define VI_TRIG_TTL8                (32)
+#define VI_TRIG_TTL9                (33)
+#define VI_TRIG_TTL10               (34)
+#define VI_TRIG_TTL11               (35)
 
 #define VI_TRIG_PROT_DEFAULT        (0)
 #define VI_TRIG_PROT_ON             (1)
@@ -923,7 +928,7 @@ ViStatus _VI_FUNC  viPxiReserveTriggers(ViSession vi, ViInt16 cnt, ViAInt16 trig
 #endif
 
 #define VI_INTF_RIO                 (8)
-#define VI_INTF_FIREWIRE            (9) 
+#define VI_INTF_FIREWIRE            (9)
 
 #define VI_ATTR_SYNC_MXI_ALLOW_EN   (0x3FFF0161UL) /* ViBoolean, read/write */
 

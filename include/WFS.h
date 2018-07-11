@@ -10,9 +10,9 @@
 
 	Header file
 
-	Date:          Feb-04-2015
-	Software-Nr:   09.76.440
-	Version:       4.4.0
+	Date:          Sep-11-2015
+	Software-Nr:   09.76.460
+	Version:       4.6.0
 
 	Changelog:     see 'Readme.rtf'
 
@@ -21,7 +21,7 @@
 #ifndef __WFS_HEADER
 #define __WFS_HEADER
 
-#include <vpptype.h>
+#include "vpptype.h"
 
 #if defined(__cplusplus) || defined(__cplusplus__)
 extern "C"
@@ -128,9 +128,9 @@ extern "C"
 /*---------------------------------------------------------------------------
  Timeout
 ---------------------------------------------------------------------------*/
-#define WFS_TRIG_TIMEOUT               (100*60*60*24)	// * 10 ms = 24 hours, given to function is_SetTimeout
-														// after that time is_IsVideoFinish returns 'finish' without error
-#define WFS_TIMEOUT_CAPTURE_NORMAL     (1.0)  // in sec.
+#define WFS_TRIG_TIMEOUT               (100*60*60*24) // * 10 ms = 24 hours, given to function is_SetTimeout
+																		 // after that time is_IsVideoFinish returns 'finish' without error
+#define WFS_TIMEOUT_CAPTURE_NORMAL     (3.0)  // in sec.
 #define WFS_TIMEOUT_CAPTURE_TRIGGER    (0.1)  // in sec., allow fast return of functions WFS_TakeSpotfieldImage...
 #define WFS10_TIMEOUT_CAPTURE_NORMAL   (4000) // in msec., allow 500 ms exposure time + reserve
 #define WFS10_TIMEOUT_CAPTURE_TRIGGER  (100)  // in msec., allow fast return of functions WFS_TakeSpotfieldImage...
@@ -200,12 +200,13 @@ extern "C"
 #define  CAM_RES_WFS20_MAX_IDX        (9)
 
 
-// Hardware trigger modes
-#define  WFS_HW_TRIGGER_OFF            (0)
+// Hardware/Software trigger modes
+#define  WFS_HW_TRIGGER_OFF            (0) // no trigger, continuous run, highest measurement speed, delay due to multiple image buffers
 #define  WFS_HW_TRIGGER_HL             (1)
 #define  WFS_HW_TRIGGER_LH             (2)
+#define  WFS_SW_TRIGGER                (3) // SW trigger, start new measurement when WFS_TakeSpotfieldImage() or WFS_TakeSpotfieldImageAutoExpos() is called
 #define  WFS_TRIGGER_MODE_MIN          WFS_HW_TRIGGER_OFF
-#define  WFS_TRIGGER_MODE_MAX          WFS_HW_TRIGGER_LH
+#define  WFS_TRIGGER_MODE_MAX          WFS_SW_TRIGGER
 
 	// Averaging
 #define  AVERAGE_COUNT_MAX             (256)
@@ -225,8 +226,8 @@ extern "C"
 #define  MAX_SPOTS_X                   (50) // WFS20: 1440*5/150 = 48
 #define  MAX_SPOTS_Y                   (40) // WFS20: 1080*5/150 = 36
 /*
-#define  MAX_SPOTS_X                   (41) // max. for 1280x1024 with 4.65�m pixels and 150�m lenslet pitch (WFSx)
-											// also for 640x480 with 9.9�m pixels and 150�m lenslet pitch (WFS10x)
+#define  MAX_SPOTS_X                   (41) // max. for 1280x1024 with 4.65µm pixels and 150µm lenslet pitch (WFSx)
+														  // also for 640x480 with 9.9µm pixels and 150µm lenslet pitch (WFS10x)
 #define  MAX_SPOTS_Y                   (33) // determines also 3D display size
 */
 // Reference
@@ -275,9 +276,9 @@ const static mode_t mode[] =
 	{  1,    0,    0,    "Piston",                 },
 	{  2,    1,   -1,    "Tip y",                  },
 	{  3,    1,    1,    "Tilt x",                 },
-	{  4,    2,   -2,    "Astigmatism +-45�",      },
+	{  4,    2,   -2,    "Astigmatism +-45°",      },
 	{  5,    2,    0,    "Defocus",                },
-	{  6,    2,    2,    "Astigmatism 0/90�",      },
+	{  6,    2,    2,    "Astigmatism 0/90°",      },
 	{  7,    3,   -3,    "Trefoil y",              }, // corrected y
 	{  8,    3,   -1,    "Coma x",                 },
 	{  9,    3,    1,    "Coma y",                 },
@@ -639,3 +640,5 @@ ViStatus _VI_FUNC WFS_DoSphericalRef (ViSession handle);
 /****************************************************************************
   End of Header file
 ****************************************************************************/
+
+
