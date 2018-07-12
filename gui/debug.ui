@@ -53,7 +53,7 @@
         <item row="1" column="1">
          <widget class="QPushButton" name="btn_check_highspeed_centroids">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text">
            <string>check_highspeed_centroids</string>
@@ -98,7 +98,7 @@
         <item row="0" column="2">
          <widget class="QPushButton" name="btn_set_highspeed_mode">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text">
            <string>set_highspeed_mode</string>
@@ -192,7 +192,7 @@
         <item row="1" column="0">
          <widget class="QPushButton" name="btn_get_highspeed_windows">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text">
            <string>get_highspeed_windows</string>
