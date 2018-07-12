@@ -664,8 +664,8 @@ class WFS(object):
         self.spots_x = Vi.int32(0)
         self.spots_y = Vi.int32(0)
         self.subtract_offset = Vi.int32(0)
-        self.test_message = Vi.int16(0)
-        self.test_result = Vi.char(self.WFS_BUFFER_SIZE)
+        self.test_result = Vi.int16(0)
+        self.test_message = Vi.char(self.WFS_BUFFER_SIZE)
         self.trigger_delay_actual = Vi.int32(0)
         self.trigger_delay_increment = Vi.int32(1)
         self.trigger_delay_max = Vi.int32(699000)
@@ -760,7 +760,7 @@ class WFS(object):
                                   self.reset_device,
                                   ctypes.byref(self.instrument_handle))
         log_wfs.info(f'Init: {self.instrument_handle.value}')
-        log_wfs.info(f'Resource Name: {self.resource_name.value}')
+        log_wfs.info(f'Resource Name: {self.resource_name.value.decode()}')
         log_wfs.info(f'ID Query: {self.id_query.value}')
         log_wfs.info(f'Reset Device: {self.reset_device.value}')
         self._error_message(status)
@@ -879,10 +879,10 @@ class WFS(object):
                                                self.serial_number_wfs,
                                                self.serial_number_camera)
         log_wfs.debug(f'Get Instrument Info: {self.instrument_handle.value}')
-        log_wfs.info(f'Manufacturer Name: {self.manufacturer_name.value}')
-        log_wfs.info(f'Instrument Name WFS: {self.instrument_name_wfs.value}')
-        log_wfs.info(f'Serial Number WFS: {self.serial_number_wfs.value}')
-        log_wfs.info(f'Serial Number Camera: {self.serial_number_camera.value}')
+        log_wfs.info(f'Manufacturer Name: {self.manufacturer_name.value.decode()}')
+        log_wfs.info(f'Instrument Name WFS: {self.instrument_name_wfs.value.decode()}')
+        log_wfs.info(f'Serial Number WFS: {self.serial_number_wfs.value.decode()}')
+        log_wfs.info(f'Serial Number Camera: {self.serial_number_camera.value.decode()}')
         self._error_message(status)
         return (status, self.manufacturer_name.value, self.instrument_name_wfs.value,
                 self.serial_number_wfs.value, self.serial_number_camera.value)
@@ -1711,7 +1711,7 @@ class WFS(object):
                                         ctypes.byref(self.grid_correction_45))
         log_wfs.debug(f'Get MLA Data: {self.instrument_handle.value}')
         log_wfs.info(f'MLA Index: {self.mla_index.value}')
-        log_wfs.info(f'MLA Name: {self.mla_name.value}')
+        log_wfs.info(f'MLA Name: {self.mla_name.value.decode()}')
         log_wfs.info(f'MLA Camera Pitch (µm): {self.cam_pitch_um.value}')
         log_wfs.info(f'MLA Lenslet Pitch (µm): {self.lenslet_pitch_um.value}')
         log_wfs.info(f'MLA Spot Offset X: {self.spot_offset_x.value}')
@@ -1800,7 +1800,7 @@ class WFS(object):
                                          ctypes.byref(self.grid_correction_pitch))
         log_wfs.debug(f'Get MLA Data2: {self.instrument_handle.value}')
         log_wfs.info(f'MLA Index: {self.mla_index.value}')
-        log_wfs.info(f'MLA Name: {self.mla_name.value}')
+        log_wfs.info(f'MLA Name: {self.mla_name.value.decode()}')
         log_wfs.info(f'MLA Camera Pitch (µm): {self.cam_pitch_um.value}')
         log_wfs.info(f'MLA Lenslet Pitch (µm): {self.lenslet_pitch_um.value}')
         log_wfs.info(f'MLA Spot Offset X: {self.spot_offset_x.value}')
@@ -3516,7 +3516,7 @@ class WFS(object):
                                        self.test_message)
         log_wfs.debug(f'Self Test: {self.instrument_handle.value}')
         log_wfs.info(f'Self Test Result: {self.test_result.value}')
-        log_wfs.info(f'Self Test Message: {self.test_message.value}')
+        log_wfs.info(f'Self Test Message: {self.test_message.value.decode()}')
         self._error_message(status)
         return status, self.test_result.value, self.test_message.value
 
@@ -3586,8 +3586,8 @@ class WFS(object):
                                             self.instrument_driver_revision,
                                             self.firmware_revision)
         log_wfs.debug(f'Revision Query: {self.instrument_handle.value}')
-        log_wfs.info(f'Instrument Driver Version: {self.instrument_driver_revision.value}')
-        log_wfs.info(f'Instrument Firmware Version: {self.firmware_revision.value}')
+        log_wfs.info(f'Instrument Driver Version: {self.instrument_driver_revision.value.decode()}')
+        log_wfs.info(f'Instrument Firmware Version: {self.firmware_revision.value.decode()}')
         self._error_message(status)
         return status, self.instrument_driver_revision.value, self.firmware_revision.value
 
@@ -3627,7 +3627,7 @@ class WFS(object):
                                          self.error_message)
         log_wfs.debug(f'Error Query: {self.instrument_handle.value}')
         log_wfs.info(f'Error Code: {self.error_code.value}')
-        log_wfs.error(f'Error Message: {self.error_message.value}')
+        log_wfs.error(f'Error Message: {self.error_message.value.decode()}')
         self._error_message(status)
         return status, self.error_code.value, self.error_message.value
 
@@ -3669,7 +3669,7 @@ class WFS(object):
             status = 0
             return status, self.error_message.value
         elif self.error_code.value in self.WFS_WARNING_CODES:
-            log_wfs.warning(self.WFS_WARNING_CODES[self.error_code.value])
+            log_wfs.warning(self.WFS_WARNING_CODES[self.error_code.value].decode())
             self.error_message.value = self.WFS_WARNING_CODES[self.error_code.value]
             status = 0
             return status, self.error_message.value
@@ -3681,7 +3681,7 @@ class WFS(object):
             self.error_message.value = b'Corrupt reference file!'
         # log_wfs.debug(f'Error Message: {self.instrument_handle.value}')
         log_wfs.info(f'Error Code: {self.error_code.value}')
-        log_wfs.error(f'Error Message: {self.error_message.value}')
+        log_wfs.error(f'Error Message: {self.error_message.value.decode()}')
         return status, self.error_message.value
 
     def _get_instrument_list_len(self):
@@ -3776,9 +3776,9 @@ class WFS(object):
         log_wfs.info(f'Instrument Index: {self.instrument_index.value}')
         log_wfs.info(f'Device ID: {self.device_id.value}')
         log_wfs.info(f'In Use: {self.in_use.value}')
-        log_wfs.info(f'Instrument Name WFS: {self.instrument_name_wfs.value}')
-        log_wfs.info(f'Serial Number WFS: {self.serial_number_wfs.value}')
-        log_wfs.info(f'Resource Name: {self.resource_name.value}')
+        log_wfs.info(f'Instrument Name WFS: {self.instrument_name_wfs.value.decode()}')
+        log_wfs.info(f'Serial Number WFS: {self.serial_number_wfs.value.decode()}')
+        log_wfs.info(f'Resource Name: {self.resource_name.value.decode()}')
         self._error_message(status)
         return (status, self.instrument_index.value, self.device_id.value, self.instrument_name_wfs.value,
                 self.serial_number_wfs.value, self.resource_name.value)
@@ -4208,7 +4208,7 @@ class WFS(object):
         self._calc_wavefront()
         self._calc_wavefront_statistics()
         self._get_line_view()
-        # self._zernike_lsf()
+        self._zernike_lsf()
         return self.roc_mm.value
 
     def disconnect(self):
