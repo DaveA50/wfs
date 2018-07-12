@@ -46,6 +46,9 @@ def find_wfs_library():
         ctypes.windll.LoadLibrary(WFS_32/64.dll)
     """
     bitness = ctypes.sizeof(ctypes.c_void_p) * 8  # =32 on x86, =64 on x64
+    if bitness is 64:
+        log_wfs.critical('64 bit Windows has OSError Access Violations')
+        raise ImportError('64 bit Windows has OSError Access Violations')
     lib = find_library(f'WFS_{bitness}')
     if lib is None:
         log_wfs.critical(f'WFS_{bitness}.dll not found')
@@ -332,6 +335,7 @@ class WFS(object):
     WFS_ERROR_PARAMETER7 = WFS_ERROR + 0x3FFC0007  # -1074003961
     WFS_ERROR_PARAMETER8 = WFS_ERROR + 0x3FFC0008  # -1074003960
     # WFS_ERROR_PARAMETER9 = WFS_ERROR + 0x3FFC0009  # -1074003959
+    WFS_ERROR_API_ID_NOT_SUPPORTED = 0x00000504
 
     WFS_ERROR_NO_SENSOR_CONNECTED = WFS_INSTR_ERROR_OFFSET + 0x00  # -1074001664
     WFS_ERROR_OUT_OF_MEMORY = WFS_INSTR_ERROR_OFFSET + 0x01  # -1074001663
@@ -374,11 +378,11 @@ class WFS(object):
     WFS_WARN_NSUP_SELF_TEST = 0x3FFC0103  # 1073479939
     WFS_WARN_NSUP_ERROR_QUERY = 0x3FFC0104  # 1073479940
     WFS_WARN_NSUP_REV_QUERY = 0x3FFC0105  # 1073479941
-    WFS_WARNING_CODES = {WFS_WARN_NSUP_ID_QUERY: 'Identification query not supported!',
-                         WFS_WARN_NSUP_RESET: 'Reset not supported!',
-                         WFS_WARN_NSUP_SELF_TEST: 'Self-test not supported!',
-                         WFS_WARN_NSUP_ERROR_QUERY: 'Error query not supported!',
-                         WFS_WARN_NSUP_REV_QUERY: 'Instrument revision query not supported!'}
+    WFS_WARNING_CODES = {WFS_WARN_NSUP_ID_QUERY: b'Identification query not supported!',
+                         WFS_WARN_NSUP_RESET: b'Reset not supported!',
+                         WFS_WARN_NSUP_SELF_TEST: b'Self-test not supported!',
+                         WFS_WARN_NSUP_ERROR_QUERY: b'Error query not supported!',
+                         WFS_WARN_NSUP_REV_QUERY: b'Instrument revision query not supported!'}
 
     # Driver Status reporting (lower 24 bits)
     WFS_STATBIT_CON = 0x00000001  # USB connection lost, set by driver
@@ -398,23 +402,23 @@ class WFS(object):
     WFS_STATBIT_MIS = 0x00004000  # Mismatched centroids in Highspeed Mode
     WFS_STATBIT_LOS = 0x00008000  # Low number of detected spots, warning: reduced Zernike accuracy
     WFS_STATBIT_FIL = 0x00010000  # Pupil is badly filled with spots, warning: reduced Zernike accuracy
-    WFS_DRIVER_STATUS = {WFS_STATBIT_CON: 'USB connection lost, set by driver',
-                         WFS_STATBIT_PTH: 'Power too high (cam saturated)',
-                         WFS_STATBIT_PTL: 'Power too low (low cam digits)',
-                         WFS_STATBIT_HAL: 'High ambient light',
-                         WFS_STATBIT_SCL: 'Spot contrast too low',
-                         WFS_STATBIT_ZFL: 'Zernike fit failed because of not enough detected spots',
-                         WFS_STATBIT_ZFH: 'Zernike fit failed because of too many detected spots',
-                         WFS_STATBIT_ATR: 'Camera is still awaiting a trigger',
-                         WFS_STATBIT_CFG: 'Camera is configured, ready to use',
-                         WFS_STATBIT_PUD: 'Pupil is defined',
-                         WFS_STATBIT_SPC: 'Number of spots or pupil or aoi has been changed',
-                         WFS_STATBIT_RDA: 'Reconstructed spot deviations available',
-                         WFS_STATBIT_URF: 'User reference data available',
-                         WFS_STATBIT_HSP: 'Camera is in Highspeed Mode',
-                         WFS_STATBIT_MIS: 'Mismatched centroids in Highspeed Mode',
-                         WFS_STATBIT_LOS: 'Low number of detected spots, warning: reduced Zernike accuracy',
-                         WFS_STATBIT_FIL: 'Pupil is badly filled with spots, warning: reduced Zernike accuracy'}
+    WFS_DRIVER_STATUS = {WFS_STATBIT_CON: b'USB connection lost, set by driver',
+                         WFS_STATBIT_PTH: b'Power too high (cam saturated)',
+                         WFS_STATBIT_PTL: b'Power too low (low cam digits)',
+                         WFS_STATBIT_HAL: b'High ambient light',
+                         WFS_STATBIT_SCL: b'Spot contrast too low',
+                         WFS_STATBIT_ZFL: b'Zernike fit failed because of not enough detected spots',
+                         WFS_STATBIT_ZFH: b'Zernike fit failed because of too many detected spots',
+                         WFS_STATBIT_ATR: b'Camera is still awaiting a trigger',
+                         WFS_STATBIT_CFG: b'Camera is configured, ready to use',
+                         WFS_STATBIT_PUD: b'Pupil is defined',
+                         WFS_STATBIT_SPC: b'Number of spots or pupil or aoi has been changed',
+                         WFS_STATBIT_RDA: b'Reconstructed spot deviations available',
+                         WFS_STATBIT_URF: b'User reference data available',
+                         WFS_STATBIT_HSP: b'Camera is in Highspeed Mode',
+                         WFS_STATBIT_MIS: b'Mismatched centroids in Highspeed Mode',
+                         WFS_STATBIT_LOS: b'Low number of detected spots, warning: reduced Zernike accuracy',
+                         WFS_STATBIT_FIL: b'Pupil is badly filled with spots, warning: reduced Zernike accuracy'}
 
     # Timeout
     # * 10 ms = 24 hours, given to is_SetTimeout, after that time is_IsVideoFinish returns 'finish' without error
@@ -492,8 +496,9 @@ class WFS(object):
     WFS_HW_TRIGGER_OFF = 0
     WFS_HW_TRIGGER_HL = 1
     WFS_HW_TRIGGER_LH = 2
+    WFS_SW_TRIGGER = 3
     WFS_TRIGGER_MODE_MIN = WFS_HW_TRIGGER_OFF
-    WFS_TRIGGER_MODE_MAX = WFS_HW_TRIGGER_LH
+    WFS_TRIGGER_MODE_MAX = WFS_SW_TRIGGER
 
     # Averaging
     AVERAGE_COUNT_MAX = 256
@@ -594,9 +599,9 @@ class WFS(object):
         self.error_code = Vi.int32(0)
         self.error_message = Vi.char(self.WFS_ERR_DESCR_BUFFER_SIZE)
         self.exposure_time_actual = Vi.real64(0)
-        self.exposure_time_increment = Vi.real64(0.0554)
-        self.exposure_time_max = Vi.real64(66.6147666666)
-        self.exposure_time_min = Vi.real64(0.0793666666667)
+        self.exposure_time_increment = Vi.real64(0.005)
+        self.exposure_time_max = Vi.real64(83.3479995727539)
+        self.exposure_time_min = Vi.real64(0.01)
         self.exposure_time_set = Vi.real64(0.0793666666667)
         self.firmware_revision = Vi.char(self.WFS_BUFFER_SIZE)
         self.fit_error_mean = Vi.real64(0)
@@ -629,7 +634,7 @@ class WFS(object):
         self.line = Vi.int32(0)
         self.manufacturer_name = Vi.char(self.WFS_BUFFER_SIZE)
         self.master_gain_actual = Vi.real64(0)
-        self.master_gain_max = Vi.real64(5)
+        self.master_gain_max = Vi.real64(1)
         self.master_gain_min = Vi.real64(1)
         self.master_gain_set = Vi.real64(1)
         self.mla_count = Vi.int32(1)
@@ -641,8 +646,8 @@ class WFS(object):
         self.pixel_format = Vi.int32(self.PIXEL_FORMAT_MONO8)
         self.pupil_center_x_mm = Vi.real64(0)
         self.pupil_center_y_mm = Vi.real64(0)
-        self.pupil_diameter_x_mm = Vi.real64(4.76)  # Max diameter without clipping edges
-        self.pupil_diameter_y_mm = Vi.real64(4.76)  # Max diameter without clipping edges
+        self.pupil_diameter_x_mm = Vi.real64(5.4)  # Max diameter without clipping edges
+        self.pupil_diameter_y_mm = Vi.real64(5.4)  # Max diameter without clipping edges
         self.reference_index = Vi.int32(0)
         self.reset_device = Vi.boolean(0)
         self.resource_name = Vi.rsrc(self.WFS_BUFFER_SIZE, b'USB::0x1313::0x0000::1')
@@ -663,9 +668,9 @@ class WFS(object):
         self.test_result = Vi.char(self.WFS_BUFFER_SIZE)
         self.trigger_delay_actual = Vi.int32(0)
         self.trigger_delay_increment = Vi.int32(1)
-        self.trigger_delay_max = Vi.int32(4000000)
-        self.trigger_delay_min = Vi.int32(15)
-        self.trigger_delay_set = Vi.int32(15)
+        self.trigger_delay_max = Vi.int32(699000)
+        self.trigger_delay_min = Vi.int32(0)
+        self.trigger_delay_set = Vi.int32(0)
         self.trigger_mode = Vi.int32(0)
         self.wavefront_diff = Vi.real64(0)
         self.wavefront_max = Vi.real64(0)
@@ -4203,7 +4208,7 @@ class WFS(object):
         self._calc_wavefront()
         self._calc_wavefront_statistics()
         self._get_line_view()
-        self._zernike_lsf()
+        # self._zernike_lsf()
         return self.roc_mm.value
 
     def disconnect(self):
