@@ -123,17 +123,18 @@ class Vi(object):
             log_wfs.warning(f'Must be an Int, setting to 512: {e}')
             return ctypes.create_string_buffer(512)
 
-    @staticmethod
-    def int8(n):
-        """
-        Args:
-            n: Binary8 char
-        """
-        try:
-            return ctypes.c_byte(int(n))
-        except ValueError as e:
-            log_wfs.warning(f'Must be an Int, setting to 0: {e}')
-            return ctypes.c_byte(0)
+    # Deprecated
+    # @staticmethod
+    # def int8(n):
+    #     """
+    #     Args:
+    #         n: Binary8 char
+    #     """
+    #     try:
+    #         return ctypes.c_byte(int(n))
+    #     except ValueError as e:
+    #         log_wfs.warning(f'Must be an Int, setting to 0: {e}')
+    #         return ctypes.c_byte(0)
 
     @staticmethod
     def uint8(n):
@@ -195,17 +196,18 @@ class Vi(object):
             log_wfs.warning(f'Must be an Int, setting to 0: {e}')
             return ctypes.c_ulong(0)
 
-    @staticmethod
-    def real32(n):
-        """
-        Args:
-            n: float, char*
-        """
-        try:
-            return ctypes.c_float(float(n))
-        except ValueError as e:
-            log_wfs.warning(f'Must be a float, setting to 0: {e}')
-            return ctypes.c_float(float(0))
+    # Deprecated
+    # @staticmethod
+    # def real32(n):
+    #     """
+    #     Args:
+    #         n: float, char*
+    #     """
+    #     try:
+    #         return ctypes.c_float(float(n))
+    #     except ValueError as e:
+    #         log_wfs.warning(f'Must be a float, setting to 0: {e}')
+    #         return ctypes.c_float(float(0))
 
     @staticmethod
     def real64(n):
@@ -248,7 +250,7 @@ class Vi(object):
             n (int):
 
         Returns:
-            Vi.uint16(n) or Vi.uint16(0)
+            Vi.uint32(n) or Vi.uint32(0)
         """
         return Vi.uint32(n)
 
@@ -282,7 +284,7 @@ class Vi(object):
 
         Args:
             n (int):
-            s (str):
+            s (bytes):
 
         Returns:
             Vi.char(n).value = s
@@ -750,11 +752,6 @@ class WFS(object):
                 self.reset_device = Vi.boolean(reset_device)
             except TypeError:
                 self.reset_device = reset_device
-        lib_wfs.WFS_init.argtypes = [ctypes.c_char_p,
-                                     ctypes.c_ushort,
-                                     ctypes.c_ushort,
-                                     ctypes.POINTER(ctypes.c_ulong)]
-        lib_wfs.WFS_init.restypes = ctypes.c_long
         status = lib_wfs.WFS_init(self.resource_name,
                                   self.id_query,
                                   self.reset_device,
@@ -3757,14 +3754,6 @@ class WFS(object):
             except TypeError:
                 self.instrument_index = instrument_index
         instrument_handle = Vi.session(Vi.null)
-        lib_wfs.WFS_GetInstrumentListInfo.argtypes = [ctypes.c_ulong,
-                                                      ctypes.c_long,
-                                                      ctypes.POINTER(ctypes.c_long),
-                                                      ctypes.POINTER(ctypes.c_long),
-                                                      ctypes.c_char_p,
-                                                      ctypes.c_char_p,
-                                                      ctypes.c_char_p]
-        lib_wfs.WFS_GetInstrumentListInfo.restypes = ctypes.c_long
         status = lib_wfs.WFS_GetInstrumentListInfo(instrument_handle,
                                                    self.instrument_index,
                                                    ctypes.byref(self.device_id),
