@@ -81,7 +81,7 @@ class Vi(object):
             y (int): Size of array in Y
         """
         try:
-            # noinspection PyCallingNonCallable
+            # noinspection PyCallingNonCallable, PyTypeChecker
             return ((ctypes.c_ubyte * int(x)) * int(y))()
         except ValueError as e:
             log_wfs.warning(f'Must be an Int, setting to 0: {e}')
@@ -96,14 +96,14 @@ class Vi(object):
         """
         if y is not None:
             try:
-                # noinspection PyCallingNonCallable
+                # noinspection PyCallingNonCallable, PyTypeChecker
                 return ((ctypes.c_float * int(x)) * int(y))()
             except ValueError as e:
                 log_wfs.warning(f'Must be an Int, setting to 0: {e}')
                 return ctypes.c_float(0)
         else:
             try:
-                # noinspection PyCallingNonCallable
+                # noinspection PyCallingNonCallable, PyTypeChecker
                 return (ctypes.c_float * int(x))()
             except ValueError as e:
                 log_wfs.warning(f'Must be an Int, setting to 0: {e}')
