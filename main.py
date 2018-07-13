@@ -133,17 +133,17 @@ class WFSApp(design_base, design_form):
         self.action_stop.triggered.connect(self.on_stop_click)
 
         self.zernike_plot = pg.PlotWidget()
-        self.grid_central.addWidget(self.zernike_plot)
+        # self.grid_central.addWidget(self.zernike_plot)
         self.zernike_plot.setXRange(0, 16)
         self.zernike_plot_xrange = np.linspace(0.5, 15.5, 16)
 
         self.roc_plot = pg.PlotWidget()
-        self.grid_central.addWidget(self.roc_plot)
+        # self.grid_central.addWidget(self.roc_plot)
         self.roc_list = [0] * 100
         self.roc_list_X = [x for x in range(-100, 0)]
 
         self.line_view_plot = pg.PlotWidget()
-        self.grid_central.addWidget(self.line_view_plot)
+        # self.grid_central.addWidget(self.line_view_plot)
 
         self.wavefront_grid_X = np.linspace(-2.4, 2.4, 33)
         self.wavefront_grid_Y = np.linspace(-3, 3, 41)
@@ -236,7 +236,7 @@ class WFSApp(design_base, design_form):
         self.wfs.config()
         self.action_disconnect.setEnabled(True)
         self.action_connect.setEnabled(False)
-        self.on_start_click()
+        # self.on_start_click()
 
     @Slot()
     def on_disconnect_click(self):

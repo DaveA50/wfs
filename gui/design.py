@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\TAG\Code\wfs\gui\design.ui'
+# Form implementation generated from reading ui file 'C:\Users\TAG\Code\wfs\gui\design.ui',
+# licensing of 'C:\Users\TAG\Code\wfs\gui\design.ui' applies.
 #
-# Created by: PyQt5 UI code generator 5.11.2
+# Created: Wed Jul 11 18:28:03 2018
+#      by: pyside2-uic  running on PySide2 5.11.1a1.dev1530708810518
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
 class Ui_main_window(object):
     def setupUi(self, main_window):
@@ -68,27 +70,26 @@ class Ui_main_window(object):
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
     def retranslateUi(self, main_window):
-        _translate = QtCore.QCoreApplication.translate
-        main_window.setWindowTitle(_translate("main_window", "WFS Application"))
-        self.menu_file.setTitle(_translate("main_window", "File"))
-        self.toolbar.setWindowTitle(_translate("main_window", "toolBar"))
-        self.action_quit.setText(_translate("main_window", "&Quit"))
-        self.action_settings.setText(_translate("main_window", "&Settings"))
-        self.action_settings.setShortcut(_translate("main_window", "Ctrl+Alt+S"))
-        self.action_connect.setText(_translate("main_window", "&Connect"))
-        self.action_connect.setToolTip(_translate("main_window", "Connect to the WFS"))
-        self.action_connect.setShortcut(_translate("main_window", "F1"))
-        self.action_disconnect.setText(_translate("main_window", "&Disconnect"))
-        self.action_disconnect.setToolTip(_translate("main_window", "Disconnect from the WFS"))
-        self.action_disconnect.setShortcut(_translate("main_window", "F2"))
-        self.action_stop.setText(_translate("main_window", "Stop"))
-        self.action_stop.setToolTip(_translate("main_window", "Stop updating the WFS"))
-        self.action_stop.setShortcut(_translate("main_window", "Shift+F2"))
-        self.action_start.setText(_translate("main_window", "Start"))
-        self.action_start.setToolTip(_translate("main_window", "Start updating the WFS"))
-        self.action_start.setShortcut(_translate("main_window", "Shift+F1"))
-        self.action_debug.setText(_translate("main_window", "Debug"))
-        self.action_debug.setToolTip(_translate("main_window", "Debug command window"))
-        self.action_test.setText(_translate("main_window", "Test"))
-        self.action_test.setToolTip(_translate("main_window", "Test Function"))
+        main_window.setWindowTitle(QtWidgets.QApplication.translate("main_window", "WFS Application", None, -1))
+        self.menu_file.setTitle(QtWidgets.QApplication.translate("main_window", "File", None, -1))
+        self.toolbar.setWindowTitle(QtWidgets.QApplication.translate("main_window", "toolBar", None, -1))
+        self.action_quit.setText(QtWidgets.QApplication.translate("main_window", "&Quit", None, -1))
+        self.action_settings.setText(QtWidgets.QApplication.translate("main_window", "&Settings", None, -1))
+        self.action_settings.setShortcut(QtWidgets.QApplication.translate("main_window", "Ctrl+Alt+S", None, -1))
+        self.action_connect.setText(QtWidgets.QApplication.translate("main_window", "&Connect", None, -1))
+        self.action_connect.setToolTip(QtWidgets.QApplication.translate("main_window", "Connect to the WFS", None, -1))
+        self.action_connect.setShortcut(QtWidgets.QApplication.translate("main_window", "F1", None, -1))
+        self.action_disconnect.setText(QtWidgets.QApplication.translate("main_window", "&Disconnect", None, -1))
+        self.action_disconnect.setToolTip(QtWidgets.QApplication.translate("main_window", "Disconnect from the WFS", None, -1))
+        self.action_disconnect.setShortcut(QtWidgets.QApplication.translate("main_window", "F2", None, -1))
+        self.action_stop.setText(QtWidgets.QApplication.translate("main_window", "Stop", None, -1))
+        self.action_stop.setToolTip(QtWidgets.QApplication.translate("main_window", "Stop updating the WFS", None, -1))
+        self.action_stop.setShortcut(QtWidgets.QApplication.translate("main_window", "Shift+F2", None, -1))
+        self.action_start.setText(QtWidgets.QApplication.translate("main_window", "Start", None, -1))
+        self.action_start.setToolTip(QtWidgets.QApplication.translate("main_window", "Start updating the WFS", None, -1))
+        self.action_start.setShortcut(QtWidgets.QApplication.translate("main_window", "Shift+F1", None, -1))
+        self.action_debug.setText(QtWidgets.QApplication.translate("main_window", "Debug", None, -1))
+        self.action_debug.setToolTip(QtWidgets.QApplication.translate("main_window", "Debug command window", None, -1))
+        self.action_test.setText(QtWidgets.QApplication.translate("main_window", "Test", None, -1))
+        self.action_test.setToolTip(QtWidgets.QApplication.translate("main_window", "Test Function", None, -1))
 
