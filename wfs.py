@@ -336,7 +336,7 @@ class WFS(object):
     WFS_ERROR_PARAMETER6 = WFS_ERROR + 0x3FFC0006  # -1074003962
     WFS_ERROR_PARAMETER7 = WFS_ERROR + 0x3FFC0007  # -1074003961
     WFS_ERROR_PARAMETER8 = WFS_ERROR + 0x3FFC0008  # -1074003960
-    # WFS_ERROR_PARAMETER9 = WFS_ERROR + 0x3FFC0009  # -1074003959
+    WFS_ERROR_PARAMETER9 = WFS_ERROR + 0x3FFC0009  # -1074003959
     WFS_ERROR_API_ID_NOT_SUPPORTED = 0x00000504
 
     WFS_ERROR_NO_SENSOR_CONNECTED = WFS_INSTR_ERROR_OFFSET + 0x00  # -1074001664
@@ -425,7 +425,7 @@ class WFS(object):
     # Timeout
     # * 10 ms = 24 hours, given to is_SetTimeout, after that time is_IsVideoFinish returns 'finish' without error
     WFS_TRIG_TIMEOUT = 100 * 60 * 60 * 24  # 8640000
-    WFS_TIMEOUT_CAPTURE_NORMAL = 1.0  # in seconds
+    WFS_TIMEOUT_CAPTURE_NORMAL = 5.0  # in seconds
     WFS_TIMEOUT_CAPTURE_TRIGGER = 0.1  # in seconds, allow fast return of functions WFS_TakeSpotfieldImage...
     WFS10_TIMEOUT_CAPTURE_NORMAL = 4000  # in ms, allow 500 ms exposure time + reserve
     WFS10_TIMEOUT_CAPTURE_TRIGGER = 100  # in ms, allow fast return of functions WFS_TakeSpotfieldImage...
@@ -437,7 +437,7 @@ class WFS(object):
     WFS_FALSE = 0
 
     # Defines for WFS camera
-    MAX_FRAMERATE = 15  # not higher for wider exposure range
+    # MAX_FRAMERATE = 15  # not higher for wider exposure range
 
     EXPOSURE_MANUAL = 0
     EXPOSURE_AUTO = 1
@@ -446,9 +446,13 @@ class WFS(object):
     MASTER_GAIN_MIN_WFS10 = 1.5  # 1.0 prevents ADC from saturation on overexposure
     MASTER_GAIN_MIN_WFS20 = 1.0
     MASTER_GAIN_MAX_WFS20 = 1.0
+    MASTER_GAIN_MAX_WFS30 = 24.0
+    MASTER_GAIN_MAX_WFS40 = 4.0
     MASTER_GAIN_MAX = 13.66
     MASTER_GAIN_MAX_DISPLAY = 5.0  # dark signal is too noisy for higher amplification
     MASTER_GAIN_EXPONENT = 38.26  # based on natural logarithm
+    MASTER_GAIN_EXPONENT_WFS30 = 31.465
+    MASTER_GAIN_FACTOR_WFS40 = 33.333
 
     NOISE_LEVEL_MIN = 0  # level for cutting spotfield
     NOISE_LEVEL_MAX = 255
@@ -458,20 +462,22 @@ class WFS(object):
     BLACK_LEVEL_WFS_DEF = 100  # lower values causes problems with auto-exposure and trigger (WFS)
     BLACK_LEVEL_WFS10_DEF = 100  # for cam shifted to 0 ... +15
     BLACK_LEVEL_WFS20_DEF = 0
+    BLACK_LEVEL_WFS30_DEF = 0
+    BLACK_LEVEL_WFS40_DEF = 0
 
     # Pixel format defines
     PIXEL_FORMAT_MONO8 = 0
     PIXEL_FORMAT_MONO16 = 1
 
-    # pre-defined image sizes for WFS instruments
+    # pre-defined image sizes for WFS150/300 instruments
     CAM_RES_1280 = 0  # 1280x1024
     CAM_RES_1024 = 1  # 1024x1024
     CAM_RES_768 = 2  # 768x768
     CAM_RES_512 = 3  # 512x512
     CAM_RES_320 = 4  # 320x320 smallest!
     CAM_RES_MAX_IDX = 4
-    CAM_MAX_PIX_X = 1280
-    CAM_MAX_PIX_Y = 1024
+    # CAM_MAX_PIX_X = 1280
+    # CAM_MAX_PIX_Y = 1024
 
     # pre-defined image sizes for WFS10 instruments
     CAM_RES_WFS10_640 = 0  # 640x480
@@ -494,6 +500,36 @@ class WFS(object):
     CAM_RES_WFS20_180_BIN2 = 9  # 180x180, binning 2x2
     CAM_RES_WFS20_MAX_IDX = 9
 
+    # pre-defined image sizes for WFS30 instruments
+    CAM_RES_WFS30_1936 = 0  # 1936x1216
+    CAM_RES_WFS30_1216 = 1  # 1216x1216
+    CAM_RES_WFS30_1024 = 2  # 1024x1024
+    CAM_RES_WFS30_768 = 3  # 768x768
+    CAM_RES_WFS30_512 = 4  # 512x512
+    CAM_RES_WFS30_360 = 5  # 360x360 smallest!
+    CAM_RES_WFS30_968_SUB2 = 6  # 968x608, subsampling 2x2
+    CAM_RES_WFS30_608_SUB2 = 7  # 608x608, subsampling 2x2
+    CAM_RES_WFS30_512_SUB2 = 8  # 512x512, subsampling 2x2
+    CAM_RES_WFS30_384_SUB2 = 9  # 384x384, subsampling 2x2
+    CAM_RES_WFS30_256_SUB2 = 10  # 256x256, subsampling 2x2
+    CAM_RES_WFS30_180_SUB2 = 11  # 180x180, subsampling 2x2
+    CAM_RES_WFS30_MAX_IDX = 11
+
+    # pre-defined image sizes for WFS40 instruments
+    CAM_RES_WFS40_2048 = 0  # 2048x2048
+    CAM_RES_WFS40_1536 = 1  # 1536x1536
+    CAM_RES_WFS40_1024 = 2  # 1024x1024
+    CAM_RES_WFS40_768 = 3  # 768x768
+    CAM_RES_WFS40_512 = 4  # 512x512
+    CAM_RES_WFS40_360 = 5  # 360x360 smallest!
+    CAM_RES_WFS40_1024_SUB2 = 6  # 1024x1024, subsampling 2x2
+    CAM_RES_WFS40_768_SUB2 = 7  # 608x608, subsampling 2x2
+    CAM_RES_WFS40_512_SUB2 = 8  # 512x512, subsampling 2x2
+    CAM_RES_WFS40_384_SUB2 = 9  # 384x384, subsampling 2x2
+    CAM_RES_WFS40_256_SUB2 = 10  # 256x256, subsampling 2x2
+    CAM_RES_WFS40_180_SUB2 = 11  # 180x180, subsampling 2x2
+    CAM_RES_WFS40_MAX_IDX = 11
+
     # Hardware trigger modes
     WFS_HW_TRIGGER_OFF = 0
     WFS_HW_TRIGGER_HL = 1
@@ -506,10 +542,10 @@ class WFS(object):
     AVERAGE_COUNT_MAX = 256
 
     # Pupil
-    PUPIL_DIA_MIN_MM = 0.1  # for coarse check only
-    PUPIL_DIA_MAX_MM = 10.0
-    PUPIL_CTR_MIN_MM = -5.0
-    PUPIL_CTR_MAX_MM = 5.0
+    PUPIL_DIA_MIN_MM = 0.5  # for coarse check only
+    PUPIL_DIA_MAX_MM = 12.0
+    PUPIL_CTR_MIN_MM = -8.0
+    PUPIL_CTR_MAX_MM = 8.0
 
     # Wavefront types
     WAVEFRONT_MEAS = 0
@@ -517,10 +553,10 @@ class WFS(object):
     WAVEFRONT_DIFF = 2
 
     # Max number of detectable spots
-    # MAX_SPOTS_X = 50  # WFS20: 1440*5/150 = 48
-    # MAX_SPOTS_Y = 40  # WFS20: 1080*5/150 = 36
-    MAX_SPOTS_X = 41  # max for 1280x1024 with 4.65µm pixels and 150µm lenslet pitch (WFSx)
-    MAX_SPOTS_Y = 33  # determines also 3D display size
+    # MAX_SPOTS_X = 80  # WFS30: 1936 * 5.86 / 150 = 75.6; WFS40: 2048 * 5.5 / 150 = 75.1
+    # MAX_SPOTS_Y = 80  # WFS40: 2048 * 5.5 / 150 = 75.1
+    MAX_SPOTS_X = 47  # WFS20: 1440*5/150 - 1 = 47
+    MAX_SPOTS_Y = 35  # WFS20: 1080*5/150 - 1 = 35
 
     # Reference
     WFS_REF_INTERNAL = 0
@@ -1917,6 +1953,16 @@ class WFS(object):
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
+        if 0 < self.aoi_size_x_mm.value < 0.500:
+            log_wfs.debug(f'Set AoI: {self.instrument_handle.value}')
+            status = self.WFS_ERROR_PARAMETER4
+            self._error_message(status)
+            return status
+        if 0 < self.aoi_size_y_mm.value < 0.500:
+            log_wfs.debug(f'Set AoI: {self.instrument_handle.value}')
+            status = self.WFS_ERROR_PARAMETER5
+            self._error_message(status)
+            return status
         status = lib_wfs.WFS_SetAoi(self.instrument_handle,
                                     self.aoi_center_x_mm,
                                     self.aoi_center_y_mm,
@@ -3905,9 +3951,9 @@ class WFS(object):
                                          self.array_wavefront_yx,
                                          self.array_wavefront_xy)
         log_wfs.debug(f'Flip 2D Array: {self.instrument_handle.value}')
-        log_wfs.debug('Wavefront YX: \n' +
+        log_wfs.debug(f'Wavefront YX: {len(self.array_wavefront_yx[0])} x {len(self.array_wavefront_yx)}\n' +
                       '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_wavefront_yx]))
-        log_wfs.debug('Wavefront XY: \n' +
+        log_wfs.debug(f'Wavefront XY: {len(self.array_wavefront_xy[0])} x {len(self.array_wavefront_xy)}\n' +
                       '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_wavefront_xy]))
         self._error_message(status)
         return status, self.array_wavefront_xy
