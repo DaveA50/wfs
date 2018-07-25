@@ -741,7 +741,7 @@ ________________________________________________________________________________
           Variable Type       float []
 
           This parameter returns a two-dimensional array of float containing
-          the wavefront data in µm.
+          the wavefront data in ï¿½m.
           
           The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
           
@@ -767,7 +767,7 @@ ________________________________________________________________________________
 
   Purpose
 
-      This function returns statistic parameters of the wavefront in µm
+      This function returns statistic parameters of the wavefront in ï¿½m
       calculated by function WFS_CalcWavefront.
       
       Note: Function WFS_CalcWavefront is required to run prior to this
@@ -961,6 +961,36 @@ ________________________________________________________________________________
              8     256x256, bin2
              9     180x180, bin2
           
+          For WFS30 instruments:
+           Index  Resolution
+             0    1936x1216
+             1    1216x1216
+             2    1024x1024
+             3     768x768
+             4     512x512
+             5     360x360
+             6     968x608, sub2
+             7     608x608, sub2
+             8     512x512, sub2
+             9     384x384, sub2
+            10     256x256, sub2
+            11     180x180, sub2
+          
+          For WFS40 instruments:
+           Index  Resolution
+             0    2048x2048
+             1    1536x1536
+             2    1024x1024
+             3     768x768
+             4     512x512
+             5     360x360
+             6    1024x1024, sub2
+             7     768x768, sub2
+             8     512x512, sub2
+             9     384x384, sub2
+            10     256x256, sub2
+            11     180x180, sub2
+          
 
       spotsX
 
@@ -996,7 +1026,7 @@ ________________________________________________________________________________
   Purpose
 
       This function converts the wavefront data array calculated by function
-      CalcWavefront() from µm into waves unit depending on the actual
+      CalcWavefront() from ï¿½m into waves unit depending on the actual
       wavelength.
 
   Parameter List
@@ -1022,7 +1052,7 @@ ________________________________________________________________________________
           Variable Type       ViReal32[]
 
           This parameter accepts a two-dimensional array of float containing
-          the wavefront data in µm.
+          the wavefront data in ï¿½m.
           
           The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
           
@@ -1810,6 +1840,8 @@ ________________________________________________________________________________
              max. 1280 for WFS150/WFS300
              max   640 for WFS10
              max. 1440 for WFS20
+             max. 1936 for WFS30
+             max. 2048 for WFS40
           instruments.
 
   Return Value
@@ -1854,6 +1886,8 @@ ________________________________________________________________________________
              max. 1280 for WFS150/WFS300
              max   640 for WFS10
              max. 1440 for WFS20
+             max. 1936 for WFS30
+             max. 2048 for WFS40
           instruments.
 
       lineMax
@@ -1868,6 +1902,8 @@ ________________________________________________________________________________
              max. 1280 for WFS150/WFS300
              max   640 for WFS10
              max. 1440 for WFS20
+             max. 1936 for WFS30
+             max. 2048 for WFS40
           instruments.
 
   Return Value
@@ -2041,14 +2077,14 @@ ________________________________________________________________________________
 
           Variable Type       ViReal64 (passed by reference)
 
-          This parameter returns the camera pixel pitch in µm.
+          This parameter returns the camera pixel pitch in ï¿½m.
           
 
       lensletPitchm
 
           Variable Type       ViReal64 (passed by reference)
 
-          This parameter returns the Microlens Array pitch in µm.
+          This parameter returns the Microlens Array pitch in ï¿½m.
           
 
       spotOffsetX
@@ -2069,7 +2105,7 @@ ________________________________________________________________________________
           Variable Type       ViReal64 (passed by reference)
 
           This parameter returns the calibrated distance (focal length) of  the
-          Microlens Array in µm.
+          Microlens Array in ï¿½m.
           
 
       grdCorr0
@@ -2077,7 +2113,7 @@ ________________________________________________________________________________
           Variable Type       ViReal64 (passed by reference)
 
           This parameter returns the calibrated correction value for
-          astigmatism 0° of the Microlens Array in ppm.
+          astigmatism 0ï¿½ of the Microlens Array in ppm.
           
 
       grdCorr45
@@ -2085,7 +2121,7 @@ ________________________________________________________________________________
           Variable Type       ViReal64 (passed by reference)
 
           This parameter returns the calibrated correction value for
-          astigmatism 45° of the Microlens Array in ppm.
+          astigmatism 45ï¿½ of the Microlens Array in ppm.
           
 
   Return Value
@@ -2146,14 +2182,14 @@ ________________________________________________________________________________
 
           Variable Type       ViReal64 (passed by reference)
 
-          This parameter returns the camera pixel pitch in µm.
+          This parameter returns the camera pixel pitch in ï¿½m.
           
 
       lensletPitchm
 
           Variable Type       ViReal64 (passed by reference)
 
-          This parameter returns the Microlens Array pitch in µm.
+          This parameter returns the Microlens Array pitch in ï¿½m.
           
 
       spotOffsetX
@@ -2174,7 +2210,7 @@ ________________________________________________________________________________
           Variable Type       ViReal64 (passed by reference)
 
           This parameter returns the calibrated distance (focal length) of  the
-          Microlens Array in µm.
+          Microlens Array in ï¿½m.
           
 
       grdCorr0
@@ -2182,7 +2218,7 @@ ________________________________________________________________________________
           Variable Type       ViReal64 (passed by reference)
 
           This parameter returns the calibrated correction value for
-          astigmatism 0° of the Microlens Array in ppm.
+          astigmatism 0ï¿½ of the Microlens Array in ppm.
           
 
       grdCorr45
@@ -2190,7 +2226,7 @@ ________________________________________________________________________________
           Variable Type       ViReal64 (passed by reference)
 
           This parameter returns the calibrated correction value for
-          astigmatism 45° of the Microlens Array in ppm.
+          astigmatism 45ï¿½ of the Microlens Array in ppm.
           
 
       grdCorrRot
@@ -2838,13 +2874,13 @@ ________________________________________________________________________________
 
           Variable Type       ViInt32 (passed by reference)
 
-          This parameter returns the minimum adjustable trigger delay in µs.
+          This parameter returns the minimum adjustable trigger delay in ï¿½s.
 
       triggerDelayMax
 
           Variable Type       ViInt32 (passed by reference)
 
-          This parameter returns the maximum adjustable trigger delay in µs.
+          This parameter returns the maximum adjustable trigger delay in ï¿½s.
           
 
       triggerDelayIncr
@@ -2852,7 +2888,7 @@ ________________________________________________________________________________
           Variable Type       ViInt32 (passed by reference)
 
           This parameter returns the accepted minimum increment of the trigger
-          delay in µs.
+          delay in ï¿½s.
           
 
   Return Value
@@ -2902,7 +2938,7 @@ ________________________________________________________________________________
           WFS_TakeSpotfieldImageAutoExpos() is called,
           Compared to WFS_HW_TRIGGER_OFF lower measurememnt speed is achieved.
           
-          Note: For WFS150 and WFS300 modes WFS_HW_TRIGGER_OFF and
+          Note: For WFS150/WFS300, WFS30 and WFS40 modes WFS_HW_TRIGGER_OFF and
           WFS_SW_TRIGGER are identical.
 
   Return Value
@@ -3059,6 +3095,10 @@ ________________________________________________________________________________
       WFS10_<serial_number_wfs>_<mla_name>_<cam_resol_idx>.ref
       or
       WFS20_<serial_number_wfs>_<mla_name>_<cam_resol_idx>.ref
+      or
+      WFS30_<serial_number_wfs>_<mla_name>_<cam_resol_idx>.ref
+      or
+      WFS40_<serial_number_wfs>_<mla_name>_<cam_resol_idx>.ref
       
       Example: "WFS_M00224955_MLA150M-5C_0.ref"
       
@@ -3183,6 +3223,10 @@ ________________________________________________________________________________
       WFS10_<serial_number_wfs>_<mla_name>_<cam_resol_idx>.ref
       or
       WFS20_<serial_number_wfs>_<mla_name>_<cam_resol_idx>.ref
+      or
+      WFS30_<serial_number_wfs>_<mla_name>_<cam_resol_idx>.ref
+      or
+      WFS40_<serial_number_wfs>_<mla_name>_<cam_resol_idx>.ref
       
       Example: "WFS_M00224955_MLA150M-5C_0.ref"
       
@@ -3543,7 +3587,8 @@ ________________________________________________________________________________
       
       Note:
       There is no camera image available when Highspeed Mode is activated!
-      Highspeed Mode is not available for WFS150/WFS300 instruments!
+      Highspeed Mode is not available for WFS150/WFS300/WFS30/WFS40
+      instruments!
 
   Parameter List
 
@@ -3822,7 +3867,7 @@ ________________________________________________________________________________
 
           Variable Type       ViInt32
 
-          This parameter accepts the target trigger delay in µs. Use function
+          This parameter accepts the target trigger delay in ï¿½s. Use function
           GetTriggerDelayRange() to read out the accepted limits.
           
 
@@ -3830,7 +3875,7 @@ ________________________________________________________________________________
 
           Variable Type       ViInt32 (passed by reference)
 
-          This parameter returns the actual trigger delay in µs which may
+          This parameter returns the actual trigger delay in ï¿½s which may
           differ from the target value.
           
 
@@ -3886,9 +3931,9 @@ ________________________________________________________________________________
           Note: When WFS_SW_TRIGGER is used, a new measurement is started
           whenever WFS_TakeSpotfieldImage() or
           WFS_TakeSpotfieldImageAutoExpos() is called,
-          Compared to WFS_HW_TRIGGER_OFF lower measurememnt speed is achieved.
+          Compared to WFS_HW_TRIGGER_OFF lower measurement speed is achieved.
           
-          Note: For WFS150 and WFS300 modes WFS_HW_TRIGGER_OFF and
+          Note: For WFS150/WFS300, WFS30 and WFS40 modes WFS_HW_TRIGGER_OFF and
           WFS_SW_TRIGGER are identical.
 
   Return Value

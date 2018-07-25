@@ -2,7 +2,7 @@
 
 	Thorlabs WFS - WavefrontSensor Instrument Driver
 
-	Copyright:  Copyright(c) 2016, Thorlabs GmbH (www.thorlabs.com)
+	Copyright:  Copyright(c) 2018, Thorlabs GmbH (www.thorlabs.com)
 	Author:     Egbert Krause (ekrause@thorlabs.com)
 
 	Disclaimer: This software is protected by the Thorlabs End-user License Agreement in License.rtf.
@@ -10,9 +10,9 @@
 
 	Header file
 
-	Date:          Feb-05-2016
-	Software-Nr:   09.76.463
-	Version:       4.6.3
+	Date:          Jul-05-2018
+	Software-Nr:   09.76.500
+	Version:       5.0.0
 
 	Changelog:     see 'Readme.rtf'
 
@@ -129,8 +129,8 @@ extern "C"
  Timeout
 ---------------------------------------------------------------------------*/
 #define WFS_TRIG_TIMEOUT               (100*60*60*24) // * 10 ms = 24 hours, given to function is_SetTimeout
-																		 // after that time is_IsVideoFinish returns 'finish' without error
-#define WFS_TIMEOUT_CAPTURE_NORMAL     (3.0)  // in sec.
+																		// after that time is_IsVideoFinish returns 'finish' without error
+#define WFS_TIMEOUT_CAPTURE_NORMAL     (5.0) // in sec., extend to prevent USB connection lost?
 #define WFS_TIMEOUT_CAPTURE_TRIGGER    (0.1)  // in sec., allow fast return of functions WFS_TakeSpotfieldImage...
 #define WFS10_TIMEOUT_CAPTURE_NORMAL   (4000) // in msec., allow 500 ms exposure time + reserve
 #define WFS10_TIMEOUT_CAPTURE_TRIGGER  (100)  // in msec., allow fast return of functions WFS_TakeSpotfieldImage...
@@ -144,8 +144,6 @@ extern "C"
 #define  WFS_FALSE                     (0)
 
 //Defines for WFS camera
-#define  MAX_FRAMERATE                 (15) // not higher for wider exposure range
-
 #define  EXPOSURE_MANUAL               (0)
 #define  EXPOSURE_AUTO                 (1)
 
@@ -153,9 +151,13 @@ extern "C"
 #define  MASTER_GAIN_MIN_WFS10         (1.5) // 1.0 prevents ADC from saturation on overexposure
 #define  MASTER_GAIN_MIN_WFS20         (1.0)
 #define  MASTER_GAIN_MAX_WFS20         (1.0)
+#define  MASTER_GAIN_MAX_WFS30         (24.0)
+#define  MASTER_GAIN_MAX_WFS40         (4.0)
 #define  MASTER_GAIN_MAX               (13.66)
-#define  MASTER_GAIN_MAX_DISPLAY       (5.0)   // dark signal is too noisy for higher amplification
+#define  MASTER_GAIN_MAX_DISPLAY       (5.0)   // dark signal is too noisy for higher amplification, for WFS150/300 and WFS10
 #define  MASTER_GAIN_EXPONENT          (38.26) // based on natural logarithm
+#define  MASTER_GAIN_EXPONENT_WFS30    (31.465) // based on natural logarithm
+#define  MASTER_GAIN_FACTOR_WFS40      (33.333)
 
 #define  NOISE_LEVEL_MIN               (0)     // level for cutting spotfield
 #define  NOISE_LEVEL_MAX               (255)
@@ -165,12 +167,14 @@ extern "C"
 #define  BLACK_LEVEL_WFS_DEF           (100)  // lower values causes problems with autoexposure and trigger (WFS)
 #define  BLACK_LEVEL_WFS10_DEF         (100)  // for cam shifted to 0 .. +15
 #define  BLACK_LEVEL_WFS20_DEF         (0)
+#define  BLACK_LEVEL_WFS30_DEF         (0)
+#define  BLACK_LEVEL_WFS40_DEF         (0)
 
 // Pixel format defines
 #define  PIXEL_FORMAT_MONO8            (0)
 #define  PIXEL_FORMAT_MONO16           (1)
 
-// pre-defined image sizes for WFS instruments
+// pre-defined image sizes for WFS150/300 instruments
 #define  CAM_RES_1280                  (0) // 1280x1024
 #define  CAM_RES_1024                  (1) // 1024x1024
 #define  CAM_RES_768                   (2) // 768x768
@@ -199,6 +203,36 @@ extern "C"
 #define  CAM_RES_WFS20_180_BIN2       (9) // 180x180, binning 2x2
 #define  CAM_RES_WFS20_MAX_IDX        (9)
 
+// pre-defined image sizes for WFS30 instruments
+#define  CAM_RES_WFS30_1936           (0) // 1936x1216
+#define  CAM_RES_WFS30_1216           (1) // 1216x1216
+#define  CAM_RES_WFS30_1024           (2) // 1024x1024
+#define  CAM_RES_WFS30_768            (3) // 768x768
+#define  CAM_RES_WFS30_512            (4) // 512x512
+#define  CAM_RES_WFS30_360            (5) // 360x360 smallest!
+#define  CAM_RES_WFS30_968_SUB2       (6) // 968x608, subsampling 2x2
+#define  CAM_RES_WFS30_608_SUB2       (7) // 608x608, subsampling 2x2
+#define  CAM_RES_WFS30_512_SUB2       (8) // 512x512, subsampling 2x2
+#define  CAM_RES_WFS30_384_SUB2       (9) // 384x384, subsampling 2x2
+#define  CAM_RES_WFS30_256_SUB2       (10) // 256x256, subsampling 2x2
+#define  CAM_RES_WFS30_180_SUB2       (11) // 180x180, subsampling 2x2
+#define  CAM_RES_WFS30_MAX_IDX        (11)
+	
+// pre-defined image sizes for WFS40 instruments
+#define  CAM_RES_WFS40_2048           (0) // 2048x2048
+#define  CAM_RES_WFS40_1536           (1) // 1536x1536
+#define  CAM_RES_WFS40_1024           (2) // 1024x1024
+#define  CAM_RES_WFS40_768            (3) // 768x768
+#define  CAM_RES_WFS40_512            (4) // 512x512
+#define  CAM_RES_WFS40_360            (5) // 360x360 smallest!   
+#define  CAM_RES_WFS40_1024_SUB2      (6) // 1024x1024, subsampling 2x2
+#define  CAM_RES_WFS40_768_SUB2       (7) // 768x768,  subsampling 2x2
+#define  CAM_RES_WFS40_512_SUB2       (8) // 512x512,  subsampling 2x2
+#define  CAM_RES_WFS40_384_SUB2       (9) // 384x384,  subsampling 2x2
+#define  CAM_RES_WFS40_256_SUB2       (10) // 256x256, subsampling 2x2
+#define  CAM_RES_WFS40_180_SUB2       (11) // 180x180, subsampling 2x2
+#define  CAM_RES_WFS40_MAX_IDX        (11)
+	
 
 // Hardware/Software trigger modes
 #define  WFS_HW_TRIGGER_OFF            (0) // no trigger, continuous run, highest measurement speed, delay due to multiple image buffers
@@ -212,10 +246,10 @@ extern "C"
 #define  AVERAGE_COUNT_MAX             (256)
 
 // Pupil
-#define  PUPIL_DIA_MIN_MM              (0.1)  // for coarse check only
-#define  PUPIL_DIA_MAX_MM              (10.0)
-#define  PUPIL_CTR_MIN_MM              (-5.0)
-#define  PUPIL_CTR_MAX_MM              (5.0)
+#define  PUPIL_DIA_MIN_MM              (0.5)  // for coarse check only
+#define  PUPIL_DIA_MAX_MM              (12.0)
+#define  PUPIL_CTR_MIN_MM              (-8.0)
+#define  PUPIL_CTR_MAX_MM              (8.0)
 
 // Wavefront types
 #define  WAVEFRONT_MEAS                (0)
@@ -223,13 +257,9 @@ extern "C"
 #define  WAVEFRONT_DIFF                (2)
 
 // Max number of detectable spots
-#define  MAX_SPOTS_X                   (50) // WFS20: 1440*5/150 = 48
-#define  MAX_SPOTS_Y                   (40) // WFS20: 1080*5/150 = 36
-/*
-#define  MAX_SPOTS_X                   (41) // max. for 1280x1024 with 4.65µm pixels and 150µm lenslet pitch (WFSx)
-														  // also for 640x480 with 9.9µm pixels and 150µm lenslet pitch (WFS10x)
-#define  MAX_SPOTS_Y                   (33) // determines also 3D display size
-*/
+#define  MAX_SPOTS_X                   (80) // WFS30: 1936 * 5.86 / 150 = 75.6; WFS40: 2048 * 5.5 / 150 = 75.1
+#define  MAX_SPOTS_Y                   (80) // WFS40: 2048 * 5.5 / 150 = 75.1
+
 // Reference
 #define  WFS_REF_INTERNAL              (0)
 #define  WFS_REF_USER                  (1)
@@ -276,9 +306,9 @@ const static mode_t mode[] =
 	{  1,    0,    0,    "Piston",                 },
 	{  2,    1,   -1,    "Tip y",                  },
 	{  3,    1,    1,    "Tilt x",                 },
-	{  4,    2,   -2,    "Astigmatism +-45°",      },
+	{  4,    2,   -2,    "Astigmatism +-45�",      },
 	{  5,    2,    0,    "Defocus",                },
-	{  6,    2,    2,    "Astigmatism 0/90°",      },
+	{  6,    2,    2,    "Astigmatism 0/90�",      },
 	{  7,    3,   -3,    "Trefoil y",              }, // corrected y
 	{  8,    3,   -1,    "Coma x",                 },
 	{  9,    3,    1,    "Coma y",                 },

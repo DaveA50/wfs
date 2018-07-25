@@ -1,0 +1,1031 @@
+[uuid(77132dc8-ad85-4cd1-807e-7be9c473bf77), helpfile("WFS.hlp"), helpcontext(72), helpstring("Wavefront Sensor")]
+library WFS{
+typedef [public] long           ViAttr;
+typedef [public] long           ViStatus;
+typedef [public] long*          ViAStatus;
+typedef [public] long*          ViPStatus;
+typedef [public] short        ViBoolean;
+typedef [public] short*       ViABoolean;
+typedef [public] short*       ViPBoolean;
+typedef [public] char           ViChar;
+typedef [public] LPSTR          ViAChar;
+typedef [public] LPSTR          ViPChar;
+typedef [public] unsigned char  ViByte;
+typedef [public] unsigned char* ViAByte;
+typedef [public] unsigned char* ViPByte;
+typedef [public] unsigned char           ViInt8;
+typedef [public] unsigned char*         ViAInt8;
+typedef [public] unsigned char*         ViPInt8;
+typedef [public] unsigned char  ViUInt8;
+typedef [public] unsigned char* ViAUInt8;
+typedef [public] unsigned char* ViPUInt8;
+typedef [public] short          ViInt16;
+typedef [public] short*         ViAInt16;
+typedef [public] short*         ViPInt16;
+typedef [public] short          ViUInt16;
+typedef [public] short*         ViAUInt16;
+typedef [public] short*         ViPUInt16;
+typedef [public] long           ViInt32;
+typedef [public] long*          ViAInt32;
+typedef [public] long*          ViPInt32;
+typedef [public] long           ViUInt32;
+typedef [public] long*          ViAUInt32;
+typedef [public] long*          ViPUInt32;
+typedef [public] float          ViReal32;
+typedef [public] float*         ViAReal32;
+typedef [public] float*         ViPReal32;
+typedef [public] double         ViReal64;
+typedef [public] double*        ViAReal64;
+typedef [public] double*        ViPReal64;
+typedef [public] LPSTR ViBuf;
+typedef [public] LPSTR ViPBuf;
+typedef [public] LPSTR           ViString;
+typedef [public] LPSTR*          ViAString;
+typedef [public] LPSTR          ViPString;
+typedef [public] LPSTR           ViRsrc;
+typedef [public] LPSTR*          ViARsrc;
+typedef [public] LPSTR          ViPRsrc;
+typedef [public] LPSTR           ViKeyId;
+typedef [public] LPSTR          ViPKeyId;
+typedef [public] LPSTR          ViClass;
+typedef [public] LPSTR          ViPClass;
+typedef [public] long           ViAddr;
+typedef [public] long*           ViAAddr;
+typedef [public] long*           ViPAddr;
+typedef [public] long           ViVersion;
+typedef [public] long*          ViAVersion;
+typedef [public] long*          ViPVersion;
+typedef [public] long           ViAccessMode;
+typedef [public] long           ViJobId;
+typedef [public] long*          ViPJobId;
+typedef [public] long           ViJobStatus;
+typedef [public] long*          ViPJobStatus;
+typedef [public] long           ViEventType;
+typedef [public] long*          ViPEventType;
+typedef [public] long           ViFilterType;
+typedef [public] long*          ViPFilterType;
+typedef [public] long           ViBusAddress;
+typedef [public] long*          ViPBusAddress;
+typedef [public] long           ViBusSize;
+typedef [public] long           ViHndlr;
+typedef [public] long           ViObject;
+typedef [public] long           ViSession;
+typedef [public] long*           ViPSession;
+typedef [public] long           ViEvent;
+typedef [public] long*           ViPEvent;
+typedef [public] long           ViEventFilter;
+typedef [public] long           ViFindList;
+typedef [public] long*          ViPFindList;
+typedef [public] long           ViAttrState;
+typedef [public] long*          ViPAttrState;
+typedef [public] LPSTR          ViConstString;
+typedef [public] __int64        ViBusAddress64;
+typedef [public] __int64*       ViPBusAddress64;
+typedef [public] __int64        ViInt64;
+typedef [public] __int64*       ViAInt64;
+typedef [public] __int64*       ViPInt64;
+typedef [public] __int64        ViUInt64;
+typedef [public] __int64*       ViAUInt64;
+typedef [public] __int64*       ViPUInt64;
+	[dllname("WFS.dll"), helpstring("VISA Attributes")]
+	module VISAAttributes {
+		const long VI_ATTR_RSRC_NAME                   = 0xBFFF0002;
+		const long VI_ATTR_RSRC_IMPL_VERSION           = 0x3FFF0003;
+		const long VI_ATTR_RSRC_LOCK_STATE             = 0x3FFF0004;
+		const long VI_ATTR_MAX_QUEUE_LENGTH            = 0x3FFF0005;
+		const long VI_ATTR_USER_DATA                   = 0x3FFF0007;
+		const long VI_ATTR_FDC_CHNL                    = 0x3FFF000D;
+		const long VI_ATTR_FDC_MODE                    = 0x3FFF000F;
+		const long VI_ATTR_FDC_GEN_SIGNAL_EN           = 0x3FFF0011;
+		const long VI_ATTR_FDC_USE_PAIR                = 0x3FFF0013;
+		const long VI_ATTR_SEND_END_EN                 = 0x3FFF0016;
+		const long VI_ATTR_TERMCHAR                    = 0x3FFF0018;
+		const long VI_ATTR_TMO_VALUE                   = 0x3FFF001A;
+		const long VI_ATTR_GPIB_READDR_EN             = 0x3FFF001B;
+		const long VI_ATTR_IO_PROT                     = 0x3FFF001C;
+		const long VI_ATTR_ASRL_BAUD                   = 0x3FFF0021; 
+		const long VI_ATTR_ASRL_DATA_BITS              = 0x3FFF0022; 
+		const long VI_ATTR_ASRL_PARITY                 = 0x3FFF0023; 
+		const long VI_ATTR_ASRL_STOP_BITS              = 0x3FFF0024; 
+		const long VI_ATTR_ASRL_FLOW_CNTRL             = 0x3FFF0025; 
+		const long VI_ATTR_RD_BUF_OPER_MODE            = 0x3FFF002A;
+		const long VI_ATTR_WR_BUF_OPER_MODE            = 0x3FFF002D;
+		const long VI_ATTR_SUPPRESS_END_EN             = 0x3FFF0036;
+		const long VI_ATTR_TERMCHAR_EN                 = 0x3FFF0038;
+		const long VI_ATTR_DEST_ACCESS_PRIV           = 0x3FFF0039;
+		const long VI_ATTR_DEST_BYTE_ORDER            = 0x3FFF003A;
+		const long VI_ATTR_SRC_ACCESS_PRIV            = 0x3FFF003C;
+		const long VI_ATTR_SRC_BYTE_ORDER             = 0x3FFF003D;
+		const long VI_ATTR_SRC_INCREMENT               = 0x3FFF0040;
+		const long VI_ATTR_DEST_INCREMENT              = 0x3FFF0041;
+		const long VI_ATTR_WIN_ACCESS_PRIV            = 0x3FFF0045;
+		const long VI_ATTR_WIN_BYTE_ORDER             = 0x3FFF0047;
+		const long VI_ATTR_CMDR_LA                     = 0x3FFF006B;
+		const long VI_ATTR_MAINFRAME_LA                = 0x3FFF0070;
+		const long VI_ATTR_WIN_BASE_ADDR               = 0x3FFF0098;
+		const long VI_ATTR_WIN_SIZE                    = 0x3FFF009A;
+		const long VI_ATTR_ASRL_AVAIL_NUM              = 0x3FFF00AC;
+		const long VI_ATTR_MEM_BASE                    = 0x3FFF00AD;
+		const long VI_ATTR_ASRL_CTS_STATE             = 0x3FFF00AE;
+		const long VI_ATTR_ASRL_DCD_STATE             = 0x3FFF00AF;
+		const long VI_ATTR_ASRL_DSR_STATE             = 0x3FFF00B1;
+		const long VI_ATTR_ASRL_DTR_STATE             = 0x3FFF00B2;
+		const long VI_ATTR_ASRL_END_IN                 = 0x3FFF00B3; 
+		const long VI_ATTR_ASRL_END_OUT                = 0x3FFF00B4; 
+		const long VI_ATTR_ASRL_RI_STATE              = 0x3FFF00BF;
+		const long VI_ATTR_ASRL_RTS_STATE             = 0x3FFF00C0;
+		const long VI_ATTR_WIN_ACCESS                  = 0x3FFF00C3;
+		const long VI_ATTR_RM_SESSION                  = 0x3FFF00C4;
+		const long VI_ATTR_VXI_LA                      = 0x3FFF00D5;
+		const long VI_ATTR_MANF_ID                     = 0x3FFF00D9;
+		const long VI_ATTR_MEM_SIZE                    = 0x3FFF00DD;
+		const long VI_ATTR_MEM_SPACE                   = 0x3FFF00DE;
+		const long VI_ATTR_MODEL_CODE                  = 0x3FFF00DF;
+		const long VI_ATTR_SLOT                        = 0x3FFF00E8;
+		const long VI_ATTR_INTF_INST_NAME             = 0xBFFF00E9;
+		const long VI_ATTR_IMMEDIATE_SERV              = 0x3FFF0100; 
+		const long VI_ATTR_INTF_PARENT_NUM             = 0x3FFF0101;
+		const long VI_ATTR_RSRC_SPEC_VERSION           = 0x3FFF0170;
+		const long VI_ATTR_INTF_TYPE                   = 0x3FFF0171;
+		const long VI_ATTR_GPIB_PRIMARY_ADDR           = 0x3FFF0172;
+		const long VI_ATTR_GPIB_SECONDARY_ADDR         = 0x3FFF0173;
+		const long VI_ATTR_RSRC_MANF_NAME              = 0xBFFF0174;
+		const long VI_ATTR_RSRC_MANF_ID                = 0x3FFF0175;
+		const long VI_ATTR_INTF_NUM                    = 0x3FFF0176;
+		const long VI_ATTR_TRIG_ID                     = 0x3FFF0177;
+		const long VI_ATTR_GPIB_UNADDR_EN             = 0x3FFF0184;
+		const long VI_ATTR_JOB_ID                      = 0x3FFF4006;
+		const long VI_ATTR_EVENT_TYPE                  = 0x3FFF4010;
+		const long VI_ATTR_SIGP_STATUS_ID              = 0x3FFF4011;
+		const long VI_ATTR_RECV_TRIG_ID                = 0x3FFF4012;
+		const long VI_ATTR_INTR_STATUS_ID             = 0x3FFF4023;
+		const long VI_ATTR_STATUS                      = 0x3FFF4025;
+		const long VI_ATTR_RET_COUNT                   = 0x3FFF4026;
+		const long VI_ATTR_BUFFER                      = 0x3FFF4027;
+		const long VI_ATTR_RECV_INTR_LEVEL            = 0x3FFF4041;
+		const long VI_ATTR_RSRC_CLASS                  = 0xBFFF0001;
+		const long VI_ATTR_GPIB_ATN_STATE              = 0x3FFF0057;
+		const long VI_ATTR_GPIB_ADDR_STATE             = 0x3FFF005C;
+		const long VI_ATTR_GPIB_CIC_STATE              = 0x3FFF005E;
+		const long VI_ATTR_GPIB_NDAC_STATE             = 0x3FFF0062;
+		const long VI_ATTR_GPIB_SRQ_STATE              = 0x3FFF0067;
+		const long VI_ATTR_GPIB_SYS_CNTRL_STATE        = 0x3FFF0068;
+		const long VI_ATTR_GPIB_HS488_CBL_LEN          = 0x3FFF0069;
+		const long VI_ATTR_VXI_DEV_CLASS               = 0x3FFF006C;
+		const long VI_ATTR_MANF_NAME                   = 0xBFFF0072;
+		const long VI_ATTR_MODEL_NAME                  = 0xBFFF0077;
+		const long VI_ATTR_VXI_VME_INTR_STATUS         = 0x3FFF008B;
+		const long VI_ATTR_VXI_TRIG_STATUS             = 0x3FFF008D;
+		const long VI_ATTR_VXI_VME_SYSFAIL_STATE       = 0x3FFF0094;
+		const long VI_ATTR_ASRL_XON_CHAR               = 0x3FFF00C1;
+		const long VI_ATTR_ASRL_XOFF_CHAR              = 0x3FFF00C2;
+		const long VI_ATTR_GPIB_REN_STATE              = 0x3FFF0181;
+		const long VI_ATTR_DEV_STATUS_BYTE             = 0x3FFF0189;
+		const long VI_ATTR_FILE_APPEND_EN              = 0x3FFF0192;
+		const long VI_ATTR_VXI_TRIG_SUPPORT            = 0x3FFF0194;
+		const long VI_ATTR_TCPIP_ADDR                  = 0xBFFF0195;
+		const long VI_ATTR_TCPIP_HOSTNAME              = 0xBFFF0196;
+		const long VI_ATTR_TCPIP_PORT                  = 0x3FFF0197;
+		const long VI_ATTR_TCPIP_DEVICE_NAME           = 0xBFFF0199;
+		const long VI_ATTR_TCPIP_NODELAY               = 0x3FFF019A;
+		const long VI_ATTR_TCPIP_KEEPALIVE             = 0x3FFF019B;
+		const long VI_ATTR_4882_COMPLIANT              = 0x3FFF019F;
+		const long VI_ATTR_USB_SERIAL_NUM              = 0xBFFF01A0;
+		const long VI_ATTR_USB_INTFC_NUM               = 0x3FFF01A1;
+		const long VI_ATTR_USB_PROTOCOL                = 0x3FFF01A7;
+		const long VI_ATTR_USB_MAX_INTR_SIZE           = 0x3FFF01AF;
+		const long VI_ATTR_OPER_NAME                   = 0xBFFF4042;
+		const long VI_ATTR_GPIB_RECV_CIC_STATE         = 0x3FFF4193;
+		const long VI_ATTR_RECV_TCPIP_ADDR             = 0xBFFF4198;
+		const long VI_ATTR_USB_RECV_INTR_SIZE          = 0x3FFF41B0;
+		const long VI_ATTR_USB_RECV_INTR_DATA          = 0xBFFF41B1;
+		const long VI_ATTR_RD_BUF_SIZE                 = 0x3FFF002B;
+		const long VI_ATTR_WR_BUF_SIZE                 = 0x3FFF002E;
+	};
+	[dllname("WFS.dll"), helpstring("VISA Event Types")]
+	module VISAEventTypes {
+		const long VI_EVENT_IO_COMPLETION              = 0x3FFF2009;
+		const long VI_EVENT_TRIG                       = 0xBFFF200A;
+		const long VI_EVENT_SERVICE_REQ                = 0x3FFF200B;
+		const long VI_EVENT_VXI_SIGP                   = 0x3FFF2020;
+		const long VI_EVENT_VXI_VME_INTR               = 0xBFFF2021;
+		const long VI_ALL_ENABLED_EVENTS               = 0x3FFF7FFF;
+		const long VI_EVENT_CLEAR                      = 0x3FFF200D;
+		const long VI_EVENT_EXCEPTION                  = 0xBFFF200E;
+		const long VI_EVENT_GPIB_CIC                   = 0x3FFF2012;
+		const long VI_EVENT_GPIB_TALK                  = 0x3FFF2013;
+		const long VI_EVENT_GPIB_LISTEN                = 0x3FFF2014;
+		const long VI_EVENT_VXI_VME_SYSFAIL            = 0x3FFF201D;
+		const long VI_EVENT_VXI_VME_SYSRESET           = 0x3FFF201E;
+		const long VI_EVENT_TCPIP_CONNECT              = 0x3FFF2036;
+		const long VI_EVENT_USB_INTR                   = 0x3FFF2037;
+	};
+	[dllname("WFS.dll"), helpstring("VISA Completion and Error Codes")]
+	module VISACompletionAndErrorCodes {
+		const long VI_SUCCESS                    = 0x0;
+		const long VI_SUCCESS_EVENT_EN           = 0x3FFF0002;
+		const long VI_SUCCESS_EVENT_DIS          = 0x3FFF0003;
+		const long VI_SUCCESS_QUEUE_EMPTY        = 0x3FFF0004;
+		const long VI_SUCCESS_TERM_CHAR          = 0x3FFF0005;
+		const long VI_SUCCESS_MAX_CNT            = 0x3FFF0006;
+		const long VI_SUCCESS_DEV_NPRESENT       = 0x3FFF007D;
+		const long VI_SUCCESS_QUEUE_NEMPTY       = 0x3FFF0080;
+		const long VI_SUCCESS_NESTED_SHARED      = 0x3FFF0099;
+		const long VI_SUCCESS_NESTED_EXCLUSIVE   = 0x3FFF009A;
+		const long VI_SUCCESS_SYNC               = 0x3FFF009B;
+		const long VI_WARN_CONFIG_NLOADED        = 0x3FFF0077;
+		const long VI_WARN_NULL_OBJECT           = 0x3FFF0082;
+		const long VI_WARN_NSUP_ATTR_STATE       = 0x3FFF0084;
+		const long VI_WARN_UNKNOWN_STATUS        = 0x3FFF0085;
+		const long VI_WARN_NSUP_BUF              = 0x3FFF0088;
+		const long VI_WARN_NSUP_ID_QUERY         = 0x3FFC0101;
+		const long VI_WARN_NSUP_RESET            = 0x3FFC0102;
+		const long VI_WARN_NSUP_SELF_TEST        = 0x3FFC0103;
+		const long VI_WARN_NSUP_ERROR_QUERY      = 0x3FFC0104;
+		const long VI_WARN_NSUP_REV_QUERY        = 0x3FFC0105;
+		const long VI_ERROR                      = 0x80000000;
+		const long VI_ERROR_SYSTEM_ERROR         = 0xBFFF0000;
+		const long VI_ERROR_INV_OBJECT           = 0xBFFF000E;
+		const long VI_ERROR_RSRC_LOCKED          = 0xBFFF000F;
+		const long VI_ERROR_INV_EXPR             = 0xBFFF0010;
+		const long VI_ERROR_RSRC_NFOUND          = 0xBFFF0011;
+		const long VI_ERROR_INV_RSRC_NAME        = 0xBFFF0012;
+		const long VI_ERROR_INV_ACC_MODE         = 0xBFFF0013;
+		const long VI_ERROR_TMO                  = 0xBFFF0015;
+		const long VI_ERROR_CLOSING_FAILED       = 0xBFFF0016;
+		const long VI_ERROR_INV_DEGREE           = 0xBFFF001B;
+		const long VI_ERROR_INV_JOB_ID           = 0xBFFF001C;
+		const long VI_ERROR_NSUP_ATTR            = 0xBFFF001D;
+		const long VI_ERROR_NSUP_ATTR_STATE      = 0xBFFF001E;
+		const long VI_ERROR_ATTR_READONLY        = 0xBFFF001F;
+		const long VI_ERROR_INV_LOCK_TYPE        = 0xBFFF0020;
+		const long VI_ERROR_INV_ACCESS_KEY       = 0xBFFF0021;
+		const long VI_ERROR_INV_EVENT            = 0xBFFF0026;
+		const long VI_ERROR_INV_MECH             = 0xBFFF0027;
+		const long VI_ERROR_HNDLR_NINSTALLED     = 0xBFFF0028;
+		const long VI_ERROR_INV_HNDLR_REF        = 0xBFFF0029;
+		const long VI_ERROR_INV_CONTEXT          = 0xBFFF002A;
+		const long VI_ERROR_ABORT                = 0xBFFF0030;
+		const long VI_ERROR_RAW_WR_PROT_VIOL     = 0xBFFF0034;
+		const long VI_ERROR_RAW_RD_PROT_VIOL     = 0xBFFF0035;
+		const long VI_ERROR_OUTP_PROT_VIOL       = 0xBFFF0036;
+		const long VI_ERROR_INP_PROT_VIOL        = 0xBFFF0037;
+		const long VI_ERROR_BERR                 = 0xBFFF0038;
+		const long VI_ERROR_INV_SETUP            = 0xBFFF003A;
+		const long VI_ERROR_QUEUE_ERROR          = 0xBFFF003B;
+		const long VI_ERROR_ALLOC                = 0xBFFF003C;
+		const long VI_ERROR_INV_MASK             = 0xBFFF003D;
+		const long VI_ERROR_IO                   = 0xBFFF003E;
+		const long VI_ERROR_INV_FMT              = 0xBFFF003F;
+		const long VI_ERROR_NSUP_FMT             = 0xBFFF0041;
+		const long VI_ERROR_LINE_IN_USE          = 0xBFFF0042;
+		const long VI_ERROR_SRQ_NOCCURRED        = 0xBFFF004A;
+		const long VI_ERROR_INV_SPACE            = 0xBFFF004E;
+		const long VI_ERROR_INV_OFFSET           = 0xBFFF0051;
+		const long VI_ERROR_INV_WIDTH            = 0xBFFF0052;
+		const long VI_ERROR_NSUP_OFFSET          = 0xBFFF0054;
+		const long VI_ERROR_NSUP_VAR_WIDTH       = 0xBFFF0055;
+		const long VI_ERROR_WINDOW_NMAPPED       = 0xBFFF0057;
+		const long VI_ERROR_NLISTENERS           = 0xBFFF005F;
+		const long VI_ERROR_NCIC                 = 0xBFFF0060;
+		const long VI_ERROR_NSUP_OPER            = 0xBFFF0067;
+		const long VI_ERROR_ASRL_PARITY          = 0xBFFF006A;
+		const long VI_ERROR_ASRL_FRAMING         = 0xBFFF006B;
+		const long VI_ERROR_ASRL_OVERRUN         = 0xBFFF006C;
+		const long VI_ERROR_NSUP_ALIGN_OFFSET    = 0xBFFF0070;
+		const long VI_ERROR_USER_BUF             = 0xBFFF0071;
+		const long VI_ERROR_RSRC_BUSY            = 0xBFFF0072;
+		const long VI_ERROR_NSUP_WIDTH           = 0xBFFF0076;
+		const long VI_ERROR_INV_PARAMETER        = 0xBFFF0078;
+		const long VI_ERROR_INV_PROT             = 0xBFFF0079;
+		const long VI_ERROR_INV_SIZE             = 0xBFFF007B;
+		const long VI_ERROR_WINDOW_MAPPED        = 0xBFFF0080;
+		const long VI_ERROR_NIMPL_OPER           = 0xBFFF0081;
+		const long VI_ERROR_INV_LENGTH           = 0xBFFF0083;
+		const long VI_ERROR_SESN_NLOCKED         = 0xBFFF009C;
+		const long VI_ERROR_MEM_NSHARED          = 0xBFFF009D;
+		const long VI_ERROR_INV_SESSION          = 0xBFFF000E;
+		const long VI_ERROR_PARAMETER1           = 0xBFFC0001;
+		const long VI_ERROR_PARAMETER2           = 0xBFFC0002;
+		const long VI_ERROR_PARAMETER3           = 0xBFFC0003;
+		const long VI_ERROR_PARAMETER4           = 0xBFFC0004;
+		const long VI_ERROR_PARAMETER5           = 0xBFFC0005;
+		const long VI_ERROR_PARAMETER6           = 0xBFFC0006;
+		const long VI_ERROR_PARAMETER7           = 0xBFFC0007;
+		const long VI_ERROR_PARAMETER8           = 0xBFFC0008;
+		const long VI_ERROR_FAIL_ID_QUERY        = 0xBFFC0011;
+		const long VI_ERROR_INV_RESPONSE         = 0xBFFC0012;
+		const long VI_SUCCESS_TRIG_MAPPED        = 0x3FFF007E;
+		const long VI_SUCCESS_NCHAIN             = 0x3FFF0098;
+		const long VI_ERROR_IN_PROGRESS          = 0xBFFF0039;
+		const long VI_ERROR_NSUP_MODE            = 0xBFFF0046;
+		const long VI_ERROR_RESP_PENDING         = 0xBFFF0059;
+		const long VI_ERROR_NSYS_CNTLR           = 0xBFFF0061;
+		const long VI_ERROR_INTR_PENDING         = 0xBFFF0068;
+		const long VI_ERROR_TRIG_NMAPPED         = 0xBFFF006E;
+		const long VI_ERROR_INV_MODE             = 0xBFFF0091;
+		const long VI_ERROR_LIBRARY_NFOUND       = 0xBFFF009E;
+		const long VI_ERROR_NSUP_INTR            = 0xBFFF009F;
+		const long VI_ERROR_INV_LINE             = 0xBFFF00A0;
+		const long VI_ERROR_FILE_ACCESS          = 0xBFFF00A1;
+		const long VI_ERROR_FILE_IO              = 0xBFFF00A2;
+		const long VI_ERROR_NSUP_LINE            = 0xBFFF00A3;
+		const long VI_ERROR_NSUP_MECH            = 0xBFFF00A4;
+		const long VI_ERROR_INTF_NUM_NCONFIG     = 0xBFFF00A5;
+		const long VI_ERROR_CONN_LOST            = 0xBFFF00A6;
+		const long VI_ERROR_MACHINE_NAVAIL       = 0xBFFF00A7;
+		const long VI_ERROR_NPERMISSION          = 0xBFFF00A8;
+		const long VI_WARN_QUEUE_OVERFLOW        = 0x3FFF000C;
+		const long VI_WARN_EXT_FUNC_NIMPL        = 0x3FFF00A9;
+	};
+	[dllname("WFS.dll"), helpstring("VISA National Instruments Extensions")]
+	module VISANIExtensions {
+		const long VI_ATTR_UNSAFE_CALLBACK_EN          = 0x3FFF0008;
+		const long VI_ATTR_KRNL_VIIN8_ADDR             = 0x3FFF810A;
+		const long VI_ATTR_KRNL_VIIN16_ADDR            = 0x3FFF810B;
+		const long VI_ATTR_KRNL_VIIN32_ADDR            = 0x3FFF810C;
+		const long VI_ATTR_KRNL_VIOUT8_ADDR            = 0x3FFF810D;
+		const long VI_ATTR_KRNL_VIOUT16_ADDR           = 0x3FFF810E;
+		const long VI_ATTR_KRNL_VIOUT32_ADDR           = 0x3FFF810F;
+		const long VI_ATTR_RESMAN_STATUS               = 0x3FFF8110;
+		const long VI_ATTR_FIND_NEEDS_REFRESH          = 0x3FFF018F;
+		const long VI_ATTR_FIND_RSRC_MODE              = 0x3FFF0190;
+		const int  VI_FIND_SEARCH_NOALIAS              = 0;
+		const int  VI_FIND_SEARCH_MATCHALIASES         = 2;
+		const int  VI_FIND_NOSEARCH_ALLALIASES         = 3;
+		const int  VI_FIND_SEARCH_ALLALIASES           = 4;
+		const long VI_EVENT_VXI_DEV_CMD                = 0xBFFF200F;
+		const long VI_ATTR_VXI_DEV_CMD_TYPE            = 0x3FFF4037;
+		const long VI_ATTR_VXI_DEV_CMD_VALUE           = 0x3FFF4038;
+		const int  VI_VXI_DEV_CMD_TYPE_16              = 16;
+		const int  VI_VXI_DEV_CMD_TYPE_32              = 32;
+		const int  VI_VXI_RESP_NONE                    = 0;
+		const int  VI_VXI_RESP_PROT_ERROR              = -1;
+		const long VI_ATTR_ASRL_DISCARD_NULL           = 0x3FFF00B0;
+		const long VI_ATTR_ASRL_BREAK_STATE            = 0x3FFF01BC;
+		const long VI_ATTR_ASRL_BREAK_LEN              = 0x3FFF01BD;
+		const long VI_ATTR_ASRL_ALLOW_TRANSMIT         = 0x3FFF01BE;
+		const long VI_ATTR_ASRL_WIRE_MODE              = 0x3FFF01BF;
+		const int  VI_ASRL_WIRE_485_4                  = 0;
+		const int  VI_ASRL_WIRE_485_2_DTR_ECHO         = 1;
+		const int  VI_ASRL_WIRE_485_2_DTR_CTRL         = 2;
+		const int  VI_ASRL_WIRE_485_2_AUTO             = 3;
+		const long VI_EVENT_ASRL_BREAK                 = 0x3FFF2023;
+		const long VI_EVENT_ASRL_CTS                   = 0x3FFF2029;
+		const long VI_EVENT_ASRL_DSR                   = 0x3FFF202A;
+		const long VI_EVENT_ASRL_DCD                   = 0x3FFF202C;
+		const long VI_EVENT_ASRL_RI                    = 0x3FFF202E;
+		const long VI_EVENT_ASRL_CHAR                  = 0x3FFF2035;
+		const long VI_EVENT_ASRL_TERMCHAR              = 0x3FFF2024;
+		const long VI_ATTR_PXI_DEV_NUM                 = 0x3FFF0201;
+		const long VI_ATTR_PXI_FUNC_NUM                = 0x3FFF0202;
+		const long VI_ATTR_PXI_BUS_NUM                 = 0x3FFF0205;
+		const long VI_ATTR_PXI_CHASSIS                 = 0x3FFF0206;
+		const long VI_ATTR_PXI_SLOTPATH                = 0xBFFF0207;
+		const long VI_ATTR_PXI_SLOT_LBUS_LEFT          = 0x3FFF0208;
+		const long VI_ATTR_PXI_SLOT_LBUS_RIGHT         = 0x3FFF0209;
+		const long VI_ATTR_PXI_TRIG_BUS                = 0x3FFF020A;
+		const long VI_ATTR_PXI_STAR_TRIG_BUS           = 0x3FFF020B;
+		const long VI_ATTR_PXI_STAR_TRIG_LINE          = 0x3FFF020C;
+		const long VI_ATTR_PXI_MEM_TYPE_BAR0           = 0x3FFF0211;
+		const long VI_ATTR_PXI_MEM_TYPE_BAR1           = 0x3FFF0212;
+		const long VI_ATTR_PXI_MEM_TYPE_BAR2           = 0x3FFF0213;
+		const long VI_ATTR_PXI_MEM_TYPE_BAR3           = 0x3FFF0214;
+		const long VI_ATTR_PXI_MEM_TYPE_BAR4           = 0x3FFF0215;
+		const long VI_ATTR_PXI_MEM_TYPE_BAR5           = 0x3FFF0216;
+		const long VI_ATTR_PXI_MEM_BASE_BAR0           = 0x3FFF0221;
+		const long VI_ATTR_PXI_MEM_BASE_BAR1           = 0x3FFF0222;
+		const long VI_ATTR_PXI_MEM_BASE_BAR2           = 0x3FFF0223;
+		const long VI_ATTR_PXI_MEM_BASE_BAR3           = 0x3FFF0224;
+		const long VI_ATTR_PXI_MEM_BASE_BAR4           = 0x3FFF0225;
+		const long VI_ATTR_PXI_MEM_BASE_BAR5           = 0x3FFF0226;
+		const long VI_ATTR_PXI_MEM_SIZE_BAR0           = 0x3FFF0231;
+		const long VI_ATTR_PXI_MEM_SIZE_BAR1           = 0x3FFF0232;
+		const long VI_ATTR_PXI_MEM_SIZE_BAR2           = 0x3FFF0233;
+		const long VI_ATTR_PXI_MEM_SIZE_BAR3           = 0x3FFF0234;
+		const long VI_ATTR_PXI_MEM_SIZE_BAR4           = 0x3FFF0235;
+		const long VI_ATTR_PXI_MEM_SIZE_BAR5           = 0x3FFF0236;
+		const long VI_EVENT_PXI_INTR                   = 0x3FFF2022;
+		const int  VI_INTF_PXI                         = 5;
+		const int  VI_PXI_ALLOC_SPACE                  = 9;
+		const int  VI_PXI_CFG_SPACE                    = 10;
+		const int  VI_PXI_BAR0_SPACE                   = 11;
+		const int  VI_PXI_BAR1_SPACE                   = 12;
+		const int  VI_PXI_BAR2_SPACE                   = 13;
+		const int  VI_PXI_BAR3_SPACE                   = 14;
+		const int  VI_PXI_BAR4_SPACE                   = 15;
+		const int  VI_PXI_BAR5_SPACE                   = 16;
+		const int  VI_PXI_ADDR_NONE                    = 0;
+		const int  VI_PXI_ADDR_MEM                     = 1;
+		const int  VI_PXI_ADDR_IO                      = 2;
+		const int  VI_PXI_ADDR_CFG                     = 3;
+		const long VI_ATTR_USB_BULK_OUT_PIPE           = 0x3FFF01A2;
+		const long VI_ATTR_USB_BULK_IN_PIPE            = 0x3FFF01A3;
+		const long VI_ATTR_USB_INTR_IN_PIPE            = 0x3FFF01A4;
+		const long VI_ATTR_USB_CLASS                   = 0x3FFF01A5;
+		const long VI_ATTR_USB_SUBCLASS                = 0x3FFF01A6;
+		const long VI_ATTR_USB_ALT_SETTING             = 0x3FFF01A8;
+		const long VI_ATTR_USB_NUM_INTFCS              = 0x3FFF01AA;
+		const long VI_ATTR_USB_NUM_PIPES               = 0x3FFF01AB;
+		const long VI_ATTR_USB_BULK_OUT_STATUS         = 0x3FFF01AC;
+		const long VI_ATTR_USB_BULK_IN_STATUS          = 0x3FFF01AD;
+		const long VI_ATTR_USB_INTR_IN_STATUS          = 0x3FFF01AE;
+		const int  VI_USB_PIPE_STATE_UNKNOWN           = -1;
+		const int  VI_USB_PIPE_READY                   = 0;
+		const int  VI_USB_PIPE_STALLED                 = 1;
+		const long VI_ATTR_PXI_RECV_INTR_SEQ           = 0x3FFF4240;
+		const long VI_ATTR_PXI_RECV_INTR_DATA          = 0x3FFF4241;
+		const long VI_ATTR_ASRL_CONNECTED              = 0x3FFF01BB;
+		const long VI_ATTR_PXI_SRC_TRIG_BUS            = 0x3FFF020D;
+		const long VI_ATTR_PXI_DEST_TRIG_BUS           = 0x3FFF020E;
+		const int  VI_ASRL_WIRE_232_DTE                = 128;
+		const int  VI_ASRL_WIRE_232_DCE                = 129;
+		const int  VI_ASRL_WIRE_232_AUTO               = 130;
+		const int  VI_TRIG_PROT_RESERVE                = 6;
+		const int  VI_TRIG_PROT_UNRESERVE              = 7;
+		const int  VI_INTF_RIO                         = 8;
+		const long VI_ATTR_USB_END_IN                  = 0x3FFF01A9;
+		const int  VI_USB_END_NONE                     = 0;
+		const int  VI_USB_END_SHORT                    = 4;
+		const int  VI_USB_END_SHORT_OR_COUNT           = 5;
+		const int  VI_INTF_FIREWIRE                    = 9;
+		const long VI_ATTR_FIREWIRE_DEST_UPPER_OFFSET  = 0x3FFF01F0;
+		const long VI_ATTR_FIREWIRE_SRC_UPPER_OFFSET   = 0x3FFF01F1;
+		const long VI_ATTR_FIREWIRE_WIN_UPPER_OFFSET   = 0x3FFF01F2;
+		const long VI_ATTR_FIREWIRE_VENDOR_ID          = 0x3FFF01F3;
+		const long VI_ATTR_FIREWIRE_LOWER_CHIP_ID      = 0x3FFF01F4;
+		const long VI_ATTR_FIREWIRE_UPPER_CHIP_ID      = 0x3FFF01F5;
+		const long VI_ATTR_USB_CTRL_PIPE               = 0x3FFF01B0;
+		const long VI_ATTR_PXI_IS_EXPRESS              = 0x3FFF0240;
+		const long VI_ATTR_PXI_SLOT_LWIDTH             = 0x3FFF0241;
+		const long VI_ATTR_PXI_MAX_LWIDTH              = 0x3FFF0242;
+		const long VI_ATTR_PXI_ACTUAL_LWIDTH           = 0x3FFF0243;
+		const long VI_ATTR_PXI_DSTAR_BUS               = 0x3FFF0244;
+		const long VI_ATTR_PXI_DSTAR_SET               = 0x3FFF0245;
+		const long VI_ATTR_VXI_TRIG_LINES_EN           = 0x3FFF4043;
+		const long VI_ATTR_VXI_TRIG_DIR                = 0x3FFF4044;
+	};
+	[dllname("WFS.dll"), helpstring("Other VISA Definitions")]
+	module VISAOtherDefinitions {
+		const int VI_FIND_BUFLEN                      = 256;
+		const int VI_NULL                             = 0;
+		const int VI_TRUE                             = 1;
+		const int VI_FALSE                            = 0;
+		const int VI_INTF_GPIB                        = 1;
+		const int VI_INTF_VXI                         = 2;
+		const int VI_INTF_GPIB_VXI                    = 3;
+		const int VI_INTF_ASRL                        = 4;
+		const int VI_NORMAL                           = 1;
+		const int VI_FDC                              = 2;
+		const int VI_HS488                            = 3;
+		const int VI_ASRL488                          = 4;
+		const int VI_FDC_NORMAL                       = 1;
+		const int VI_FDC_STREAM                       = 2;
+		const int VI_LOCAL_SPACE                      = 0;
+		const int VI_A16_SPACE                        = 1;
+		const int VI_A24_SPACE                        = 2;
+		const int VI_A32_SPACE                        = 3;
+		const int VI_UNKNOWN_LA                       = -1;
+		const int VI_UNKNOWN_SLOT                     = -1;
+		const int VI_UNKNOWN_LEVEL                    = -1;
+		const int VI_QUEUE                            = 1;
+		const int VI_HNDLR                            = 2;
+		const int VI_SUSPEND_HNDLR                    = 4;
+		const int VI_ALL_MECH                         = 0xFFFF;
+		const int VI_ANY_HNDLR                        = 0;
+		const int VI_TRIG_SW                          = -1;
+		const int VI_TRIG_TTL0                        = 0;
+		const int VI_TRIG_TTL1                        = 1;
+		const int VI_TRIG_TTL2                        = 2;
+		const int VI_TRIG_TTL3                        = 3;
+		const int VI_TRIG_TTL4                        = 4;
+		const int VI_TRIG_TTL5                        = 5;
+		const int VI_TRIG_TTL6                        = 6;
+		const int VI_TRIG_TTL7                        = 7;
+		const int VI_TRIG_ECL0                        = 8;
+		const int VI_TRIG_ECL1                        = 9;
+		const int VI_TRIG_PROT_DEFAULT                = 0;
+		const int VI_TRIG_PROT_ON                     = 1;
+		const int VI_TRIG_PROT_OFF                    = 2;
+		const int VI_TRIG_PROT_SYNC                   = 5;
+		const int VI_READ_BUF                         = 1;
+		const int VI_WRITE_BUF                        = 2;
+		const int VI_READ_BUF_DISCARD                 = 4;
+		const int VI_WRITE_BUF_DISCARD                = 8;
+		const int VI_ASRL_IN_BUF                      = 16;
+		const int VI_ASRL_OUT_BUF                     = 32;
+		const int VI_ASRL_IN_BUF_DISCARD              = 64;
+		const int VI_ASRL_OUT_BUF_DISCARD             = 128;
+		const int VI_FLUSH_ON_ACCESS                  = 1;
+		const int VI_FLUSH_WHEN_FULL                  = 2;
+		const int VI_FLUSH_DISABLE                    = 3;
+		const int VI_NMAPPED                          = 1;
+		const int VI_USE_OPERS                        = 2;
+		const int VI_DEREF_ADDR                       = 3;
+		const int VI_TMO_IMMEDIATE                    = 0x0;
+		const int VI_TMO_INFINITE                     = 0xFFFFFFFF;
+		const int VI_INFINITE                         = 0xFFFFFFFF;
+		const int VI_NO_LOCK                          = 0;
+		const int VI_EXCLUSIVE_LOCK                   = 1;
+		const int VI_SHARED_LOCK                      = 2;
+		const int VI_LOAD_CONFIG                      = 4;
+		const int VI_NO_SEC_ADDR                      = 0xFFFF;
+		const int VI_ASRL_PAR_NONE                    = 0;
+		const int VI_ASRL_PAR_ODD                     = 1;
+		const int VI_ASRL_PAR_EVEN                    = 2;
+		const int VI_ASRL_PAR_MARK                    = 3;
+		const int VI_ASRL_PAR_SPACE                   = 4;
+		const int VI_ASRL_STOP_ONE                    = 10;
+		const int VI_ASRL_STOP_TWO                    = 20;
+		const int VI_ASRL_FLOW_NONE                   = 0;
+		const int VI_ASRL_FLOW_XON_XOFF               = 1;
+		const int VI_ASRL_FLOW_RTS_CTS                = 2;
+		const int VI_ASRL_END_NONE                    = 0;
+		const int VI_ASRL_END_LAST_BIT                = 1;
+		const int VI_ASRL_END_TERMCHAR                = 2;
+		const int VI_ASRL_END_BREAK                   = 3;
+		const int VI_STATE_ASSERTED                   = 1;
+		const int VI_STATE_UNASSERTED                 = 0;
+		const int VI_STATE_UNKNOWN                    = -1;
+		const int VI_BIG_ENDIAN                       = 0;
+		const int VI_LITTLE_ENDIAN                    = 1;
+		const int VI_DATA_PRIV                        = 0;
+		const int VI_DATA_NPRIV                       = 1;
+		const int VI_PROG_PRIV                        = 2;
+		const int VI_PROG_NPRIV                       = 3;
+		const int VI_BLCK_PRIV                        = 4;
+		const int VI_BLCK_NPRIV                       = 5;
+		const int VI_D64_PRIV                         = 6;
+		const int VI_D64_NPRIV                        = 7;
+		const int VI_WIDTH_8                          = 1;
+		const int VI_WIDTH_16                         = 2;
+		const int VI_WIDTH_32                         = 4;
+		const int VI_ON                              =  1;
+		const int VI_OFF                             =  0;
+		const int VI_INTF_TCPIP                       = 6;
+		const int VI_INTF_USB                         = 7;
+		const int VI_PROT_4882_STRS                   = 4;
+		const int VI_TRIG_ALL                         = -2;
+		const int VI_TRIG_PANEL_IN                    = 27;
+		const int VI_TRIG_PANEL_OUT                   = 28;
+		const int VI_IO_IN_BUF                        = 16;
+		const int VI_IO_OUT_BUF                       = 32;
+		const int VI_IO_IN_BUF_DISCARD                = 64;
+		const int VI_IO_OUT_BUF_DISCARD               = 128;
+		const int VI_ASRL_STOP_ONE5                   = 15;
+		const int VI_ASRL_FLOW_DTR_DSR                = 4;
+		const int VI_GPIB_REN_DEASSERT                = 0;
+		const int VI_GPIB_REN_ASSERT                  = 1;
+		const int VI_GPIB_REN_DEASSERT_GTL            = 2;
+		const int VI_GPIB_REN_ASSERT_ADDRESS          = 3;
+		const int VI_GPIB_REN_ASSERT_LLO              = 4;
+		const int VI_GPIB_REN_ASSERT_ADDRESS_LLO      = 5;
+		const int VI_GPIB_REN_ADDRESS_GTL             = 6;
+		const int VI_GPIB_ATN_DEASSERT                = 0;
+		const int VI_GPIB_ATN_ASSERT                  = 1;
+		const int VI_GPIB_ATN_DEASSERT_HANDSHAKE      = 2;
+		const int VI_GPIB_ATN_ASSERT_IMMEDIATE        = 3;
+		const int VI_GPIB_HS488_DISABLED              = 0;
+		const int VI_GPIB_HS488_NIMPL                 = -1;
+		const int VI_GPIB_UNADDRESSED                 = 0;
+		const int VI_GPIB_TALKER                      = 1;
+		const int VI_GPIB_LISTENER                    = 2;
+		const int VI_VXI_CMD16                        = 0x0200;
+		const int VI_VXI_CMD16_RESP16                 = 0x0202;
+		const int VI_VXI_RESP16                       = 0x0002;
+		const int VI_VXI_CMD32                        = 0x0400;
+		const int VI_VXI_CMD32_RESP16                 = 0x0402;
+		const int VI_VXI_CMD32_RESP32                 = 0x0404;
+		const int VI_VXI_RESP32                       = 0x0004;
+		const int VI_ASSERT_SIGNAL                    = -1;
+		const int VI_ASSERT_USE_ASSIGNED              = 0;
+		const int VI_ASSERT_IRQ1                      = 1;
+		const int VI_ASSERT_IRQ2                      = 2;
+		const int VI_ASSERT_IRQ3                      = 3;
+		const int VI_ASSERT_IRQ4                      = 4;
+		const int VI_ASSERT_IRQ5                      = 5;
+		const int VI_ASSERT_IRQ6                      = 6;
+		const int VI_ASSERT_IRQ7                      = 7;
+		const int VI_UTIL_ASSERT_SYSRESET             = 1;
+		const int VI_UTIL_ASSERT_SYSFAIL              = 2;
+		const int VI_UTIL_DEASSERT_SYSFAIL            = 3;
+		const int VI_VXI_CLASS_MEMORY                 = 0;
+		const int VI_VXI_CLASS_EXTENDED               = 1;
+		const int VI_VXI_CLASS_MESSAGE                = 2;
+		const int VI_VXI_CLASS_REGISTER               = 3;
+		const int VI_VXI_CLASS_OTHER                  = 4;
+		const int VI_PROT_NORMAL                      = 1;
+		const int VI_PROT_FDC                         = 2;
+		const int VI_PROT_HS488                       = 3;
+		const int VI_PROT_USBTMC_VENDOR               = 5;
+		const int VI_DEREF_ADDR_BYTE_SWAP             = 4;
+	};
+	[dllname("WFS.dll"), helpcontext(72), helpstring("Initialize")]
+	module Initialize{
+		[helpcontext(1), entry("WFS_init"), helpstring("Initialize")]
+		ViStatus __stdcall WFS_init(
+			[in] ViRsrc resourceName, 
+			[in] ViBoolean IDQuery, 
+			[in] ViBoolean resetDevice, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViSession *instrumentHandle);
+	};
+	[dllname("WFS.dll"), helpcontext(72), helpstring("Configuration Functions")]
+	module ConfigurationFunctions{
+		[helpcontext(2), entry("WFS_GetInstrumentInfo"), helpstring("Get Instrument Info")]
+		ViStatus __stdcall WFS_GetInstrumentInfo(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] LPSTR manufacturerName, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] LPSTR instrumentNameWFS, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] LPSTR serialNumberWFS, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] LPSTR serialNumberCam);
+		[helpcontext(3), entry("WFS_ConfigureCam"), helpstring("Configure Cam")]
+		ViStatus __stdcall WFS_ConfigureCam(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 pixelFormat, 
+			[in] ViInt32 camResolIndex, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *spotsX, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *spotsY);
+		[helpcontext(4), entry("WFS_SetHighspeedMode"), helpstring("Set Highspeed Mode")]
+		ViStatus __stdcall WFS_SetHighspeedMode(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 highspeedMode, 
+			[in] ViInt32 adaptCentroids, 
+			[in] ViInt32 substractOffset, 
+			[in] ViInt32 allowAutoExposure);
+		[helpcontext(5), entry("WFS_GetHighspeedWindows"), helpstring("Get Highspeed Windows")]
+		ViStatus __stdcall WFS_GetHighspeedWindows(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *windowCountX, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *windowCountY, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *windowSizeX, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *windowSizeY, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] ViInt32 *windowStartposX, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] ViInt32 *windowStartposY);
+		[helpcontext(6), entry("WFS_CheckHighspeedCentroids"), helpstring("Check Highspeed Centroids")]
+		ViStatus __stdcall WFS_CheckHighspeedCentroids(
+			[in] ViSession instrumentHandle);
+		[helpcontext(7), entry("WFS_GetExposureTimeRange"), helpstring("Get Exposure Time Range")]
+		ViStatus __stdcall WFS_GetExposureTimeRange(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *exposureTimeMin, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *exposureTimeMax, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *exposureTimeIncr);
+		[helpcontext(8), entry("WFS_SetExposureTime"), helpstring("Set Exposure Time")]
+		ViStatus __stdcall WFS_SetExposureTime(
+			[in] ViSession instrumentHandle, 
+			[in] ViReal64 exposureTimeSet, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *exposureTimeAct);
+		[helpcontext(9), entry("WFS_GetExposureTime"), helpstring("Get Exposure Time")]
+		ViStatus __stdcall WFS_GetExposureTime(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *exposureTimeAct);
+		[helpcontext(10), entry("WFS_GetMasterGainRange"), helpstring("Get Master Gain Range")]
+		ViStatus __stdcall WFS_GetMasterGainRange(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *masterGainMin, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *masterGainMax);
+		[helpcontext(11), entry("WFS_SetMasterGain"), helpstring("Set Master Gain")]
+		ViStatus __stdcall WFS_SetMasterGain(
+			[in] ViSession instrumentHandle, 
+			[in] ViReal64 masterGainSet, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *masterGainAct);
+		[helpcontext(12), entry("WFS_GetMasterGain"), helpstring("Get Master Gain")]
+		ViStatus __stdcall WFS_GetMasterGain(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *masterGainAct);
+		[helpcontext(13), entry("WFS_SetBlackLevelOffset"), helpstring("Set Black Level Offset")]
+		ViStatus __stdcall WFS_SetBlackLevelOffset(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 blackLevelOffsetSet);
+		[helpcontext(14), entry("WFS_GetBlackLevelOffset"), helpstring("Get Black Level Offset")]
+		ViStatus __stdcall WFS_GetBlackLevelOffset(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *blackLevelOffsetAct);
+		[helpcontext(15), entry("WFS_SetTriggerMode"), helpstring("Set Trigger Mode")]
+		ViStatus __stdcall WFS_SetTriggerMode(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 triggerMode);
+		[helpcontext(16), entry("WFS_GetTriggerMode"), helpstring("Get Trigger Mode")]
+		ViStatus __stdcall WFS_GetTriggerMode(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *triggerMode);
+		[helpcontext(17), entry("WFS_SetTriggerDelay"), helpstring("Set Trigger Delay")]
+		ViStatus __stdcall WFS_SetTriggerDelay(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 triggerDelaySet, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *triggerDelayAct);
+		[helpcontext(18), entry("WFS_GetTriggerDelayRange"), helpstring("Get Trigger Delay Range")]
+		ViStatus __stdcall WFS_GetTriggerDelayRange(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *triggerDelayMin, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *triggerDelayMax, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *triggerDelayIncr);
+		[helpcontext(19), entry("WFS_GetMlaCount"), helpstring("Get Mla Count")]
+		ViStatus __stdcall WFS_GetMlaCount(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *MLACount);
+		[helpcontext(20), entry("WFS_GetMlaData"), helpstring("Get Mla Data")]
+		ViStatus __stdcall WFS_GetMlaData(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 MLAIndex, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] LPSTR MLAName, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *camPitchm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *lensletPitchm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *spotOffsetX, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *spotOffsetY, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *lensletFm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *grdCorr0, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *grdCorr45);
+		[helpcontext(21), entry("WFS_GetMlaData2"), helpstring("Get Mla Data 2")]
+		ViStatus __stdcall WFS_GetMlaData2(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 MLAIndex, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] LPSTR MLAName, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *camPitchm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *lensletPitchm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *spotOffsetX, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *spotOffsetY, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *lensletFm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *grdCorr0, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *grdCorr45, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *grdCorrRot, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *grdCorrPitch);
+		[helpcontext(22), entry("WFS_SelectMla"), helpstring("Select Mla")]
+		ViStatus __stdcall WFS_SelectMla(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 MLAIndex);
+		[helpcontext(23), entry("WFS_SetAoi"), helpstring("Set Aoi")]
+		ViStatus __stdcall WFS_SetAoi(
+			[in] ViSession instrumentHandle, 
+			[in] ViReal64 AOICenterXMm, 
+			[in] ViReal64 AOICenterYMm, 
+			[in] ViReal64 AOISizeXMm, 
+			[in] ViReal64 AOISizeYMm);
+		[helpcontext(24), entry("WFS_GetAoi"), helpstring("Get Aoi")]
+		ViStatus __stdcall WFS_GetAoi(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *AOICenterXMm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *AOICenterYMm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *AOISizeXMm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *AOISizeYMm);
+		[helpcontext(25), entry("WFS_SetPupil"), helpstring("Set Pupil")]
+		ViStatus __stdcall WFS_SetPupil(
+			[in] ViSession instrumentHandle, 
+			[in] ViReal64 pupilCenterXMm, 
+			[in] ViReal64 pupilCenterYMm, 
+			[in] ViReal64 pupilDiameterXMm, 
+			[in] ViReal64 pupilDiameterYMm);
+		[helpcontext(26), entry("WFS_GetPupil"), helpstring("Get Pupil")]
+		ViStatus __stdcall WFS_GetPupil(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *pupilCenterXMm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *pupilCenterYMm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *pupilDiameterXMm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *pupilDiameterYMm);
+		[helpcontext(27), entry("WFS_SetReferencePlane"), helpstring("Set Reference Plane")]
+		ViStatus __stdcall WFS_SetReferencePlane(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 referenceIndex);
+		[helpcontext(28), entry("WFS_GetReferencePlane"), helpstring("Get Reference Plane")]
+		ViStatus __stdcall WFS_GetReferencePlane(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *referenceIndex);
+	};
+	[dllname("WFS.dll"), helpcontext(72), helpstring("Action/Status Functions")]
+	module ActionStatusFunctions{
+		[helpcontext(29), entry("WFS_GetStatus"), helpstring("Get Status")]
+		ViStatus __stdcall WFS_GetStatus(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *deviceStatus);
+	};
+	[dllname("WFS.dll"), helpcontext(72), helpstring("Data Functions")]
+	module DataFunctions{
+		[helpcontext(30), entry("WFS_TakeSpotfieldImage"), helpstring("Take Spotfield Image")]
+		ViStatus __stdcall WFS_TakeSpotfieldImage(
+			[in] ViSession instrumentHandle);
+		[helpcontext(31), entry("WFS_TakeSpotfieldImageAutoExpos"), helpstring("Take Spotfield Image Auto Expos")]
+		ViStatus __stdcall WFS_TakeSpotfieldImageAutoExpos(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *exposureTimeAct, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *masterGainAct);
+		[helpcontext(32), entry("WFS_GetSpotfieldImage"), helpstring("Get Spotfield Image")]
+		ViStatus __stdcall WFS_GetSpotfieldImage(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViAUInt8 *imageBuf, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *rows, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *columns);
+		[helpcontext(33), entry("WFS_GetSpotfieldImageCopy"), helpstring("Get Spotfield Image Copy")]
+		ViStatus __stdcall WFS_GetSpotfieldImageCopy(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] ViUInt8 *imageBuf, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *rows, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *columns);
+		[helpcontext(34), entry("WFS_AverageImage"), helpstring("Average Image")]
+		ViStatus __stdcall WFS_AverageImage(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 averageCount, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *averagedDataReady);
+		[helpcontext(35), entry("WFS_AverageImageRolling"), helpstring("Average Image Rolling")]
+		ViStatus __stdcall WFS_AverageImageRolling(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 averageCount, 
+			[in] ViInt32 reset);
+		[helpcontext(36), entry("WFS_CutImageNoiseFloor"), helpstring("Cut Image Noise Floor")]
+		ViStatus __stdcall WFS_CutImageNoiseFloor(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 limit);
+		[helpcontext(37), entry("WFS_CalcImageMinMax"), helpstring("Calc Image Min Max")]
+		ViStatus __stdcall WFS_CalcImageMinMax(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *imageMin, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *imageMax, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *saturatedPixelsPercent);
+		[helpcontext(38), entry("WFS_CalcMeanRmsNoise"), helpstring("Calc Mean Rms Noise")]
+		ViStatus __stdcall WFS_CalcMeanRmsNoise(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *mean, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *rms);
+		[helpcontext(39), entry("WFS_GetLine"), helpstring("Get Line")]
+		ViStatus __stdcall WFS_GetLine(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 line, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *lineSelected);
+		[helpcontext(40), entry("WFS_GetLineView"), helpstring("Get Line View")]
+		ViStatus __stdcall WFS_GetLineView(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *lineMin, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *lineMax);
+		[helpcontext(41), entry("WFS_CalcBeamCentroidDia"), helpstring("Calc Beam Centroid Dia")]
+		ViStatus __stdcall WFS_CalcBeamCentroidDia(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *beamCentroidXMm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *beamCentroidYMm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *beamDiameterXMm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *beamDiameterYMm);
+		[helpcontext(42), entry("WFS_CalcSpotsCentrDiaIntens"), helpstring("Calc Spots Centr Dia Intens")]
+		ViStatus __stdcall WFS_CalcSpotsCentrDiaIntens(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 dynamicNoiseCut, 
+			[in] ViInt32 calculateDiameters);
+		[helpcontext(43), entry("WFS_GetSpotCentroids"), helpstring("Get Spot Centroids")]
+		ViStatus __stdcall WFS_GetSpotCentroids(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *arrayCentroidX, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *arrayCentroidY);
+		[helpcontext(44), entry("WFS_GetSpotDiameters"), helpstring("Get Spot Diameters")]
+		ViStatus __stdcall WFS_GetSpotDiameters(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *arrayDiameterX, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *arrayDiameterY);
+		[helpcontext(45), entry("WFS_GetSpotDiaStatistics"), helpstring("Get Spot Dia Statistics")]
+		ViStatus __stdcall WFS_GetSpotDiaStatistics(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *min, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *max, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *mean);
+		[helpcontext(46), entry("WFS_GetSpotIntensities"), helpstring("Get Spot Intensities")]
+		ViStatus __stdcall WFS_GetSpotIntensities(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *arrayIntensity);
+		[helpcontext(47), entry("WFS_CalcSpotToReferenceDeviations"), helpstring("Calc Spot To Reference Deviations")]
+		ViStatus __stdcall WFS_CalcSpotToReferenceDeviations(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 cancelWavefrontTilt);
+		[helpcontext(48), entry("WFS_GetSpotReferencePositions"), helpstring("Get Spot Reference Positions")]
+		ViStatus __stdcall WFS_GetSpotReferencePositions(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *arrayRefPosX, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *arrayRefPosY);
+		[helpcontext(49), entry("WFS_GetSpotDeviations"), helpstring("Get Spot Deviations")]
+		ViStatus __stdcall WFS_GetSpotDeviations(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *arrayDeviationsX, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *arrayDeviationsY);
+		[helpcontext(50), entry("WFS_ZernikeLsf"), helpstring("Zernike Lsf")]
+		ViStatus __stdcall WFS_ZernikeLsf(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *zernikeOrders, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *arrayZernikeUm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *arrayZernikeOrdersUm, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *roCMm);
+		[helpcontext(51), entry("WFS_CalcFourierOptometric"), helpstring("Calc Fourier Optometric")]
+		ViStatus __stdcall WFS_CalcFourierOptometric(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 zernikeOrders, 
+			[in] ViInt32 fourierOrder, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *fourierM, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *fourierJ0, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *fourierJ45, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *optoSphere, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *optoCylinder, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *optoAxisDeg);
+		[helpcontext(52), entry("WFS_CalcReconstrDeviations"), helpstring("Calc Reconstr Deviations")]
+		ViStatus __stdcall WFS_CalcReconstrDeviations(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 zernikeOrders, 
+			[in, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] ViInt32 *arrayZernikeReconstruct, 
+			[in] ViInt32 doSphericalReference, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *fitErrMean, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *fitErrStdev);
+		[helpcontext(53), entry("WFS_CalcWavefront"), helpstring("Calc Wavefront")]
+		ViStatus __stdcall WFS_CalcWavefront(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 wavefrontType, 
+			[in] ViInt32 limitToPupil, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *arrayWavefront);
+		[helpcontext(54), entry("WFS_CalcWavefrontStatistics"), helpstring("Calc Wavefront Statistics")]
+		ViStatus __stdcall WFS_CalcWavefrontStatistics(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *min, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *max, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *diff, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *mean, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *RMS, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViReal64 *weightedRMS);
+	};
+	[dllname("WFS.dll"), helpcontext(72), helpstring("Utility Functions")]
+	module UtilityFunctions{
+		[helpcontext(55), entry("WFS_self_test"), helpstring("Self-Test")]
+		ViStatus __stdcall WFS_self_test(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt16 *selfTestResult, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] LPSTR selfTestMessage);
+		[helpcontext(56), entry("WFS_reset"), helpstring("Reset")]
+		ViStatus __stdcall WFS_reset(
+			[in] ViSession instrumentHandle);
+		[helpcontext(57), entry("WFS_revision_query"), helpstring("Revision Query")]
+		ViStatus __stdcall WFS_revision_query(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] LPSTR instrumentDriverRevision, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] LPSTR firmwareRevision);
+		[helpcontext(58), entry("WFS_error_query"), helpstring("Error Query")]
+		ViStatus __stdcall WFS_error_query(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *errorCode, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] LPSTR errorMessage);
+		[helpcontext(59), entry("WFS_error_message"), helpstring("Error Message")]
+		ViStatus __stdcall WFS_error_message(
+			[in] ViSession instrumentHandle, 
+			[in] ViStatus errorCode, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] LPSTR errorMessage);
+		[helpcontext(60), entry("WFS_GetInstrumentListLen"), helpstring("Get Instrument List Len")]
+		ViStatus __stdcall WFS_GetInstrumentListLen(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *instrumentCount);
+		[helpcontext(61), entry("WFS_GetInstrumentListInfo"), helpstring("Get Instrument List Info")]
+		ViStatus __stdcall WFS_GetInstrumentListInfo(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 instrumentListIndex, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *deviceID, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 0)] ViInt32 *inUse, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] LPSTR instrumentName, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] LPSTR instrumentSN, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] LPSTR resourceName);
+		[helpcontext(62), entry("WFS_GetXYScale"), helpstring("Get XY Scale")]
+		ViStatus __stdcall WFS_GetXYScale(
+			[in] ViSession instrumentHandle, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *arrayScaleX, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] float *arrayScaleY);
+		[helpcontext(63), entry("WFS_ConvertWavefrontWaves"), helpstring("Convert Wavefront Waves")]
+		ViStatus __stdcall WFS_ConvertWavefrontWaves(
+			[in] ViSession instrumentHandle, 
+			[in] ViReal64 wavelength, 
+			[in, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] ViReal32 *arrayWavefrontIn, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] ViReal32 *arrayWavefrontOut);
+		[helpcontext(64), entry("WFS_Flip2DArray"), helpstring("Flip 2D Array")]
+		ViStatus __stdcall WFS_Flip2DArray(
+			[in] ViSession instrumentHandle, 
+			[in, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] ViReal32 *arrayYX, 
+			[in, out, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[]")] ViReal32 *arrayXY);
+	};
+	[dllname("WFS.dll"), helpcontext(72), helpstring("Calibration Functions")]
+	module CalibrationFunctions{
+		[helpcontext(65), entry("WFS_SetSpotsToUserReference"), helpstring("Set Spots To User Reference")]
+		ViStatus __stdcall WFS_SetSpotsToUserReference(
+			[in] ViSession instrumentHandle);
+		[helpcontext(66), entry("WFS_SetCalcSpotsToUserReference"), helpstring("Set Calc Spots To User Reference")]
+		ViStatus __stdcall WFS_SetCalcSpotsToUserReference(
+			[in] ViSession instrumentHandle, 
+			[in] ViInt32 referenceType, 
+			[in, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[MAX_SPOTS_Y][MAX_SPOTS_X]")] float *arrayRefPosX, 
+			[in, custom(53D57340-9A16-11d0-A62C-0020AF16F78E, 1), custom(746B27E2-FBD7-11d1-B311-0060970535CB, "[MAX_SPOTS_Y][MAX_SPOTS_X]")] float *arrayRefPosY);
+		[helpcontext(67), entry("WFS_CreateDefaultUserReference"), helpstring("Create Default User Reference")]
+		ViStatus __stdcall WFS_CreateDefaultUserReference(
+			[in] ViSession instrumentHandle);
+		[helpcontext(68), entry("WFS_SaveUserRefFile"), helpstring("Save User Ref File")]
+		ViStatus __stdcall WFS_SaveUserRefFile(
+			[in] ViSession instrumentHandle);
+		[helpcontext(69), entry("WFS_LoadUserRefFile"), helpstring("Load User Ref File")]
+		ViStatus __stdcall WFS_LoadUserRefFile(
+			[in] ViSession instrumentHandle);
+		[helpcontext(70), entry("WFS_DoSphericalRef"), helpstring("Do Spherical Ref")]
+		ViStatus __stdcall WFS_DoSphericalRef(
+			[in] ViSession instrumentHandle);
+	};
+	[dllname("WFS.dll"), helpcontext(72), helpstring("close")]
+	module close{
+		[helpcontext(71), entry("WFS_close"), helpstring("close")]
+		ViStatus __stdcall WFS_close(
+			[in] ViSession instrumentHandle);
+	};
+};

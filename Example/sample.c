@@ -3,21 +3,22 @@
 	Thorlabs Wavefront Sensor sample application
 
 	This sample program for WFS Wavefront Sensor instruments connects to a selected instrument,
-	configures it, takes some measurment and displays the results.
+	configures it, takes some measurement and displays the results.
 	Finally it closes the connection.
 
 	Source file 'sample.c'
 
-	Date:          Sep-08-2014
+	Date:          Jun-12-2018
 	Software-Nr:   N/A
-	Version:       1.3
-	Copyright:     Copyright(c) 2014, Thorlabs GmbH (www.thorlabs.com)
+	Version:       1.4
+	Copyright:     Copyright(c) 2018, Thorlabs GmbH (www.thorlabs.com)
 	Author:        Egbert Krause (ekrause@thorlabs.com)
 
 	Changelog:     Dec-04-2009 -> V1.0
 						Nov-30-2010 -> V1.1 extended to WFS10 series instruments, highspeed mode enabled
 						Dec-19-2013 -> V1.2 added loop with data output to file
 						Sep-08-2014 -> V1.3 added WFS20 support
+						Jun-12-2018 -> V1.4 added WFS30/WFS40 support
 						
 	Disclaimer:
 
@@ -60,6 +61,8 @@
 
 #define  DEVICE_OFFSET_WFS10           (0x00100) // device IDs of WFS10 instruments start at 256 decimal
 #define  DEVICE_OFFSET_WFS20           (0x00200) // device IDs of WFS20 instruments start at 512 decimal
+#define  DEVICE_OFFSET_WFS30           (0x00400) // device IDs of WFS30 instruments start at 1024 decimal
+#define  DEVICE_OFFSET_WFS40           (0x00800) // device IDs of WFS40 instruments start at 2048 decimal
 
 // settings for this sample program, you may adapt settings to your preferences
 #define  OPTION_OFF                    (0)
@@ -69,6 +72,8 @@
 #define  SAMPLE_CAMERA_RESOL_WFS       CAM_RES_768          // 768x768 pixels, see wfs.h for alternative cam resolutions
 #define  SAMPLE_CAMERA_RESOL_WFS10     CAM_RES_WFS10_360    // 360x360 pixels
 #define  SAMPLE_CAMERA_RESOL_WFS20     CAM_RES_WFS20_512    // 512x512 pixels
+#define  SAMPLE_CAMERA_RESOL_WFS30     CAM_RES_WFS30_512    // 512x512 pixels
+#define  SAMPLE_CAMERA_RESOL_WFS40     CAM_RES_WFS40_512    // 512x512 pixels
 #define  SAMPLE_REF_PLANE              WFS_REF_INTERNAL
 
 #define  SAMPLE_PUPIL_CENTROID_X       (0.0) // in mm
@@ -147,12 +152,16 @@ int CVIFUNC    GetKey (void);
 /*===============================================================================================================================
   Global Variables
 ===============================================================================================================================*/
-const int   cam_wfs_xpixel[] = { 1280, 1024, 768, 512, 320 };
+const int   cam_wfs_xpixel[] = { 1280, 1024, 768, 512, 320 }; // WFS150/300
 const int   cam_wfs_ypixel[] = { 1024, 1024, 768, 512, 320 };
 const int   cam_wfs10_xpixel[] = {  640,  480, 360, 260, 180 };
 const int   cam_wfs10_ypixel[] = {  480,  480, 360, 260, 180 };
 const int   cam_wfs20_xpixel[] = {  1440, 1080, 768, 512, 360,  720, 540, 384, 256, 180 };
 const int   cam_wfs20_ypixel[] = {  1080, 1080, 768, 512, 360,  540, 540, 384, 256, 180 };
+const int   cam_wfs30_xpixel[] = {  1936, 1216, 1024, 768, 512, 360, 968, 608, 512, 384, 256, 180 };
+const int   cam_wfs30_ypixel[] = {  1216, 1216, 1024, 768, 512, 360, 608, 608, 512, 384, 256, 180 };
+const int   cam_wfs40_xpixel[] = {  2048, 1536, 1024, 768, 512, 360, 1024, 768, 512, 384, 256, 180 }; 
+const int   cam_wfs40_ypixel[] = {  2048, 1536, 1024, 768, 512, 360, 1024, 768, 512, 384, 256, 180 }; 
 
 const int   zernike_modes[] = { 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66 }; // converts Zernike order to Zernike modes
 
@@ -257,7 +266,7 @@ void main (void)
 	
 	
 	// Configure WFS camera, use a pre-defined camera resolution
-	if((instr.selected_id & DEVICE_OFFSET_WFS10) == 0 && (instr.selected_id & DEVICE_OFFSET_WFS20) == 0) // WFS150/300 instrument
+	if((instr.selected_id & DEVICE_OFFSET_WFS10) == 0 && (instr.selected_id & DEVICE_OFFSET_WFS20) == 0 && (instr.selected_id & DEVICE_OFFSET_WFS30) == 0 && (instr.selected_id & DEVICE_OFFSET_WFS40) == 0) // WFS150/300 instrument
 	{   
 		printf("\n\nConfigure WFS camera with resolution index %d (%d x %d pixels).\n", SAMPLE_CAMERA_RESOL_WFS, cam_wfs_xpixel[SAMPLE_CAMERA_RESOL_WFS], cam_wfs_ypixel[SAMPLE_CAMERA_RESOL_WFS]);
 		
@@ -278,6 +287,22 @@ void main (void)
 		printf("\n\nConfigure WFS20 camera with resolution index %d (%d x %d pixels).\n", SAMPLE_CAMERA_RESOL_WFS20, cam_wfs20_xpixel[SAMPLE_CAMERA_RESOL_WFS20], cam_wfs20_ypixel[SAMPLE_CAMERA_RESOL_WFS20]);
 	
 		if(err = WFS_ConfigureCam (instr.handle, SAMPLE_PIXEL_FORMAT, SAMPLE_CAMERA_RESOL_WFS20, &instr.spots_x, &instr.spots_y))
+			handle_errors(err);
+	}
+	
+	if(instr.selected_id & DEVICE_OFFSET_WFS30) // WFS30 instrument
+	{
+		printf("\n\nConfigure WFS30 camera with resolution index %d (%d x %d pixels).\n", SAMPLE_CAMERA_RESOL_WFS30, cam_wfs30_xpixel[SAMPLE_CAMERA_RESOL_WFS30], cam_wfs30_ypixel[SAMPLE_CAMERA_RESOL_WFS30]);
+	
+		if(err = WFS_ConfigureCam (instr.handle, SAMPLE_PIXEL_FORMAT, SAMPLE_CAMERA_RESOL_WFS30, &instr.spots_x, &instr.spots_y))
+			handle_errors(err);
+	}
+	
+	if(instr.selected_id & DEVICE_OFFSET_WFS40) // WFS40 instrument
+	{
+		printf("\n\nConfigure WFS40 camera with resolution index %d (%d x %d pixels).\n", SAMPLE_CAMERA_RESOL_WFS40, cam_wfs40_xpixel[SAMPLE_CAMERA_RESOL_WFS40], cam_wfs40_ypixel[SAMPLE_CAMERA_RESOL_WFS40]);
+	
+		if(err = WFS_ConfigureCam (instr.handle, SAMPLE_PIXEL_FORMAT, SAMPLE_CAMERA_RESOL_WFS40, &instr.spots_x, &instr.spots_y))
 			handle_errors(err);
 	}
 	
@@ -690,7 +715,7 @@ int select_instrument (int *selection, ViChar resourceName[])
 		if(err = WFS_GetInstrumentListInfo (VI_NULL, i, &device_id, &in_use, instr_name, serNr, resourceName))
 			handle_errors(err);
 		
-		printf("%3d   %s    %s    %s\n", device_id, instr_name, serNr, (!in_use) ? "" : "(inUse)");
+		printf("%4d   %s    %s    %s\n", device_id, instr_name, serNr, (!in_use) ? "" : "(inUse)");
 	}
 
 	// Select instrument
