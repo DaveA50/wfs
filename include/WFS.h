@@ -306,9 +306,9 @@ const static mode_t mode[] =
 	{  1,    0,    0,    "Piston",                 },
 	{  2,    1,   -1,    "Tip y",                  },
 	{  3,    1,    1,    "Tilt x",                 },
-	{  4,    2,   -2,    "Astigmatism +-45°",      },
+	{  4,    2,   -2,    "Astigmatism +-45Â°",      },
 	{  5,    2,    0,    "Defocus",                },
-	{  6,    2,    2,    "Astigmatism 0/90°",      },
+	{  6,    2,    2,    "Astigmatism 0/90Â°",      },
 	{  7,    3,   -3,    "Trefoil y",              }, // corrected y
 	{  8,    3,   -1,    "Coma x",                 },
 	{  9,    3,    1,    "Coma y",                 },
