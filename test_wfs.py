@@ -42,7 +42,6 @@ class TestWFS(object):
 
     def test_select_mla(self, wfs):
         assert wfs._select_mla() == 0
-        # Parameter 2 out of range! # -1074003966
         assert wfs._select_mla(1) == wfs.WFS_ERROR_PARAMETER2
         assert wfs._select_mla(0) == 0
 
@@ -53,7 +52,6 @@ class TestWFS(object):
         assert wfs._get_status()[0] == 0
 
     def test_set_highspeed_mode(self, wfs):
-        # Highspeed mode is not supported! # -1074001641
         assert wfs._check_highspeed_centroids() == wfs.WFS_ERROR_HIGHSPEED_NOT_ACTIVE
         assert wfs._set_highspeed_mode(True) == 0
         assert wfs._set_highspeed_mode(False) == 0
@@ -61,14 +59,12 @@ class TestWFS(object):
 
     # TODO
     # def test_get_highspeed_windows(self, wfs):
-    #     # Highspeed Mode is not active! # -1074001639
     #     assert wfs._get_highspeed_windows()[0] == wfs.WFS_ERROR_HIGHSPEED_NOT_ACTIVE
     #     assert wfs._set_highspeed_mode(True) == 0
     #     assert wfs._get_highspeed_windows()[0] == wfs.WFS_ERROR_HIGHSPEED_NOT_ACTIVE
     #     assert wfs._set_highspeed_mode(False) == 0
 
     def test_check_highspeed_centroids(self, wfs):
-        # Highspeed Mode is not active! # -1074001639
         assert wfs._check_highspeed_centroids() == wfs.WFS_ERROR_HIGHSPEED_NOT_ACTIVE
         assert wfs._set_highspeed_mode(True) == 0
         assert wfs._check_highspeed_centroids() == 0
@@ -80,14 +76,12 @@ class TestWFS(object):
 
     def test_set_exposure_time(self, wfs):
         assert wfs._set_exposure_time()[0] == 0
-        # Parameter 2 out of range! # -1074003966
         # noinspection PyPep8
         assert wfs._set_exposure_time(wfs.exposure_time_min.value - wfs.exposure_time_increment.value)[0] == wfs.WFS_ERROR_PARAMETER2
         assert wfs._set_exposure_time(wfs.exposure_time_min.value)[0] == 0
         assert wfs._set_exposure_time(wfs.exposure_time_min.value + wfs.exposure_time_increment.value)[0] == 0
         assert wfs._set_exposure_time(wfs.exposure_time_max.value - wfs.exposure_time_increment.value)[0] == 0
         assert wfs._set_exposure_time(wfs.exposure_time_max.value)[0] == 0
-        # Parameter 2 out of range! # -1074003966
         # noinspection PyPep8
         assert wfs._set_exposure_time(wfs.exposure_time_max.value + wfs.exposure_time_increment.value)[0] == wfs.WFS_ERROR_PARAMETER2
         assert wfs._set_exposure_time(1)[0] == 0
@@ -100,11 +94,9 @@ class TestWFS(object):
 
     def test_set_master_gain(self, wfs):
         assert wfs._set_master_gain()[0] == 0
-        # Parameter 2 out of range! # -1074003966
         assert wfs._set_master_gain(wfs.master_gain_min.value - 0.01)[0] == wfs.WFS_ERROR_PARAMETER2
         assert wfs._set_master_gain(wfs.master_gain_min.value)[0] == 0
         assert wfs._set_master_gain(wfs.master_gain_max.value)[0] == 0
-        # Parameter 2 out of range! # -1074003966
         assert wfs._set_master_gain(wfs.master_gain_max.value + 0.01)[0] == wfs.WFS_ERROR_PARAMETER2
         assert wfs._set_master_gain(1)[0] == 0
 
@@ -114,10 +106,11 @@ class TestWFS(object):
 
     def test_set_black_level_offset(self, wfs):
         assert wfs._set_black_level_offset() == 0
-        assert wfs._set_black_level_offset(255) == 0
-        # Parameter 2 out of range! # -1074003966
-        assert wfs._set_black_level_offset(256) == wfs.WFS_ERROR_PARAMETER2
-        assert wfs._set_black_level_offset(0) == 0
+        assert wfs._set_black_level_offset(wfs.BLACK_LEVEL_MIN - 1) == wfs.WFS_ERROR_PARAMETER2
+        assert wfs._set_black_level_offset(wfs.BLACK_LEVEL_MIN) == 0
+        assert wfs._set_black_level_offset(wfs.BLACK_LEVEL_MAX) == 0
+        assert wfs._set_black_level_offset(wfs.BLACK_LEVEL_MAX + 1) == wfs.WFS_ERROR_PARAMETER2
+        assert wfs._set_black_level_offset(wfs.BLACK_LEVEL_WFS20_DEF) == 0
 
     def test_get_black_level_offset(self, wfs):
         assert wfs._get_black_level_offset()[0] == 0
@@ -127,8 +120,10 @@ class TestWFS(object):
         assert wfs._set_trigger_mode(wfs.WFS_HW_TRIGGER_HL) == 0  # 1
         assert wfs._set_trigger_mode(wfs.WFS_HW_TRIGGER_LH) == 0  # 2
         assert wfs._set_trigger_mode(wfs.WFS_SW_TRIGGER) == 0  # 3
-        # Parameter 2 out of range! # -1074003966
-        assert wfs._set_trigger_mode(4) == wfs.WFS_ERROR_PARAMETER2
+        assert wfs._set_trigger_mode(wfs.WFS_TRIGGER_MODE_MIN - 1) == wfs.WFS_ERROR_PARAMETER2
+        assert wfs._set_trigger_mode(wfs.WFS_TRIGGER_MODE_MIN) == 0
+        assert wfs._set_trigger_mode(wfs.WFS_TRIGGER_MODE_MAX) == 0
+        assert wfs._set_trigger_mode(wfs.WFS_TRIGGER_MODE_MAX + 1) == wfs.WFS_ERROR_PARAMETER2
         assert wfs._set_trigger_mode(wfs.WFS_HW_TRIGGER_OFF) == 0
 
     def test_get_trigger_mode(self, wfs):
@@ -139,78 +134,84 @@ class TestWFS(object):
 
     def test_set_trigger_delay(self, wfs):
         assert wfs._set_trigger_delay()[0] == 0
-        # Parameter 2 out of range! # -1074003966
         # noinspection PyPep8
         assert wfs._set_trigger_delay(wfs.trigger_delay_min.value - wfs.trigger_delay_increment.value)[0] == wfs.WFS_ERROR_PARAMETER2
-        assert wfs._set_trigger_delay(wfs.trigger_delay_min.value + wfs.trigger_delay_increment.value)[0] == 0
-        assert wfs._set_trigger_delay(wfs.trigger_delay_max.value - wfs.trigger_delay_increment.value)[0] == 0
         assert wfs._set_trigger_delay(wfs.trigger_delay_max.value)[0] == 0
-        # Parameter 2 out of range! # -1074003966
         # noinspection PyPep8
         assert wfs._set_trigger_delay(wfs.trigger_delay_max.value + wfs.trigger_delay_increment.value)[0] == wfs.WFS_ERROR_PARAMETER2
         assert wfs._set_trigger_delay(wfs.trigger_delay_min.value)[0] == 0
 
     def test_set_aoi(self, wfs):
+        # WFS20
         # Resolution: 1440 x 1080
-        # Pixel Size: 5.0 (µm)
-        # Sensor Size: 7.20 x 5.40 (mm)
-        # Sensor Size Center +/-: 3.60 x 2.70 (mm)
+        # Pixel Size: 0.005 (mm)
+        # Sensor Size: 7.200 x 5.400 (mm)
+        # Sensor Size Center +/-: 3.600 x 2.700 (mm)
+        # Min Sensor Area: 0.500 x 0.500
+        pixel = wfs.cam_pitch_um.value / 1000
+        factor = wfs.cam_resolution_factor.value
+        x_size = wfs.cam_resolution_x.value * pixel * factor
+        y_size = wfs.cam_resolution_y.value * pixel * factor
+        min_size = wfs.PUPIL_DIA_MIN_MM
+        x_offset = (x_size-min_size)/2
+        y_offset = (y_size-min_size)/2
         assert wfs._set_aoi() == 0
-        # Parameter 2 out of range! # -1074003966
-        assert wfs._set_aoi(-3.601, 0, 0, 0) == wfs.WFS_ERROR_PARAMETER2
-        assert wfs._set_aoi(-3.60, 0, 0, 0) == 0
-        # Parameter 2 out of range! # -1074003966
-        assert wfs._set_aoi(3.601, 0, 0, 0) == wfs.WFS_ERROR_PARAMETER2
-        assert wfs._set_aoi(3.60, 0, 0, 0) == 0
-        # Parameter 3 out of range! # -1074003965
-        assert wfs._set_aoi(0, -2.701, 0, 0) == wfs.WFS_ERROR_PARAMETER3
-        assert wfs._set_aoi(0, -2.70, 0, 0) == 0
-        # Parameter 3 out of range! # -1074003965
-        assert wfs._set_aoi(0, 2.701, 0, 0) == wfs.WFS_ERROR_PARAMETER3
-        assert wfs._set_aoi(0, 2.70, 0, 0) == 0
-        # Parameter 4 out of range! # -1074003964
-        assert wfs._set_aoi(0, 0, 7.201, 0) == wfs.WFS_ERROR_PARAMETER4
-        assert wfs._set_aoi(0, 0, 7.20, 0) == 0
-        # Parameter 5 out of range! # -1074003963
-        assert wfs._set_aoi(0, 0, 0, 5.401) == wfs.WFS_ERROR_PARAMETER5
-        assert wfs._set_aoi(0, 0, 0, 5.40) == 0
-        assert wfs._set_aoi(0, 0, 0, 0) == 0
+        assert wfs._set_aoi(0, 0, x_size, y_size) == 0
+        assert wfs._set_aoi(0, 0, x_size + pixel, y_size) == wfs.WFS_ERROR_PARAMETER4
+        assert wfs._set_aoi(0, 0, x_size, y_size + pixel) == wfs.WFS_ERROR_PARAMETER5
+        assert wfs._set_aoi(0, 0, min_size, min_size) == 0
+        assert wfs._set_aoi(0, 0, min_size - pixel, min_size) == wfs.WFS_ERROR_PARAMETER4
+        assert wfs._set_aoi(0, 0, min_size, min_size - pixel) == wfs.WFS_ERROR_PARAMETER5
+        assert wfs._set_aoi((x_offset * -1), 0, min_size, min_size) == 0
+        assert wfs._set_aoi(x_offset, 0, min_size, min_size) == 0
+        assert wfs._set_aoi(((x_offset + pixel) * -1), 0, min_size, min_size) == wfs.WFS_ERROR_PARAMETER4
+        assert wfs._set_aoi((x_offset + pixel), 0, min_size, min_size) == wfs.WFS_ERROR_PARAMETER4
+        assert wfs._set_aoi(((x_size/2 + pixel) * -1), 0, min_size, min_size) == wfs.WFS_ERROR_PARAMETER2
+        assert wfs._set_aoi((x_size/2 + pixel), 0, min_size, min_size) == wfs.WFS_ERROR_PARAMETER2
+        assert wfs._set_aoi(0, (y_offset * -1), min_size, min_size) == 0
+        assert wfs._set_aoi(0, y_offset, min_size, min_size) == 0
+        assert wfs._set_aoi(0, ((y_offset + pixel) * -1), min_size, min_size) == wfs.WFS_ERROR_PARAMETER5
+        assert wfs._set_aoi(0, (y_offset + pixel), min_size, min_size) == wfs.WFS_ERROR_PARAMETER5
+        assert wfs._set_aoi(0, ((y_size/2 + pixel) * -1), min_size, min_size) == wfs.WFS_ERROR_PARAMETER3
+        assert wfs._set_aoi(0, (y_size/2 + pixel), min_size, min_size) == wfs.WFS_ERROR_PARAMETER3
+        assert wfs._set_aoi(0, 0, x_size, y_size) == 0
 
     def test_get_aoi(self, wfs):
         assert wfs._get_aoi()[0] == 0
 
     def test_set_pupil(self, wfs):
-        # Pupil center range: -5.000 mm to +5.000 mm
-        # Pupil diameter range: 0.1 mm to 10.0 mm
+        # Pupil center range: -8.000 mm to +8.000 mm
+        # Pupil diameter range: 0.500 mm to 12.000 mm
+        min_size = wfs.PUPIL_DIA_MIN_MM
+        max_size = wfs.PUPIL_DIA_MAX_MM
+        pos_offset = wfs.PUPIL_CTR_MAX_MM
+        neg_offset = wfs.PUPIL_CTR_MIN_MM
+        pixel = wfs.cam_pitch_um.value / 1000
+        factor = wfs.cam_resolution_factor.value
+        x_size = wfs.cam_resolution_x.value * pixel * factor
+        y_size = wfs.cam_resolution_y.value * pixel * factor
         assert wfs._set_pupil() == 0
-        # Parameter 2 out of range! # -1074003966
-        assert wfs._set_pupil(-5.001, 0, 5.4, 5.4) == wfs.WFS_ERROR_PARAMETER2
-        # Parameter 2 out of range! # -1074003966
-        assert wfs._set_pupil(5.001, 0, 5.4, 5.4) == wfs.WFS_ERROR_PARAMETER2
-        # Parameter 3 out of range! # -1074003965
-        assert wfs._set_pupil(0, -5.001, 5.4, 5.4) == wfs.WFS_ERROR_PARAMETER3
-        # Parameter 3 out of range! # -1074003965
-        assert wfs._set_pupil(0, 5.001, 5.4, 5.4) == wfs.WFS_ERROR_PARAMETER3
-        # Parameter 4 out of range! # -1074003964
-        assert wfs._set_pupil(0, 0, 0.099, 5.4) == wfs.WFS_ERROR_PARAMETER4
-        # Parameter 4 out of range! # -1074003964
-        assert wfs._set_pupil(0, 0, 10.001, 5.4) == wfs.WFS_ERROR_PARAMETER4
-        # Parameter 5 out of range! # -1074003963
-        assert wfs._set_pupil(0, 0, 5.4, 0.099) == wfs.WFS_ERROR_PARAMETER5
-        # Parameter 5 out of range! # -1074003963
-        assert wfs._set_pupil(0, 0, 5.4, 10.001) == wfs.WFS_ERROR_PARAMETER5
-        assert wfs._set_pupil(-5.000, -5.000, 5.4, 5.4) == 0
-        assert wfs._set_pupil(5.000, 5.000, 5.4, 5.4) == 0
-        assert wfs._set_pupil(0, 0, 0.1, 0.1) == 0
-        assert wfs._set_pupil(0, 0, 10.0, 10.0) == 0
-        assert wfs._set_pupil(0, 0, 5.4, 5.4) == 0
+        assert wfs._set_pupil((neg_offset - pixel), 0, max_size, max_size) == wfs.WFS_ERROR_PARAMETER2
+        assert wfs._set_pupil((pos_offset + pixel), 0, max_size, max_size) == wfs.WFS_ERROR_PARAMETER2
+        assert wfs._set_pupil(neg_offset, 0, max_size, max_size) == 0
+        assert wfs._set_pupil(pos_offset, 0, max_size, max_size) == 0
+        assert wfs._set_pupil(0, (neg_offset - pixel), max_size, max_size) == wfs.WFS_ERROR_PARAMETER3
+        assert wfs._set_pupil(0, (pos_offset + pixel), max_size, max_size) == wfs.WFS_ERROR_PARAMETER3
+        assert wfs._set_pupil(0, neg_offset, max_size, max_size) == 0
+        assert wfs._set_pupil(0, pos_offset, max_size, max_size) == 0
+        assert wfs._set_pupil(0, 0, max_size + pixel, max_size) == wfs.WFS_ERROR_PARAMETER4
+        assert wfs._set_pupil(0, 0, min_size - pixel, max_size) == wfs.WFS_ERROR_PARAMETER4
+        assert wfs._set_pupil(0, 0, max_size, max_size + pixel) == wfs.WFS_ERROR_PARAMETER5
+        assert wfs._set_pupil(0, 0, max_size, min_size - pixel) == wfs.WFS_ERROR_PARAMETER5
+        assert wfs._set_pupil(0, 0, min_size, min_size) == 0
+        assert wfs._set_pupil(0, 0, max_size, max_size) == 0
+        assert wfs._set_pupil(0, 0, x_size, y_size) == 0
 
     def test_get_pupil(self, wfs):
         assert wfs._get_pupil()[0] == 0
 
     def test_set_reference_plane(self, wfs):
         assert wfs._set_reference_plane() == 0
-        # No User Reference available! # -1074001643
         assert wfs._set_reference_plane(1) in (0, wfs.WFS_ERROR_NO_USER_REFERENCE)
         assert wfs._set_reference_plane(0) == 0
 
@@ -219,23 +220,23 @@ class TestWFS(object):
 
     # Data Functions
     # TODO
-    # def test_take_spotfield_image(self, wfs):
-    #     assert wfs._take_spotfield_image() == 0
+    def test_take_spotfield_image(self, wfs):
+        assert wfs._take_spotfield_image() == 0
 
     # TODO
-    # def test_take_spotfield_image_auto_exposure(self, wfs):
-    #     assert wfs._take_spotfield_image_auto_exposure()[0] == 0
-    #     assert wfs._take_spotfield_image_auto_exposure()[0] == 0
-    #     assert wfs._take_spotfield_image_auto_exposure()[0] == 0
-    #     assert wfs._take_spotfield_image_auto_exposure()[0] == 0
-    #     assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+    def test_take_spotfield_image_auto_exposure(self, wfs):
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
 
     def test_get_spotfield_image(self, wfs):
         assert wfs._get_spotfield_image()[0] == 0
 
     # TODO
-    def test_get_spotfield_image_copy(self, wfs):
-        assert wfs._get_spotfield_image_copy()[0] == 0
+    # def test_get_spotfield_image_copy(self, wfs):
+    #     assert wfs._get_spotfield_image_copy()[0] == 0
 
     # TODO
     # def test_average_image(self, wfs):
@@ -253,7 +254,6 @@ class TestWFS(object):
     #     assert wfs._cut_image_noise_floor(0) == 0
     #     assert wfs._cut_image_noise_floor(1) == 0
     #     assert wfs._cut_image_noise_floor(256) == 0
-    #     # Parameter 2 out of range! # -1074003966
     #     assert wfs._cut_image_noise_floor(257) == wfs.WFS_ERROR_PARAMETER2
     #     assert wfs._cut_image_noise_floor(10) == 0
 
@@ -269,7 +269,6 @@ class TestWFS(object):
     # def test_get_line(self, wfs):
     #     assert wfs._get_line()[0] == 0
     #     assert wfs._get_line(1023)[0] == 0
-    #     # Parameter 2 out of range! # -1074003966
     #     assert wfs._get_line(1024)[0] == wfs.WFS_ERROR_PARAMETER2
     #     assert wfs._get_line(0)[0] == 0
 
@@ -337,29 +336,14 @@ class TestWFS(object):
     # def test_get_spot_diameters_statistics(self, wfs):
     #     assert wfs._get_spot_diameters_statistics()[0] == 0
 
-    # TODO
-    # def test_get_xy_scale(self, wfs):
-    #     assert wfs._get_xy_scale()[0] == 0
-
-    # TODO
-    # def test_convert_wavefront_waves(self, wfs):
-    #     assert wfs._convert_wavefront_waves()[0] == 0
-
-    # TODO
-    # def test_flip_2d_array(self, wfs):
-    #     assert wfs._flip_2d_array()[0] == 0
-
     # Utility Functions
     def test_self_test(self, wfs):
-        # Self-test not supported! # 1073479939
         assert wfs._self_test()[0] in (0, wfs.WFS_WARN_NSUP_SELF_TEST)
 
     def test_reset(self, wfs):
-        # Reset not supported! # 1073479938
         assert wfs._reset() in (0, wfs.WFS_WARN_NSUP_RESET)
 
     def test_error_query(self, wfs):
-        # Error query not supported! # 1073479940
         assert wfs._error_query()[0] in (0, wfs.WFS_WARN_NSUP_ERROR_QUERY)
 
     def test_error_message(self, wfs):
@@ -414,6 +398,18 @@ class TestWFS(object):
         assert wfs._error_message(wfs.WFS_WARN_NSUP_SELF_TEST) == (0, b'Self-test not supported!')
         assert wfs._error_message(wfs.WFS_WARN_NSUP_ERROR_QUERY) == (0, b'Error query not supported!')
         assert wfs._error_message(wfs.WFS_WARN_NSUP_REV_QUERY) == (0, b'Instrument revision query not supported!')
+
+    # TODO
+    # def test_get_xy_scale(self, wfs):
+    #     assert wfs._get_xy_scale()[0] == 0
+
+    # TODO
+    # def test_convert_wavefront_waves(self, wfs):
+    #     assert wfs._convert_wavefront_waves()[0] == 0
+
+    # TODO
+    def test_flip_2d_array(self, wfs):
+        assert wfs._flip_2d_array()[0] == 0
 
     # Calibration Functions
     # def test_set_spots_to_user_reference(self, wfs):

@@ -437,8 +437,6 @@ class WFS(object):
     WFS_FALSE = 0
 
     # Defines for WFS camera
-    # MAX_FRAMERATE = 15  # not higher for wider exposure range
-
     EXPOSURE_MANUAL = 0
     EXPOSURE_AUTO = 1
 
@@ -476,8 +474,6 @@ class WFS(object):
     CAM_RES_512 = 3  # 512x512
     CAM_RES_320 = 4  # 320x320 smallest!
     CAM_RES_MAX_IDX = 4
-    # CAM_MAX_PIX_X = 1280
-    # CAM_MAX_PIX_Y = 1024
 
     # pre-defined image sizes for WFS10 instruments
     CAM_RES_WFS10_640 = 0  # 640x480
@@ -499,6 +495,8 @@ class WFS(object):
     CAM_RES_WFS20_256_BIN2 = 8  # 256x256, binning 2x2
     CAM_RES_WFS20_180_BIN2 = 9  # 180x180, binning 2x2
     CAM_RES_WFS20_MAX_IDX = 9
+    CAM_MAX_PIX_X = 1440
+    CAM_MAX_PIX_Y = 1080
 
     # pre-defined image sizes for WFS30 instruments
     CAM_RES_WFS30_1936 = 0  # 1936x1216
@@ -626,6 +624,9 @@ class WFS(object):
         self.calculate_diameters = Vi.int32(1)
         self.cam_pitch_um = Vi.real64(0)
         self.cam_resolution_index = Vi.int32(0)
+        self.cam_resolution_factor = Vi.int32(1)
+        self.cam_resolution_x = Vi.int32(0)
+        self.cam_resolution_y = Vi.int32(0)
         self.cancel_wavefront_tilt = Vi.int32(1)
         self.device_id = Vi.int32(0)
         self.device_status = Vi.int32(0)
@@ -725,6 +726,57 @@ class WFS(object):
         self.window_size_y = Vi.int32(0)
         self.window_start_position_x = Vi.int32(0)
         self.window_start_position_y = Vi.int32(0)
+
+        # NAME = {Index: (x_res, y_res, sub_factor)}
+        self.cam_res_WFS150 = {0: (1280, 1024, 1),
+                               1: (1024, 1024, 1),
+                               2: (768, 768, 1),
+                               3: (512, 512, 1),
+                               4: (320, 320, 1)}
+        self.cam_res_WFS10 = {0: (640, 480, 1),
+                              1: (480, 480, 1),
+                              2: (360, 360, 1),
+                              3: (260, 260, 1),
+                              4: (180, 180, 1)}
+        self.cam_res_WFS20 = {0: (1440, 1080, 1),
+                              1: (1080, 1080, 1),
+                              2: (768, 768, 1),
+                              3: (512, 512, 1),
+                              4: (360, 360, 1),
+                              5: (720, 540, 2),
+                              6: (540, 540, 2),
+                              7: (384, 384, 2),
+                              8: (256, 256, 2),
+                              9: (180, 180, 2)}
+        self.cam_res_WFS30 = {0: (1936, 1216, 1),
+                              1: (1216, 1216, 1),
+                              2: (1024, 1024, 1),
+                              3: (768, 768, 1),
+                              4: (512, 512, 1),
+                              5: (360, 360, 1),
+                              6: (968, 968, 2),
+                              7: (608, 608, 2),
+                              8: (512, 512, 2),
+                              9: (384, 384, 2),
+                              10: (256, 256, 2),
+                              11: (180, 180, 2)}
+        self.cam_res_WFS40 = {0: (2048, 2048, 1),
+                              1: (1536, 1536, 1),
+                              2: (1024, 1024, 1),
+                              3: (768, 768, 1),
+                              4: (512, 512, 1),
+                              5: (360, 360, 1),
+                              6: (1024, 1024, 2),
+                              7: (768, 768, 2),
+                              8: (512, 512, 2),
+                              9: (384, 384, 2),
+                              10: (256, 256, 2),
+                              11: (180, 180, 2)}
+        self.cam_res_id = {'WFS150': self.cam_res_WFS150,
+                           'WFS10': self.cam_res_WFS10,
+                           'WFS20': self.cam_res_WFS20,
+                           'WFS30': self.cam_res_WFS30,
+                           'WFS40': self.cam_res_WFS40}
 
     # WFS Functions
     def _init(self, resource_name=None, id_query=None, reset_device=None):
@@ -933,32 +985,61 @@ class WFS(object):
             cam_resolution_index (Vi.int32(int)): This parameter
                 selects the camera resolution in pixels. Only the
                 following pre-defined settings are supported:
-                For WFS instruments:
+                For WFS150/300 instruments:
                 Index  Resolution
-                0    1280x1024
-                1    1024x1024
-                2     768x768
-                3     512x512
-                4     320x320
+                0      1280x1024
+                1      1024x1024
+                2      768x768
+                3      512x512
+                4      320x320
                 For WFS10 instruments:
                 Index  Resolution
-                0     640x480
-                1     480x480
-                2     360x360
-                3     260x260
-                4     180x180
+                0      640x480
+                1      480x480
+                2      360x360
+                3      260x260
+                4      180x180
                 For WFS20 instruments:
                 Index  Resolution
-                0    1440x1080
-                1    1080x1080
-                2     768x768
-                3     512x512
-                4     360x360
-                5     720x540, bin2
-                6     540x540, bin2
-                7     384x384, bin2
-                8     256x256, bin2
-                9     180x180, bin2
+                0      1440x1080
+                1      1080x1080
+                2      768x768
+                3      512x512
+                4      360x360
+                5      720x540, bin2
+                6      540x540, bin2
+                7      384x384, bin2
+                8      256x256, bin2
+                9      180x180, bin2
+                For WFS30 instruments:
+                Index  Resolution
+                0      1936x1216
+                1      1216x1216
+                2      1024x1024
+                3      768x768
+                4      512x512
+                5      360x360
+                6      968x608, sub2
+                7      608x608, sub2
+                8      512x512, sub2
+                9      384x384, sub2
+                10     256x256, sub2
+                11     180x180, sub2
+                For WFS40 instruments:
+                Index  Resolution
+                0      2048x2048
+                1      1536x1536
+                2      1024x1024
+                3      768x768
+                4      512x512
+                5      360x360
+                6      1024x1024, sub2
+                7      768x768, sub2
+                8      512x512, sub2
+                9      384x384, sub2
+                10     256x256, sub2
+                11     180x180, sub2
+
             pixel_format (Vi.int32(int)): This parameter selects the
                 bit width per pixel of the returned camera image.
                 Thorlabs WFS instruments currently support only 8 bit
@@ -1001,9 +1082,16 @@ class WFS(object):
                                           self.cam_resolution_index,
                                           ctypes.byref(self.spots_x),
                                           ctypes.byref(self.spots_y))
+        cam_id = self.instrument_name_wfs.value.decode().split('-', 1)[0]  # Remove text after '-'
+        self.cam_resolution_x.value = self.cam_res_id[cam_id][self.cam_resolution_index.value][0]
+        self.cam_resolution_y.value = self.cam_res_id[cam_id][self.cam_resolution_index.value][1]
+        self.cam_resolution_factor.value = self.cam_res_id[cam_id][self.cam_resolution_index.value][2]
         log_wfs.debug(f'Configure Cam: {self.instrument_handle.value}')
         log_wfs.info(f'Pixel Format: {self.pixel_format.value}')
         log_wfs.info(f'Camera Resolution Index: {self.cam_resolution_index.value}')
+        log_wfs.info(f'Camera Resolution X: {self.cam_resolution_x.value}')
+        log_wfs.info(f'Camera Resolution Y: {self.cam_resolution_y.value}')
+        log_wfs.info(f'Camera Resolution Factor: {self.cam_resolution_factor.value}')
         log_wfs.info(f'Spots X: {self.spots_x.value}')
         log_wfs.info(f'Spots Y: {self.spots_y.value}')
         self._error_message(status)
@@ -1953,12 +2041,12 @@ class WFS(object):
                 self.instrument_handle = Vi.session(instrument_handle)
             except TypeError:
                 self.instrument_handle = instrument_handle
-        if 0 < self.aoi_size_x_mm.value < 0.500:
+        if 0 < self.aoi_size_x_mm.value < self.PUPIL_DIA_MIN_MM:
             log_wfs.debug(f'Set AoI: {self.instrument_handle.value}')
             status = self.WFS_ERROR_PARAMETER4
             self._error_message(status)
             return status
-        if 0 < self.aoi_size_y_mm.value < 0.500:
+        if 0 < self.aoi_size_y_mm.value < self.PUPIL_DIA_MIN_MM:
             log_wfs.debug(f'Set AoI: {self.instrument_handle.value}')
             status = self.WFS_ERROR_PARAMETER5
             self._error_message(status)
