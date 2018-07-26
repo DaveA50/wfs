@@ -57,19 +57,19 @@ class TestWFS(object):
         assert wfs._set_highspeed_mode(False) == 0
         assert wfs._check_highspeed_centroids() == wfs.WFS_ERROR_HIGHSPEED_NOT_ACTIVE
 
-    # TODO
-    # def test_get_highspeed_windows(self, wfs):
-    #     assert wfs._get_highspeed_windows()[0] == wfs.WFS_ERROR_HIGHSPEED_NOT_ACTIVE
-    #     assert wfs._set_highspeed_mode(True) == 0
-    #     assert wfs._get_highspeed_windows()[0] == wfs.WFS_ERROR_HIGHSPEED_NOT_ACTIVE
-    #     assert wfs._set_highspeed_mode(False) == 0
+    def test_get_highspeed_windows(self, wfs):
+        assert wfs._set_highspeed_mode(False) == 0
+        assert wfs._get_highspeed_windows()[0] == wfs.WFS_ERROR_HIGHSPEED_NOT_ACTIVE
+        assert wfs._set_highspeed_mode(True) == 0
+        assert wfs._get_highspeed_windows()[0] == 0
+        assert wfs._set_highspeed_mode(False) == 0
 
     def test_check_highspeed_centroids(self, wfs):
+        assert wfs._set_highspeed_mode(False) == 0
         assert wfs._check_highspeed_centroids() == wfs.WFS_ERROR_HIGHSPEED_NOT_ACTIVE
         assert wfs._set_highspeed_mode(True) == 0
         assert wfs._check_highspeed_centroids() == 0
         assert wfs._set_highspeed_mode(False) == 0
-        assert wfs._check_highspeed_centroids() == wfs.WFS_ERROR_HIGHSPEED_NOT_ACTIVE
 
     def test_get_exposure_time_range(self, wfs):
         assert wfs._get_exposure_time_range()[0] == 0

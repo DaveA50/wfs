@@ -724,8 +724,10 @@ class WFS(object):
         self.window_count_y = Vi.int32(0)
         self.window_size_x = Vi.int32(0)
         self.window_size_y = Vi.int32(0)
-        self.window_start_position_x = Vi.int32(0)
-        self.window_start_position_y = Vi.int32(0)
+        # self.window_start_position_x = Vi.int32(0)
+        # self.window_start_position_y = Vi.int32(0)
+        self.window_start_position_x = Vi.array_float(self.MAX_SPOTS_X)
+        self.window_start_position_y = Vi.array_float(self.MAX_SPOTS_Y)
 
         # NAME = {Index: (x_res, y_res, sub_factor)}
         self.cam_res_WFS150 = {0: (1280, 1024, 1),
@@ -1107,8 +1109,8 @@ class WFS(object):
         result to the WFS driver instead of sending raw spotfield
         images.
         Note: There is no camera image available when Highspeed Mode is
-        activated! Highspeed Mode is not available for WFS150/WFS300
-        instruments!
+        activated! Highspeed Mode is not available for
+        WFS150/WFS300/WFS30/WFS40 instruments!
 
         Args:
             highspeed_mode (Vi.int32(int)): This parameter determines
@@ -1237,11 +1239,13 @@ class WFS(object):
         log_wfs.info(f'Window Count Y: {self.window_count_y.value}')
         log_wfs.info(f'Window Size X: {self.window_size_x.value}')
         log_wfs.info(f'Window Size Y: {self.window_size_y.value}')
-        log_wfs.info(f'Window Start Position X: {self.window_start_position_x.value}')
-        log_wfs.info(f'Window Start Position Y: {self.window_start_position_y.value}')
+        log_wfs.debug('Window Start Position X: ' +
+                      ' '.join([f'{item:12.11}' for item in self.window_start_position_x]))
+        log_wfs.debug('Window Start Position Y: ' +
+                      ' '.join([f'{item:12.11}' for item in self.window_start_position_y]))
         self._error_message(status)
         return (status, self.window_count_x.value, self.window_count_y.value, self.window_size_x.value,
-                self.window_size_y.value, self.window_start_position_x.value, self.window_start_position_y.value)
+                self.window_size_y.value, self.window_start_position_x, self.window_start_position_y)
 
     def _check_highspeed_centroids(self, instrument_handle=None):
         """Check if measured spots are in calculation in Highspeed Mode
@@ -2498,7 +2502,7 @@ class WFS(object):
                                                    ctypes.byref(self.spotfield_columns))
         log_wfs.debug(f'Get Spotfield Image Copy: {self.instrument_handle.value}')
         log_wfs.debug('Image Buffer Copy: ' +
-                      '\n'.join([''.join([f'{item:6}' for item in row]) for row in self.array_image_buffer]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_image_buffer]))
         log_wfs.info(f'Rows: {self.spotfield_rows.value}')
         log_wfs.info(f'Columns: {self.spotfield_columns.value}')
         self._error_message(status)
@@ -2770,7 +2774,7 @@ class WFS(object):
         log_wfs.debug(f'Get Line: {self.instrument_handle.value}')
         log_wfs.info(f'Line: {self.line.value}')
         log_wfs.debug('Line Selected: ' +
-                      ''.join([f'{item:6}' for item in self.array_line_selected]))
+                      ' '.join([f'{item:12.11}' for item in self.array_line_selected]))
         self._error_message(status)
         return status, self.array_line_selected
 
@@ -2818,9 +2822,9 @@ class WFS(object):
                                          self.array_line_max)
         log_wfs.debug(f'Get Line View: {self.instrument_handle.value}')
         log_wfs.debug('Line Minimum: ' +
-                      ''.join([f'{item:6}' for item in self.array_line_min]))
+                      ' '.join([f'{item:12.11}' for item in self.array_line_min]))
         log_wfs.debug('Line Maximum: ' +
-                      ''.join([f'{item:6}' for item in self.array_line_max]))
+                      ' '.join([f'{item:12.11}' for item in self.array_line_max]))
         self._error_message(status)
         return status, self.array_line_min, self.array_line_max
 
@@ -2977,9 +2981,9 @@ class WFS(object):
                                               self.array_centroid_y)
         log_wfs.debug(f'Get Spot Centroids: {self.instrument_handle.value}')
         log_wfs.debug('Centroid X: \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_centroid_x]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_centroid_x]))
         log_wfs.debug('Centroid Y: \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_centroid_y]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_centroid_y]))
         self._error_message(status)
         return status, self.array_centroid_x, self.array_centroid_y
 
@@ -3027,9 +3031,9 @@ class WFS(object):
                                               self.array_diameter_y)
         log_wfs.debug(f'Get Spot Diameters: {self.instrument_handle.value}')
         log_wfs.debug('Diameter X: \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_diameter_x]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_diameter_x]))
         log_wfs.debug('Diameter Y: \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_diameter_y]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_diameter_y]))
         self._error_message(status)
         return status, self.array_diameter_x, self.array_diameter_y
 
@@ -3110,7 +3114,7 @@ class WFS(object):
                                                 self.array_intensity)
         log_wfs.debug(f'Get Spot Intensities: {self.instrument_handle.value}')
         log_wfs.debug('Intensity: \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_intensity]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_intensity]))
         self._error_message(status)
         return status, self.array_intensity
 
@@ -3202,9 +3206,9 @@ class WFS(object):
                                                        self.array_reference_y)
         log_wfs.debug(f'Get Spot Reference Positions: {self.instrument_handle.value}')
         log_wfs.debug('Reference X: \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_reference_x]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_reference_x]))
         log_wfs.debug('Reference Y: \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_reference_y]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_reference_y]))
         self._error_message(status)
         return status, self.array_reference_x, self.array_reference_y
 
@@ -3251,9 +3255,9 @@ class WFS(object):
                                                self.array_deviations_y)
         log_wfs.debug(f'Get Spot Deviations: {self.instrument_handle.value}')
         log_wfs.debug('Deviations X: \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_deviations_x]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_deviations_x]))
         log_wfs.debug('Deviations Y: \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_deviations_y]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_deviations_y]))
         self._error_message(status)
         return status, self.array_deviations_x, self.array_deviations_y
 
@@ -3324,8 +3328,8 @@ class WFS(object):
         log_wfs.debug(f'Zernike Least Square Fit: {self.instrument_handle.value}')
         log_wfs.info(f'RoC (mm): {self.roc_mm.value}')
         log_wfs.info(f'Zernike Orders: {self.zernike_orders.value}')
-        log_wfs.info('Zernike (µm):' + ''.join([f'{item:18}' for item in self.array_zernike_um]))
-        log_wfs.info('Zernike Orders (µm)' + ''.join([f'{item:18}' for item in self.array_zernike_orders_um]))
+        log_wfs.info('Zernike (µm):' + ' '.join([f'{item:12.11}' for item in self.array_zernike_um]))
+        log_wfs.info('Zernike Orders (µm)' + ' '.join([f'{item:12.11}' for item in self.array_zernike_orders_um]))
         self._error_message(status)
         return (status, self.roc_mm.value, self.zernike_orders.value,
                 self.array_zernike_um, self.array_zernike_orders_um)
@@ -3479,7 +3483,7 @@ class WFS(object):
         log_wfs.debug(f'Calc Reconstructed Deviations: {self.instrument_handle.value}')
         log_wfs.info(f'Zernike Orders: {self.zernike_orders.value}')
         log_wfs.debug('Zernike Reconstruction: \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row])
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row])
                                  for row in self.array_zernike_reconstructed]))
         log_wfs.info(f'Do Spherical Reference: {self.do_spherical_reference.value}')
         log_wfs.info(f'Fit Error Mean: {self.fit_error_mean.value}')
@@ -3551,7 +3555,7 @@ class WFS(object):
         log_wfs.info(f'Wavefront Type: {self.wavefront_type.value}')
         log_wfs.info(f'Limit to Pupil: {self.limit_to_pupil.value}')
         log_wfs.debug('Wavefront: \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_wavefront]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_wavefront]))
         self._error_message(status)
         return status, self.array_wavefront
 
@@ -3940,8 +3944,8 @@ class WFS(object):
                                         self.array_scale_x,
                                         self.array_scale_y)
         log_wfs.debug(f'Get XY Scale: {self.instrument_handle.value}')
-        log_wfs.debug('Array Scale X:' + ''.join([f'{item:18}' for item in self.array_scale_x]))
-        log_wfs.debug('Array Scale Y:' + ''.join([f'{item:18}' for item in self.array_scale_y]))
+        log_wfs.debug('Array Scale X:' + ' '.join([f'{item:12.11}' for item in self.array_scale_x]))
+        log_wfs.debug('Array Scale Y:' + ' '.join([f'{item:12.11}' for item in self.array_scale_y]))
         self._error_message(status)
         return status, self.array_scale_x, self.array_scale_y
 
@@ -3992,9 +3996,9 @@ class WFS(object):
         log_wfs.debug(f'Convert Wavefront to Waves: {self.instrument_handle.value}')
         log_wfs.info(f'Wavelength: {self.wavelength.value}')
         log_wfs.debug('Wavefront (µm): \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_wavefront]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_wavefront]))
         log_wfs.debug('Wavefront (waves): \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_wavefront_wave]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_wavefront_wave]))
         self._error_message(status)
         return status, self.array_wavefront_wave
 
@@ -4040,9 +4044,9 @@ class WFS(object):
                                          self.array_wavefront_xy)
         log_wfs.debug(f'Flip 2D Array: {self.instrument_handle.value}')
         log_wfs.debug(f'Wavefront YX: {len(self.array_wavefront_yx[0])} x {len(self.array_wavefront_yx)}\n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_wavefront_yx]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_wavefront_yx]))
         log_wfs.debug(f'Wavefront XY: {len(self.array_wavefront_xy[0])} x {len(self.array_wavefront_xy)}\n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_wavefront_xy]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_wavefront_xy]))
         self._error_message(status)
         return status, self.array_wavefront_xy
 
@@ -4137,9 +4141,9 @@ class WFS(object):
         log_wfs.debug(f'Set Calc Spots to User Reference: {self.instrument_handle.value}')
         log_wfs.info(f'Spot Reference Type: {self.spot_ref_type.value}')
         log_wfs.debug('Reference X: \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_reference_x]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_reference_x]))
         log_wfs.debug('Reference Y: \n' +
-                      '\n'.join([''.join([f'{item:16}' for item in row]) for row in self.array_reference_y]))
+                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_reference_y]))
         self._error_message(status)
         return status
 
@@ -4306,8 +4310,19 @@ class WFS(object):
         self._configure_cam(0)
         self.intensity_limit.value = 10
         self.allow_auto_exposure.value = 1
-        self._set_pupil(0, 0, 1.7, 1.7)
+        self._get_aoi()
+        self._get_black_level_offset()
+        self._get_exposure_time_range()
+        self._get_exposure_time()
+        self._get_master_gain_range()
+        self._get_master_gain()
+        self._get_trigger_delay_range()
+        self._set_trigger_delay(self.trigger_delay_min.value)
+        self._get_trigger_mode()
+        self._set_pupil(0, 0, 5.4, 5.4)
+        self._get_pupil()
         self._set_aoi(0, 0, 0, 0)
+        self._get_aoi()
         self._set_master_gain(1)
         self._set_black_level_offset(0)
         self._set_reference_plane(0)
