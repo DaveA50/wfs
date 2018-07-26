@@ -2501,8 +2501,8 @@ class WFS(object):
                                                    ctypes.byref(self.spotfield_rows),
                                                    ctypes.byref(self.spotfield_columns))
         log_wfs.debug(f'Get Spotfield Image Copy: {self.instrument_handle.value}')
-        log_wfs.debug('Image Buffer Copy: ' +
-                      '\n'.join([' '.join([f'{item:12.11}' for item in row]) for row in self.array_image_buffer]))
+        log_wfs.debug('Image Buffer Copy: \n' +
+                      '\n'.join([' '.join([f'{item:3}' for item in row]) for row in self.array_image_buffer]))
         log_wfs.info(f'Rows: {self.spotfield_rows.value}')
         log_wfs.info(f'Columns: {self.spotfield_columns.value}')
         self._error_message(status)
@@ -3944,8 +3944,8 @@ class WFS(object):
                                         self.array_scale_x,
                                         self.array_scale_y)
         log_wfs.debug(f'Get XY Scale: {self.instrument_handle.value}')
-        log_wfs.debug('Array Scale X:' + ' '.join([f'{item:12.11}' for item in self.array_scale_x]))
-        log_wfs.debug('Array Scale Y:' + ' '.join([f'{item:12.11}' for item in self.array_scale_y]))
+        log_wfs.debug('Array Scale X: \n' + ' '.join([f'{item:8.3f}' for item in self.array_scale_x]))
+        log_wfs.debug('Array Scale Y: \n' + ' '.join([f'{item:8.3f}' for item in self.array_scale_y]))
         self._error_message(status)
         return status, self.array_scale_x, self.array_scale_y
 

@@ -142,12 +142,6 @@ class TestWFS(object):
         assert wfs._set_trigger_delay(wfs.trigger_delay_min.value)[0] == 0
 
     def test_set_aoi(self, wfs):
-        # WFS20
-        # Resolution: 1440 x 1080
-        # Pixel Size: 0.005 (mm)
-        # Sensor Size: 7.200 x 5.400 (mm)
-        # Sensor Size Center +/-: 3.600 x 2.700 (mm)
-        # Min Sensor Area: 0.500 x 0.500
         pixel = wfs.cam_pitch_um.value / 1000
         factor = wfs.cam_resolution_factor.value
         x_size = wfs.cam_resolution_x.value * pixel * factor
@@ -180,10 +174,10 @@ class TestWFS(object):
         assert wfs._get_aoi()[0] == 0
 
     def test_set_pupil(self, wfs):
-        # Pupil center range: -8.000 mm to +8.000 mm
         # Pupil diameter range: 0.500 mm to 12.000 mm
         min_size = wfs.PUPIL_DIA_MIN_MM
         max_size = wfs.PUPIL_DIA_MAX_MM
+        # Pupil center range: -8.000 mm to +8.000 mm
         pos_offset = wfs.PUPIL_CTR_MAX_MM
         neg_offset = wfs.PUPIL_CTR_MIN_MM
         pixel = wfs.cam_pitch_um.value / 1000
@@ -219,29 +213,53 @@ class TestWFS(object):
         assert wfs._get_reference_plane()[0] == 0
 
     # Data Functions
-    # TODO
     def test_take_spotfield_image(self, wfs):
-        assert wfs._take_spotfield_image() == 0
+        for i in range(10):
+            assert wfs._take_spotfield_image() == 0
 
-    # TODO
     def test_take_spotfield_image_auto_exposure(self, wfs):
-        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
-        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
-        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
-        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
-        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        for i in range(10):
+            assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+            assert wfs._get_exposure_time()
 
     def test_get_spotfield_image(self, wfs):
-        assert wfs._get_spotfield_image()[0] == 0
+        for i in range(10):
+            assert wfs._get_spotfield_image()[0] == 0
 
-    # TODO
-    # def test_get_spotfield_image_copy(self, wfs):
-    #     assert wfs._get_spotfield_image_copy()[0] == 0
+    def test_get_spotfield_image_copy(self, wfs):
+        assert wfs._get_spotfield_image_copy()[0] == 0
 
-    # TODO
-    # def test_average_image(self, wfs):
-    #     # TODO Try multiple average counts
-    #     assert wfs._average_image()[0] == 0
+    def test_average_image(self, wfs):
+        assert wfs._average_image()[0] == 0
+        assert wfs.average_data_ready.value == 1
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        assert wfs._average_image(2)[0] == 0
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        assert wfs._average_image(2)[0] == 0
+        assert wfs.average_data_ready.value == 1
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        assert wfs._average_image(2)[0] == 0
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        assert wfs._average_image(2)[0] == 0
+        assert wfs.average_data_ready.value == 1
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        assert wfs._average_image(3)[0] == 0
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        assert wfs._average_image(3)[0] == 0
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        assert wfs._average_image(3)[0] == 0
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        assert wfs.average_data_ready.value == 1
+        i = 10
+        assert wfs._average_image(i)[0] == 0
+        for j in range(i-1):
+            assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+            assert wfs._average_image(i)[0] == 0
+        assert wfs.average_data_ready.value == 1
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        assert wfs._average_image(1)[0] == 0
+        assert wfs.average_data_ready.value == 1
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
 
     # TODO
     # def test_average_image_rolling(self, wfs):
@@ -399,15 +417,16 @@ class TestWFS(object):
         assert wfs._error_message(wfs.WFS_WARN_NSUP_ERROR_QUERY) == (0, b'Error query not supported!')
         assert wfs._error_message(wfs.WFS_WARN_NSUP_REV_QUERY) == (0, b'Instrument revision query not supported!')
 
-    # TODO
-    # def test_get_xy_scale(self, wfs):
-    #     assert wfs._get_xy_scale()[0] == 0
+    def test_get_xy_scale(self, wfs):
+        wfs.array_wavefront[0][0] = 1.5
+        assert wfs._get_xy_scale()[0] == 0
 
-    # TODO
-    # def test_convert_wavefront_waves(self, wfs):
-    #     assert wfs._convert_wavefront_waves()[0] == 0
+    def test_convert_wavefront_waves(self, wfs):
+        wfs.array_wavefront[0][0] = 1
+        assert wfs._convert_wavefront_waves()[0] == 0
+        assert wfs._convert_wavefront_waves(500)[0] == 0
+        assert wfs.array_wavefront_wave[0][0] == 2
 
-    # TODO
     def test_flip_2d_array(self, wfs):
         assert wfs._flip_2d_array()[0] == 0
 
