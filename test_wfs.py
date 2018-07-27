@@ -224,6 +224,7 @@ class TestWFS(object):
 
     def test_get_spotfield_image(self, wfs):
         for i in range(10):
+            assert wfs._take_spotfield_image_auto_exposure()[0] == 0
             assert wfs._get_spotfield_image()[0] == 0
 
     def test_get_spotfield_image_copy(self, wfs):

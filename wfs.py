@@ -74,18 +74,26 @@ class Vi(object):
         pass
 
     @staticmethod
-    def array_uint8(x, y):
+    def array_uint8(x, y=None):
         """
         Args:
             x (int): Size of array in X
-            y (int): Size of array in Y
+            y (int): Size of array in Y (optional)
         """
-        try:
-            # noinspection PyCallingNonCallable, PyTypeChecker
-            return ((ctypes.c_ubyte * int(x)) * int(y))()
-        except ValueError as e:
-            log_wfs.warning(f'Must be an Int, setting to 0: {e}')
-            return ctypes.c_ubyte(0)
+        if y is not None:
+            try:
+                # noinspection PyCallingNonCallable, PyTypeChecker
+                return ((ctypes.c_ubyte * int(x)) * int(y))()
+            except ValueError as e:
+                log_wfs.warning(f'Must be an Int, setting to 0: {e}')
+                return ctypes.c_ubyte(0)
+        else:
+            try:
+                # noinspection PyCallingNonCallable, PyTypeChecker
+                return (ctypes.c_ubyte * int(x))()
+            except ValueError as e:
+                log_wfs.warning(f'Must be an Int, setting to 0: {e}')
+                return ctypes.c_ubyte(0)
 
     @staticmethod
     def array_float(x, y=None):
@@ -655,7 +663,7 @@ class WFS(object):
         self.grid_correction_rotation = Vi.real64(0)
         self.highspeed_mode = Vi.int32(0)
         self.id_query = Vi.boolean(0)
-        self.image_buffer = Vi.uint8(0)
+        self.image_buffer = Vi.array_uint8(self.WFS_BUFFER_SIZE)
         self.intensity_limit = Vi.int32(1)
         self.intensity_max = Vi.int32(0)
         self.intensity_mean = Vi.int32(0)
@@ -2457,11 +2465,12 @@ class WFS(object):
                                                ctypes.byref(self.spotfield_rows),
                                                ctypes.byref(self.spotfield_columns))
         log_wfs.debug(f'Get Spotfield Image: {self.instrument_handle.value}')
-        log_wfs.info(f'Image Buffer: {self.image_buffer.value}')
+        log_wfs.debug('Image Buffer: \n' +
+                      ' '.join([f'{item:3}' for item in self.image_buffer]))
         log_wfs.info(f'Rows: {self.spotfield_rows.value}')
         log_wfs.info(f'Columns: {self.spotfield_columns.value}')
         self._error_message(status)
-        return status, self.image_buffer.value, self.spotfield_rows.value, self.spotfield_columns.value
+        return status, self.image_buffer, self.spotfield_rows.value, self.spotfield_columns.value
 
     def _get_spotfield_image_copy(self, instrument_handle=None):
         """Get a copy of the spotfield image as an array
