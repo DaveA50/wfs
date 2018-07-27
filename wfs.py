@@ -374,7 +374,7 @@ class WFS(object):
     WFS_ERROR_TILT_CALCULATION = WFS_INSTR_ERROR_OFFSET + 0x1d  # -1074001635
 
     # WFS Driver Warning Codes
-    WFS_WARNING = WFS_INSTR_WARNING_OFFSET + 0x00  # 1073481984
+    WFS_WARNING = WFS_INSTR_WARNING_OFFSET + 0x00  # 10734819841073740940
     WFS_WARN_NSUP_ID_QUERY = 0x3FFC0101  # 1073479937
     WFS_WARN_NSUP_RESET = 0x3FFC0102  # 1073479938
     WFS_WARN_NSUP_SELF_TEST = 0x3FFC0103  # 1073479939
@@ -691,7 +691,7 @@ class WFS(object):
         self.reset_device = Vi.boolean(0)
         self.resource_name = Vi.rsrc(self.WFS_BUFFER_SIZE, b'USB::0x1313::0x0000::1')
         self.roc_mm = Vi.real64(0)
-        self.rolling_reset = Vi.int32(1)
+        self.rolling_reset = Vi.int32(0)
         self.saturated_pixels_percent = Vi.real64(0)
         self.serial_number_camera = Vi.char(self.WFS_BUFFER_SIZE)
         self.serial_number_wfs = Vi.char(self.WFS_BUFFER_SIZE)
@@ -2739,7 +2739,7 @@ class WFS(object):
         Args:
             line (Vi.int32(int)): This parameter defines the
                 horizontal line to be selected within image_buffer.
-                Valid range: 0 .. rows-1
+                Valid range: 0 .. columns-1
             instrument_handle (Vi.session(int)): This parameter
                 accepts the Instrument Handle returned by the _init()
                 function to select the desired instrument driver
@@ -2754,9 +2754,11 @@ class WFS(object):
                 the pixel intensities along the selected line in
                 image_buffer. The required array size corresponds to
                 the selected image width in function _configure_cam():
-                max. 1280 for WFS150/WFS300
-                max.  640 for WFS10
-                max. 1440 for WFS20
+                max. 1024 for WFS150/WFS300
+                max.  480 for WFS10
+                max. 1080 for WFS20
+                max. 1216 for WFS30
+                max. 2048 for WFS40
         """
         if line is not None:
             try:
@@ -2821,9 +2823,9 @@ class WFS(object):
                                          self.array_line_min,
                                          self.array_line_max)
         log_wfs.debug(f'Get Line View: {self.instrument_handle.value}')
-        log_wfs.debug('Line Minimum: ' +
+        log_wfs.debug('Line Minimum: \n' +
                       ' '.join([f'{item:12.11}' for item in self.array_line_min]))
-        log_wfs.debug('Line Maximum: ' +
+        log_wfs.debug('Line Maximum: \n' +
                       ' '.join([f'{item:12.11}' for item in self.array_line_max]))
         self._error_message(status)
         return status, self.array_line_min, self.array_line_max
