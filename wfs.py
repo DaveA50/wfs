@@ -602,6 +602,7 @@ class WFS(object):
         self.array_diameter_x = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
         self.array_diameter_y = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
         self.array_image_buffer = Vi.array_uint8(self.CAM_MAX_PIX_X, self.CAM_MAX_PIX_Y)
+        self.array_image_buffer_ref = Vi.array_uint8(self.WFS_BUFFER_SIZE)
         self.array_intensity = Vi.array_float(self.MAX_SPOTS_X, self.MAX_SPOTS_Y)
         self.array_line_max = Vi.array_float(self.CAM_MAX_PIX_X)
         self.array_line_min = Vi.array_float(self.CAM_MAX_PIX_X)
@@ -663,7 +664,6 @@ class WFS(object):
         self.grid_correction_rotation = Vi.real64(0)
         self.highspeed_mode = Vi.int32(0)
         self.id_query = Vi.boolean(0)
-        self.image_buffer = Vi.array_uint8(self.WFS_BUFFER_SIZE)
         self.intensity_limit = Vi.int32(1)
         self.intensity_max = Vi.int32(0)
         self.intensity_mean = Vi.int32(0)
@@ -2446,10 +2446,11 @@ class WFS(object):
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
-            image_buffer (Vi.uint8(int)): This parameter returns a
-                reference to the image buffer. Note: This buffer is
-                allocated by the camera driver and the actual image
-                size is Rows * Columns. Do not modify this buffer!
+            array_image_buffer_ref (Vi.array_uint8(int)): This
+                parameter returns a reference to the image buffer.
+                Note: This buffer is allocated by the camera driver
+                and the actual image size is Rows * Columns. Do not
+                modify this buffer!
             spotfield_rows (Vi.int32(int)): This parameter returns the
                 image height (rows) in pixels.
             spotfield_columns (Vi.int32(int)): This parameter returns
@@ -2461,16 +2462,16 @@ class WFS(object):
             except TypeError:
                 self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetSpotfieldImage(self.instrument_handle,
-                                               ctypes.byref(self.image_buffer),
+                                               ctypes.byref(self.array_image_buffer_ref),
                                                ctypes.byref(self.spotfield_rows),
                                                ctypes.byref(self.spotfield_columns))
         log_wfs.debug(f'Get Spotfield Image: {self.instrument_handle.value}')
         log_wfs.debug('Image Buffer: \n' +
-                      ' '.join([f'{item:3}' for item in self.image_buffer]))
+                      ' '.join([f'{item:3}' for item in self.array_image_buffer_ref]))
         log_wfs.info(f'Rows: {self.spotfield_rows.value}')
         log_wfs.info(f'Columns: {self.spotfield_columns.value}')
         self._error_message(status)
-        return status, self.image_buffer, self.spotfield_rows.value, self.spotfield_columns.value
+        return status, self.array_image_buffer_ref, self.spotfield_rows.value, self.spotfield_columns.value
 
     def _get_spotfield_image_copy(self, instrument_handle=None):
         """Get a copy of the spotfield image as an array
