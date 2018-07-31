@@ -473,7 +473,6 @@ class TestWFS(object):
         assert wfs._set_spots_to_user_reference() == 0
 
     def test_set_calc_spots_to_user_reference(self, wfs):
-        # TODO
         assert wfs._set_calc_spots_to_user_reference() == 0
 
     # def test_do_spherical_reference(self, wfs):

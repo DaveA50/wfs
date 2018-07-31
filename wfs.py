@@ -18,9 +18,9 @@ __email__ = 'davea50@gmail.com'
 
 
 def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
-    """Setup logging configuration
+    """Setup logging configuration.
 
-    Uses logging.yaml for the default configuration
+    Uses logging.yaml for the default configuration.
 
     Args:
         path:
@@ -40,7 +40,7 @@ def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
 
 
 def find_wfs_library():
-    """Find and load the WFS .dll in the system
+    """Find and load the WFS .dll in the system.
 
     Returns:
         ctypes.windll.LoadLibrary(WFS_32/64.dll)
@@ -64,7 +64,7 @@ lib_wfs = find_wfs_library()
 
 
 class Vi(object):
-    """Container for ctypes conversion to Vi"""
+    """Container for ctypes conversion to Vi."""
     true = 1
     false = 0
     null = 0
@@ -78,8 +78,8 @@ class Vi(object):
         """Create a 1 or 2 dimensional uint8 array with c_ubyte.
 
         Args:
-            x (int): Size of array in X
-            y (int): Size of array in Y (optional)
+            x (int): Size of array in X.
+            y (int, optional): Size of array in Y.
         """
         try:
             if y is not None:
@@ -97,8 +97,8 @@ class Vi(object):
         """Create a 1 or 2 dimensional float array with c_float.
 
         Args:
-            x (int): Size of array in X
-            y (int): Size of array in Y (optional)
+            x (int): Size of array in X.
+            y (int, optional): Size of array in Y.
         """
         try:
             if y is not None:
@@ -116,7 +116,7 @@ class Vi(object):
         """Create a char array of size n with create_string_buffer.
 
         Args:
-            n (int): size of char array
+            n (int): size of char array.
         """
         try:
             return ctypes.create_string_buffer(int(n))
@@ -129,7 +129,7 @@ class Vi(object):
         """Create a uint with c_ubyte.
 
         Args:
-            n (int): Binary8 unsigned char
+            n (int): Binary8 unsigned char.
         """
         try:
             return ctypes.c_ubyte(int(n))
@@ -142,7 +142,7 @@ class Vi(object):
         """Create a int16 with c_short.
 
         Args:
-            n (int): Binary16 short int
+            n (int): Binary16 short int.
         """
         try:
             return ctypes.c_short(int(n))
@@ -155,7 +155,7 @@ class Vi(object):
         """Create a uint16 with c_ushort.
 
         Args:
-            n (int): Binary16 unsigned short int
+            n (int): Binary16 unsigned short int.
         """
         try:
             return ctypes.c_ushort(int(n))
@@ -168,7 +168,7 @@ class Vi(object):
         """Create a int32 with c_long.
 
         Args:
-            n (int): Binary32 long int
+            n (int): Binary32 long int.
         """
         try:
             return ctypes.c_long(int(n))
@@ -181,7 +181,7 @@ class Vi(object):
         """Create a uint32 with c_ulong.
 
         Args:
-            n (int): Binary32 long int
+            n (int): Binary32 unsigned long int.
         """
         try:
             return ctypes.c_ulong(int(n))
@@ -194,7 +194,7 @@ class Vi(object):
         """Create a real64 with c_double.
 
         Args:
-            n (float): double, char*
+            n (float): double, char*.
         """
         try:
             return ctypes.c_double(float(n))
@@ -207,7 +207,7 @@ class Vi(object):
         """Create a boolean with Vi.uint16.
 
         Args:
-            n (int):
+            n (int): Vi.true or Vi.false.
 
         Returns:
             Vi.uint16(n)
@@ -227,7 +227,7 @@ class Vi(object):
         """Create an object with Vi.uint32.
 
         Args:
-            n (int):
+            n (int): Binary32 unsigned long int.
 
         Returns:
             Vi.uint32(n)
@@ -239,7 +239,7 @@ class Vi(object):
         """Create a session with Vi.object.
 
         Args:
-            n (int):
+            n (int): Binary32 unsigned long int.
 
         Returns:
             Vi.object(n)
@@ -248,10 +248,10 @@ class Vi(object):
 
     @staticmethod
     def status(n):
-        """Create a status with Vi.int32
+        """Create a status with Vi.int32.
 
         Args:
-            n (int):
+            n (int): Binary32 long int.
 
         Returns:
             Vi.int32(n)
@@ -263,8 +263,8 @@ class Vi(object):
         """Create a string with Vi.char.
 
         Args:
-            n (int):
-            s (bytes):
+            n (int): size of char array.
+            s (bytes): bytestring value.
 
         Returns:
             Vi.char(n).value = s
@@ -278,8 +278,8 @@ class Vi(object):
         """Create a resource with Vi.string.
 
         Args:
-            n (int):
-            s (bytes):
+            n (int): size of char array.
+            s (bytes): bytestring value.
 
         Returns:
             Vi.string(n, s)
@@ -288,7 +288,7 @@ class Vi(object):
 
 
 class WFS(object):
-    """Thorlabs Shack-Hartmann Wavefront Sensor Interface"""
+    """Thorlabs Shack-Hartmann Wavefront Sensor Interface."""
     # Constants declared in WFS.h header file
     # Buffers
     WFS_BUFFER_SIZE = 256  # General buffer size
@@ -876,7 +876,7 @@ class WFS(object):
 
     # Configuration Functions
     def _get_instrument_info(self):
-        """Get information about the instrument names and serials
+        """Get information about the instrument names and serials.
 
         This function returns the following information about the
         opened instrument:
@@ -922,7 +922,7 @@ class WFS(object):
                 self.serial_number_wfs.value, self.serial_number_camera.value)
 
     def _configure_cam(self, cam_resolution_index=None, pixel_format=None):
-        """Configure the WFS camera resolution and max spots in X and Y
+        """Configure the WFS camera resolution and max spots in X and Y.
 
         This function configures the WFS instrument's camera resolution
         and returns the maximum number of detectable spots in X and Y
@@ -1039,7 +1039,7 @@ class WFS(object):
 
     def _set_highspeed_mode(self, highspeed_mode=None, adapt_centroids=None, subtract_offset=None,
                             allow_auto_exposure=None):
-        """Set the WFS to use Highspeed mode
+        """Set the WFS to use Highspeed mode.
 
         This function activates/deactivates the camera's Highspeed Mode
         for WFS10/WFS20 instruments. When activated, the camera
@@ -1114,7 +1114,7 @@ class WFS(object):
         return status
 
     def _get_highspeed_windows(self):
-        """Get the data from spot detection in Highspeed Mode
+        """Get the data from spot detection in Highspeed Mode.
 
         This function returns data of the spot detection windows valid
         in Highspeed Mode. Window size and positions depend on options
@@ -1166,7 +1166,7 @@ class WFS(object):
                 self.window_size_y.value, self.window_start_position_x, self.window_start_position_y)
 
     def _check_highspeed_centroids(self):
-        """Check if measured spots are in calculation in Highspeed Mode
+        """Check if measured spots are in calculation in Highspeed Mode.
 
         This function checks if the actual measured spot centroid
         positions are within the calculation windows in Highspeed Mode.
@@ -1188,7 +1188,7 @@ class WFS(object):
         return status
 
     def _get_exposure_time_range(self):
-        """Get the exposure time range in ms based on camera resolution
+        """Get the exposure time range in ms based on camera resolution.
 
         This function returns the available exposure range of the WFS
         camera in ms. The range may depend on the camera resolution
@@ -1221,7 +1221,7 @@ class WFS(object):
                 self.exposure_time_increment.value)
 
     def _set_exposure_time(self, exposure_time_set=None):
-        """Set the target exposure time in ms and get actual value
+        """Set the target exposure time in ms and get actual value.
 
         This function sets the target exposure time for the WFS camera
         and returns the actual set value.
@@ -1253,7 +1253,7 @@ class WFS(object):
         return status, self.exposure_time_actual.value
 
     def _get_exposure_time(self):
-        """Get the actual exposure time in ms
+        """Get the actual exposure time in ms.
 
         This function returns the actual exposure time of the WFS
         camera in ms.
@@ -1274,7 +1274,7 @@ class WFS(object):
         return status, self.exposure_time_actual.value
 
     def _get_master_gain_range(self):
-        """Get the available linear master gain range
+        """Get the available linear master gain range.
 
         This function returns the available linear master gain range
         of the WFS camera. Note: Master gain increases image noise!
@@ -1301,7 +1301,7 @@ class WFS(object):
         return status, self.master_gain_min.value, self.master_gain_max.value
 
     def _set_master_gain(self, master_gain_set=None):
-        """Set the target linear master gain
+        """Set the target linear master gain.
 
         This function sets the target linear master gain for the WFS
         camera and returns the actual set master gain.
@@ -1335,7 +1335,7 @@ class WFS(object):
         return status, self.master_gain_actual.value
 
     def _get_master_gain(self):
-        """Get the actual linear master gain
+        """Get the actual linear master gain.
 
         This function returns the actual set linear master gain.
 
@@ -1355,7 +1355,7 @@ class WFS(object):
         return status, self.master_gain_actual.value
 
     def _set_black_level_offset(self, black_level_offset_set=None):
-        """Set the black level offset
+        """Set the black level offset.
 
         This function sets the black offset level of the WFS camera. A
         higher black level will increase the intensity level of a dark
@@ -1385,7 +1385,7 @@ class WFS(object):
         return status
 
     def _get_black_level_offset(self):
-        """Get the black level offset
+        """Get the black level offset.
 
         This function returns the black offset level of the WFS camera.
 
@@ -1404,7 +1404,7 @@ class WFS(object):
         return status, self.black_level_offset_actual.value
 
     def _set_trigger_mode(self, trigger_mode=None):
-        """Set the hardware trigger mode
+        """Set the hardware trigger mode.
 
         This function sets the hardware trigger mode. When the trigger
         capability is activated, functions _take_spotfield_image() and
@@ -1440,7 +1440,7 @@ class WFS(object):
         return status
 
     def _get_trigger_mode(self):
-        """Get the hardware trigger mode
+        """Get the hardware trigger mode.
 
         This function returns the actual hardware trigger mode.
 
@@ -1462,7 +1462,7 @@ class WFS(object):
         return status, self.trigger_mode.value
 
     def _set_trigger_delay(self, trigger_delay_set=None):
-        """Set a target trigger delay for a hardware trigger mode
+        """Set a target trigger delay for a hardware trigger mode.
 
         This function sets an additional trigger delay for a hardware
         trigger mode set by function _set_trigger_mode().
@@ -1496,7 +1496,7 @@ class WFS(object):
         return status, self.trigger_delay_actual.value
 
     def _get_trigger_delay_range(self):
-        """Get the allowed time range in µs for hardware trigger delays
+        """Get the allowed time range in µs for hardware trigger delays.
 
         This function returns the allowed range for the trigger delay
         setting in function _set_trigger_delay().
@@ -1525,7 +1525,7 @@ class WFS(object):
         return status, self.trigger_delay_min.value, self.trigger_delay_max.value, self.trigger_delay_increment.value
 
     def _get_mla_count(self):
-        """Get the index of calibrated Microlens Arrays
+        """Get the index of calibrated Microlens Arrays.
 
         This function returns the number of calibrated Microlens Arrays.
 
@@ -1546,7 +1546,7 @@ class WFS(object):
         return status, self.mla_index.value
 
     def _get_mla_data(self, mla_index=None):
-        """Get the calibration data of the Microlens Array index
+        """Get the calibration data of the Microlens Array index.
 
         This function returns calibration data of the desired
         Microlens Array index. The number of calibrated lenslet arrays
@@ -1615,7 +1615,7 @@ class WFS(object):
                 self.grid_correction_0.value, self.grid_correction_45.value)
 
     def _get_mla_data2(self, mla_index=None):
-        """Get the calibration data of the Microlens Array index
+        """Get the calibration data of the Microlens Array index.
 
         This function returns more calibration data of the desired
         Microlens Array index. The number of calibrated lenslet arrays
@@ -1698,7 +1698,7 @@ class WFS(object):
                 self.grid_correction_pitch.value)
 
     def _select_mla(self, mla_index=None):
-        """Select the microlens array by index
+        """Select the microlens array by index.
 
         This function selects one of the removable microlens arrays by
         its index. Appropriate calibration values are read out of the
@@ -1728,7 +1728,7 @@ class WFS(object):
 
     def _set_aoi(self, aoi_center_x_mm=None, aoi_center_y_mm=None,
                  aoi_size_x_mm=None, aoi_size_y_mm=None):
-        """Set the area of interest position and size
+        """Set the area of interest position and size.
 
         This function defines the area of interest (AOI) within the
         camera image in position and size. All spots outside this area
@@ -1807,7 +1807,7 @@ class WFS(object):
         return status
 
     def _get_aoi(self):
-        """Get the area of interest position and size
+        """Get the area of interest position and size.
 
         This function returns the actual the area of interest (AOI)
         position and size. All spots outside this area are ignored for
@@ -1843,7 +1843,7 @@ class WFS(object):
 
     def _set_pupil(self, pupil_center_x_mm=None, pupil_center_y_mm=None,
                    pupil_diameter_x_mm=None, pupil_diameter_y_mm=None):
-        """Set the pupil position and size in mm
+        """Set the pupil position and size in mm.
 
         This function defines the pupil in position and size.
 
@@ -1908,7 +1908,7 @@ class WFS(object):
         return status
 
     def _get_pupil(self):
-        """Get the actual pupil position and size
+        """Get the actual pupil position and size.
 
         This function returns the actual the pupil position and size.
 
@@ -1940,7 +1940,7 @@ class WFS(object):
                 self.pupil_diameter_x_mm.value, self.pupil_diameter_y_mm.value)
 
     def _set_reference_plane(self, reference_index=None):
-        """Set the reference plane to either Internal or User Defined
+        """Set the reference plane to either Internal or User Defined.
 
         This function defines the WFS Reference Plane to either
         Internal or User (external).
@@ -1978,7 +1978,7 @@ class WFS(object):
         return status
 
     def _get_reference_plane(self):
-        """Get the reference plane of the WFS Instrument
+        """Get the reference plane of the WFS Instrument.
 
         This function returns the Reference Plane setting of the WFS
         instrument.
@@ -2002,7 +2002,7 @@ class WFS(object):
 
     # Data Functions
     def _take_spotfield_image(self):
-        """Take a spotfield image from the WFS and load into buffer
+        """Take a spotfield image from the WFS and load into buffer.
 
         This function receives a spotfield image from the WFS camera
         into a driver buffer. The reference to this buffer is provided
@@ -2038,7 +2038,7 @@ class WFS(object):
         return status
 
     def _take_spotfield_image_auto_exposure(self):
-        """Take a spotfield image with auto-exposure and load to buffer
+        """Take a spotfield image with auto-exposure and load to buffer.
 
         This function tries to find optimal exposure and gain settings
         and then it receives a spotfield image from the WFS camera
@@ -2085,7 +2085,7 @@ class WFS(object):
         return status, self.exposure_time_actual.value, self.master_gain_actual.value
 
     def _get_spotfield_image(self):
-        """Get the reference to a spotfield image
+        """Get the reference to a spotfield image.
 
         This function returns the reference to a spotfield image taken
         by functions _take_spotfield_image() or
@@ -2120,7 +2120,7 @@ class WFS(object):
         return status, self.array_image_buffer_ref, self.spotfield_rows.value, self.spotfield_columns.value
 
     def _get_spotfield_image_copy(self):
-        """Get a copy of the spotfield image as an array
+        """Get a copy of the spotfield image as an array.
 
         This function returns a copy of the spotfield image taken by
         functions _take_spotfield_image() or
@@ -2154,7 +2154,7 @@ class WFS(object):
         return status, self.array_image_buffer, self.spotfield_rows.value, self.spotfield_columns.value
 
     def _average_image(self, average_count=None):
-        """Generate an averaged image from a number of images in buffer
+        """Generate an averaged image from a number of images in buffer.
 
         This function generates an averaged image from a number of
         input camera images in image_buffer. The function returns
@@ -2193,7 +2193,7 @@ class WFS(object):
         return status, self.average_data_ready.value
 
     def _average_image_rolling(self, average_count=None, rolling_reset=None):
-        """Generate a rolling averaged image from a number of images
+        """Generate a rolling averaged image from a number of images.
 
         This function generates a rolling averaged image based on all
         previously entered camera images in image_buffer. The function
@@ -2237,7 +2237,7 @@ class WFS(object):
         return status
 
     def _cut_image_noise_floor(self, intensity_limit=None):
-        """Set all pixels under an intensity limit to zero
+        """Set all pixels under an intensity limit to zero.
 
         This function sets all pixels with intensities < Limit to zero
         which cuts the noise floor of the camera.
@@ -2268,7 +2268,7 @@ class WFS(object):
         return status
 
     def _calc_image_min_max(self):
-        """Calculate the min and max pixel intensity and saturation
+        """Calculate the min and max pixel intensity and saturation.
 
         This function returns minimum and maximum pixel intensities in
         image_buffer as well as the number of saturated pixels in
@@ -2299,7 +2299,7 @@ class WFS(object):
         return status, self.intensity_min.value, self.intensity_max.value, self.saturated_pixels_percent.value
 
     def _calc_mean_rms_noise(self):
-        """Calculate the mean average and rms of pixel intensities
+        """Calculate the mean average and rms of pixel intensities.
 
         This function returns the mean average and rms variations of
         the pixel intensities in image_buffer.
@@ -2326,7 +2326,7 @@ class WFS(object):
         return status, self.intensity_mean.value, self.intensity_rms.value
 
     def _get_line(self, line=None):
-        """Get a single horizontal line of the image in a linear array
+        """Get a single horizontal line of the image in a linear array.
 
         This function returns a single horizontal line of the image in
         a linear array.
@@ -2368,7 +2368,7 @@ class WFS(object):
         return status, self.array_line_selected
 
     def _get_line_view(self):
-        """Get the linear arrays with the min and max intensities
+        """Get the linear arrays with the min and max intensities.
 
         This function returns two linear arrays containing the minimum
         and maximum intensities within the image columns, respectively.
@@ -2407,7 +2407,7 @@ class WFS(object):
         return status, self.array_line_min, self.array_line_max
 
     def _calc_beam_centroid_diameter(self):
-        """Calculate the beam centroid and diameter in mm
+        """Calculate the beam centroid and diameter in mm.
 
         This function calculates and returns the beam centroid and
         diameter data based on the intensity distribution of the WFS
@@ -2448,7 +2448,7 @@ class WFS(object):
                 self.beam_diameter_y_mm.value, self.beam_diameter_x_mm.value)
 
     def _calc_spots_centroid_diameter_intensity(self, dynamic_noise_cut=None, calculate_diameters=None):
-        """Calculate the spot centroids, diameters, and intensities
+        """Calculate the spot centroids, diameters, and intensities.
 
         This function calculates the centroids, diameters (optional)
         and intensities of all spots generated by the lenslets.
@@ -2497,7 +2497,7 @@ class WFS(object):
         return status
 
     def _get_spot_centroids(self):
-        """Get the spot centroids in X and Y in pixels
+        """Get the spot centroids in X and Y in pixels.
 
         This function returns two two-dimensional arrays containing the
         centroid X and Y positions in pixels calculated by function
@@ -2534,7 +2534,7 @@ class WFS(object):
         return status, self.array_centroid_x, self.array_centroid_y
 
     def _get_spot_diameters(self):
-        """Get the spot diameters in X and Y in pixels
+        """Get the spot diameters in X and Y in pixels.
 
         This function returns two two-dimensional arrays containing the
         spot diameters in X and Y direction in pixels calculated by
@@ -2573,7 +2573,7 @@ class WFS(object):
         return status, self.array_diameter_x, self.array_diameter_y
 
     def _get_spot_diameters_statistics(self):
-        """Get the calculated statistic parameters of the wavefront
+        """Get the calculated statistic parameters of the wavefront.
 
         This function calculates statistic parameters of the wavefront
         calculated in function _calc_wavefront().
@@ -2604,7 +2604,7 @@ class WFS(object):
         return status, self.diameter_min.value, self.diameter_max.value, self.diameter_mean.value
 
     def _get_spot_intensities(self):
-        """Get the spot intensities in X and Y in arbitrary units
+        """Get the spot intensities in X and Y in arbitrary units.
 
         This function returns a two-dimensional array containing the
         spot intensities in arbitrary unit calculated by function
@@ -2632,7 +2632,7 @@ class WFS(object):
         return status, self.array_intensity
 
     def _calc_spot_to_reference_deviations(self, cancel_wavefront_tilt=None):
-        """Calculate reference positions and deviations for all spots
+        """Calculate reference positions and deviations for all spots.
 
         This function calculates reference positions and deviations
         for all spots depending on the setting reference_index
@@ -2670,7 +2670,7 @@ class WFS(object):
         return status
 
     def _get_spot_reference_positions(self):
-        """Get the arrays with actual X and Y spot positions in pixels
+        """Get the arrays with actual X and Y spot positions in pixels.
 
         This function returns two two-dimensional arrays containing
         the actual X and Y reference spot positions in pixels. A prior
@@ -2706,7 +2706,7 @@ class WFS(object):
         return status, self.array_reference_x, self.array_reference_y
 
     def _get_spot_deviations(self):
-        """Get the arrays with actual X and Y spot deviations in pixels
+        """Get the arrays with actual X and Y spot deviations in pixels.
 
         This function returns two two-dimensional arrays containing
         the actual X and Y spot deviations between centroid and
@@ -2744,7 +2744,7 @@ class WFS(object):
         return status, self.array_deviations_x, self.array_deviations_y
 
     def _zernike_lsf(self):
-        """Calculate Zernike coefficients and Radius of Curvature in mm
+        """Calculate Zernike coefficients and Radius of Curvature in mm.
 
         This function calculates the spot deviations (centroid with
         respect to its reference) and performs a least square fit to
@@ -2806,7 +2806,7 @@ class WFS(object):
                 self.array_zernike_um, self.array_zernike_orders_um)
 
     def _calc_fourier_optometric(self, zernike_orders=None, fourier_orders=None):
-        """Calculate the Fourier and Optometric notations from Zernikes
+        """Calculate the Fourier and Optometric notations from Zernikes.
 
         This function calculates the Fourier and Optometric notations
         from the Zernike coefficients calculated in function
@@ -2875,7 +2875,7 @@ class WFS(object):
 
     def _calc_reconstructed_deviations(self, zernike_orders=None, array_zernike_reconstructed=None,
                                        do_spherical_reference=None):
-        """Calculate the reconstructed spot deviations from Zernikes
+        """Calculate the reconstructed spot deviations from Zernikes.
 
         This function calculates the reconstructed spot deviations
         based on the calculated Zernike coefficients. Note: This
@@ -2944,7 +2944,7 @@ class WFS(object):
         return status, self.fit_error_mean.value, self.fit_error_stdev.value
 
     def _calc_wavefront(self, wavefront_type=None, limit_to_pupil=None):
-        """Calculate the wavefront based on the spot deviations
+        """Calculate the wavefront based on the spot deviations.
 
         This function calculates the wavefront based on the spot deviations.
 
@@ -3003,7 +3003,7 @@ class WFS(object):
         return status, self.array_wavefront
 
     def _calc_wavefront_statistics(self):
-        """Calculate statistic parameters of the wavefront in µm
+        """Calculate statistic parameters of the wavefront in µm.
 
         This function returns statistic parameters of the wavefront
         in µm calculated by function _calc_wavefront().
@@ -3049,7 +3049,7 @@ class WFS(object):
 
     # Utility Functions
     def _self_test(self):
-        """Perform a self-test of the instrument
+        """Perform a self-test of the instrument.
 
         This function causes the instrument to perform a self-test and
         returns the result of that self-test.
@@ -3077,7 +3077,7 @@ class WFS(object):
         return status, self.test_result.value, self.test_message.value
 
     def _reset(self):
-        """Places the instrument in a default state
+        """Places the instrument in a default state.
 
         Returns:
             status (Vi.status(int)): Operational return status.
@@ -3095,7 +3095,7 @@ class WFS(object):
         return status
 
     def _revision_query(self):
-        """Queries the instrument for driver and firmware revisions
+        """Queries the instrument for driver and firmware revisions.
 
         This function returns the revision of the instrument driver
         and the firmware revision of the instrument being used.
@@ -3126,7 +3126,7 @@ class WFS(object):
         return status, self.instrument_driver_revision.value, self.firmware_revision.value
 
     def _error_query(self):
-        """Queries the instrument for specific error information
+        """Queries the instrument for specific error information.
 
         This function queries the instrument and returns instrument-
         specific error information.
@@ -3155,7 +3155,7 @@ class WFS(object):
         return status, self.error_code.value, self.error_message.value
 
     def _error_message(self, error_code=None):
-        """Translates an error code into its user-readable message
+        """Translates an error code into its user-readable message.
 
         This function translates the error return value from a
         VXI plug&play instrument driver function to a user-readable
@@ -3199,7 +3199,7 @@ class WFS(object):
         return status, self.error_message.value
 
     def _get_instrument_list_len(self):
-        """Get the information about all WFS Instrument indexes
+        """Get the information about all WFS Instrument indexes.
 
         This function reads all Wavefront Sensor devices connected to
         the PC and returns the number of it. Use function
@@ -3225,7 +3225,7 @@ class WFS(object):
         return status, self.instrument_index.value, self.instrument_count.value
 
     def _get_instrument_list_info(self):
-        """Get the information about a WFS Instrument based on index
+        """Get the information about a WFS Instrument based on index.
 
         This function returns information about one connected WFS
         instrument selected by Instrument Index.
@@ -3276,7 +3276,7 @@ class WFS(object):
                 self.serial_number_wfs.value, self.resource_name.value)
 
     def _get_xy_scale(self):
-        """Get X and Y scales for spot intensity and wavefront in mm
+        """Get X and Y scales for spot intensity and wavefront in mm.
 
         This function returns two one-dimensional arrays containing the
         X and Y axis scales in mm for spot intensity and wavefront
@@ -3304,7 +3304,7 @@ class WFS(object):
         return status, self.array_scale_x, self.array_scale_y
 
     def _convert_wavefront_waves(self, wavelength=None, array_wavefront=None):
-        """Convert wavefront from µm into waves based on wavelength
+        """Convert wavefront from µm into waves based on wavelength.
 
         This function converts the wavefront data array calculated by
         function CalcWavefront() from µm into waves unit depending on
@@ -3348,7 +3348,7 @@ class WFS(object):
         return status, self.array_wavefront_wave
 
     def _flip_2d_array(self, array_wavefront_yx=None):
-        """Flip a 2D array YX into another array XY
+        """Flip a 2D array YX into another array XY.
 
         This function flips a 2-dimensional array of size
         array_wavefront_yx[MAX_SPOTS_Y][MAX_SPOTS_X] into another array
@@ -3388,7 +3388,7 @@ class WFS(object):
 
     # Calibration Functions
     def _set_spots_to_user_reference(self):
-        """Set the measured spot centroid positions to the User Ref
+        """Set the measured spot centroid positions to the User Ref.
 
         This function copies the measured spot centroid positions to
         the User Reference spot positions. Consequently spot
@@ -3406,7 +3406,7 @@ class WFS(object):
 
     def _set_calc_spots_to_user_reference(self, spot_ref_type=None, array_reference_x=None,
                                           array_reference_y=None):
-        """Set the X and Y user ref spots to calculated spot positions
+        """Set the X and Y user ref spots to calculated spot positions.
 
         This function sets the X and Y user reference spot positions in
         pixels to calculated spot positions given by two
@@ -3464,7 +3464,7 @@ class WFS(object):
         return status
 
     def _create_default_user_reference(self):
-        """Create a default User Reference identical to Internal Ref
+        """Create a default User Reference identical to Internal Ref.
 
         Generates a default User Reference which is identical to the
         Internal Reference. Use function _get_spot_reference_positions
@@ -3481,7 +3481,7 @@ class WFS(object):
         return status
 
     def _save_user_reference_file(self):
-        """Save a User Reference spotfield file for the selected MLA
+        """Save a User Reference spotfield file for the selected MLA.
 
         This function saves a User Reference spotfield file for the
         actual selected Microlens Array and image resolution to folder
@@ -3509,7 +3509,7 @@ class WFS(object):
         return status
 
     def _load_user_reference_file(self):
-        """Load a User Reference spotfield file for the selected MLA
+        """Load a User Reference spotfield file for the selected MLA.
 
         This function loads a User Reference spotfield file for the
         actual selected Microlens Array and image resolution from folder
@@ -3537,7 +3537,7 @@ class WFS(object):
         return status
 
     def _do_spherical_reference(self):
-        """Calculate spot positions based on a pure spherical wavefront
+        """Calculate spot positions based on a pure spherical wavefront.
 
         This function calculates User Reference spot positions based on
         an already performed measurement of a pure spherical wavefront.
