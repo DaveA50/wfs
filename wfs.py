@@ -75,55 +75,48 @@ class Vi(object):
 
     @staticmethod
     def array_uint8(x, y=None):
-        """
+        """Create a 1 or 2 dimensional uint8 array with c_ubyte.
+
         Args:
             x (int): Size of array in X
             y (int): Size of array in Y (optional)
         """
-        if y is not None:
-            try:
+        try:
+            if y is not None:
                 # noinspection PyCallingNonCallable, PyTypeChecker
                 return ((ctypes.c_ubyte * int(x)) * int(y))()
-            except ValueError as e:
-                log_wfs.warning(f'Must be an Int, setting to 0: {e}')
-                return ctypes.c_ubyte(0)
-        else:
-            try:
+            else:
                 # noinspection PyCallingNonCallable, PyTypeChecker
                 return (ctypes.c_ubyte * int(x))()
-            except ValueError as e:
-                log_wfs.warning(f'Must be an Int, setting to 0: {e}')
-                return ctypes.c_ubyte(0)
+        except ValueError as e:
+            log_wfs.warning(f'Must be an Int, setting to 0: {e}')
+            return ctypes.c_ubyte(0)
 
     @staticmethod
     def array_float(x, y=None):
-        """
+        """Create a 1 or 2 dimensional float array with c_float.
+
         Args:
             x (int): Size of array in X
             y (int): Size of array in Y (optional)
         """
-        if y is not None:
-            try:
+        try:
+            if y is not None:
                 # noinspection PyCallingNonCallable, PyTypeChecker
                 return ((ctypes.c_float * int(x)) * int(y))()
-            except ValueError as e:
-                log_wfs.warning(f'Must be an Int, setting to 0: {e}')
-                return ctypes.c_float(0)
-        else:
-            try:
+            else:
                 # noinspection PyCallingNonCallable, PyTypeChecker
                 return (ctypes.c_float * int(x))()
-            except ValueError as e:
-                log_wfs.warning(f'Must be an Int, setting to 0: {e}')
-                return ctypes.c_float(0)
+        except ValueError as e:
+            log_wfs.warning(f'Must be an Int, setting to 0: {e}')
+            return ctypes.c_float(0)
 
     @staticmethod
     def char(n):
-        """
-        Create a ctypes char array of size n
+        """Create a char array of size n with create_string_buffer.
 
         Args:
-            n: size of char array
+            n (int): size of char array
         """
         try:
             return ctypes.create_string_buffer(int(n))
@@ -131,24 +124,12 @@ class Vi(object):
             log_wfs.warning(f'Must be an Int, setting to 512: {e}')
             return ctypes.create_string_buffer(512)
 
-    # Deprecated
-    # @staticmethod
-    # def int8(n):
-    #     """
-    #     Args:
-    #         n: Binary8 char
-    #     """
-    #     try:
-    #         return ctypes.c_byte(int(n))
-    #     except ValueError as e:
-    #         log_wfs.warning(f'Must be an Int, setting to 0: {e}')
-    #         return ctypes.c_byte(0)
-
     @staticmethod
     def uint8(n):
-        """
+        """Create a uint with c_ubyte.
+
         Args:
-            n: Binary8 unsigned char
+            n (int): Binary8 unsigned char
         """
         try:
             return ctypes.c_ubyte(int(n))
@@ -158,9 +139,10 @@ class Vi(object):
 
     @staticmethod
     def int16(n):
-        """
+        """Create a int16 with c_short.
+
         Args:
-            n: Binary16 short int
+            n (int): Binary16 short int
         """
         try:
             return ctypes.c_short(int(n))
@@ -170,9 +152,10 @@ class Vi(object):
 
     @staticmethod
     def uint16(n):
-        """
+        """Create a uint16 with c_ushort.
+
         Args:
-            n: Binary16 unsigned short int
+            n (int): Binary16 unsigned short int
         """
         try:
             return ctypes.c_ushort(int(n))
@@ -182,9 +165,10 @@ class Vi(object):
 
     @staticmethod
     def int32(n):
-        """
+        """Create a int32 with c_long.
+
         Args:
-            n: Binary32 long int
+            n (int): Binary32 long int
         """
         try:
             return ctypes.c_long(int(n))
@@ -194,9 +178,10 @@ class Vi(object):
 
     @staticmethod
     def uint32(n):
-        """
+        """Create a uint32 with c_ulong.
+
         Args:
-            n: Binary32 long int
+            n (int): Binary32 long int
         """
         try:
             return ctypes.c_ulong(int(n))
@@ -204,24 +189,12 @@ class Vi(object):
             log_wfs.warning(f'Must be an Int, setting to 0: {e}')
             return ctypes.c_ulong(0)
 
-    # Deprecated
-    # @staticmethod
-    # def real32(n):
-    #     """
-    #     Args:
-    #         n: float, char*
-    #     """
-    #     try:
-    #         return ctypes.c_float(float(n))
-    #     except ValueError as e:
-    #         log_wfs.warning(f'Must be a float, setting to 0: {e}')
-    #         return ctypes.c_float(float(0))
-
     @staticmethod
     def real64(n):
-        """
+        """Create a real64 with c_double.
+
         Args:
-            n: double, char*
+            n (float): double, char*
         """
         try:
             return ctypes.c_double(float(n))
@@ -231,14 +204,13 @@ class Vi(object):
 
     @staticmethod
     def boolean(n):
-        """
+        """Create a boolean with Vi.uint16.
 
         Args:
             n (int):
 
         Returns:
-            Vi.uint16(n) or Vi.uint16(0)
-
+            Vi.uint16(n)
         """
         if n is True:
             n = Vi.true
@@ -252,19 +224,19 @@ class Vi(object):
 
     @staticmethod
     def object(n):
-        """
+        """Create an object with Vi.uint32.
 
         Args:
             n (int):
 
         Returns:
-            Vi.uint32(n) or Vi.uint32(0)
+            Vi.uint32(n)
         """
         return Vi.uint32(n)
 
     @staticmethod
     def session(n):
-        """
+        """Create a session with Vi.object.
 
         Args:
             n (int):
@@ -276,7 +248,7 @@ class Vi(object):
 
     @staticmethod
     def status(n):
-        """
+        """Create a status with Vi.int32
 
         Args:
             n (int):
@@ -288,7 +260,7 @@ class Vi(object):
 
     @staticmethod
     def string(n, s):
-        """
+        """Create a string with Vi.char.
 
         Args:
             n (int):
@@ -303,7 +275,7 @@ class Vi(object):
 
     @staticmethod
     def rsrc(n, s):
-        """
+        """Create a resource with Vi.string.
 
         Args:
             n (int):
