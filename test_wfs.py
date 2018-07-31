@@ -84,10 +84,10 @@ class TestVI(object):
         assert isinstance(Vi.status(''), type(ctypes.c_long(0)))
 
     def test_string(self):
-        assert Vi.string(255, b'abcdefghijklmnopqrstuvwxyz1234567890')
+        assert Vi.string(255, b'abcdefghijklmnopqrstuvwxyz1234567890').value == b'abcdefghijklmnopqrstuvwxyz1234567890'
 
     def test_rsrc(self):
-        assert Vi.rsrc(255, b'abcdefghijklmnopqrstuvwxyz1234567890')
+        assert Vi.rsrc(255, b'abcdefghijklmnopqrstuvwxyz1234567890').value == b'abcdefghijklmnopqrstuvwxyz1234567890'
 
 
 # noinspection PyMissingOrEmptyDocstring
