@@ -461,7 +461,7 @@ class WFS(object):
     MASTER_GAIN_FACTOR_WFS40 = 33.333
 
     NOISE_LEVEL_MIN = 0  # level for cutting spotfield
-    NOISE_LEVEL_MAX = 255
+    NOISE_LEVEL_MAX = 256
 
     BLACK_LEVEL_MIN = 0
     BLACK_LEVEL_MAX = 255
@@ -672,7 +672,7 @@ class WFS(object):
         self.in_use = Vi.int32(0)
         self.instrument_count = Vi.int32(0)
         self.instrument_driver_revision = Vi.char(self.WFS_BUFFER_SIZE)
-        self.instrument_handle = Vi.session(0)
+        self.instrument_handle = Vi.session(Vi.null)
         self.instrument_index = Vi.int32(0)
         self.instrument_name_wfs = Vi.char(self.WFS_BUFFER_SIZE)
         self.lenslet_focal_length_um = Vi.real64(0)
@@ -861,14 +861,8 @@ class WFS(object):
         self._error_message(status)
         return status, self.instrument_handle.value
 
-    def _get_status(self, instrument_handle=None):
+    def _get_status(self):
         """Get the device status of the Wavefront Sensor instrument.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -878,11 +872,6 @@ class WFS(object):
                 device status of the Wavefront Sensor instrument.
                 Lower 24 bits are used.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetStatus(self.instrument_handle,
                                        ctypes.byref(self.device_status))
         log_wfs.debug(f'Get Status: {self.instrument_handle.value}')
@@ -894,38 +883,27 @@ class WFS(object):
         self._error_message(status)
         return status, self.device_status.value
 
-    def _close(self, instrument_handle=None):
+    def _close(self):
         """Closes the instrument driver session.
 
         Note: The instrument must be reinitialized to use it again.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
-        if self.instrument_handle.value is not 0:
+        if self.instrument_handle.value is not Vi.null:
             status = lib_wfs.WFS_close(self.instrument_handle)
             log_wfs.info(f'Close: {self.instrument_handle.value}')
-            self.instrument_handle.value = 0
+            self.instrument_handle.value = Vi.null
         else:
             status = 0
         self._error_message(status)
         return status
 
     # Configuration Functions
-    def _get_instrument_info(self, instrument_handle=None):
+    def _get_instrument_info(self):
         """Get information about the instrument names and serials
 
         This function returns the following information about the
@@ -934,12 +912,6 @@ class WFS(object):
         - Instrument Name
         - Instrument Serial Number
         - Camera Serial Number
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -963,11 +935,6 @@ class WFS(object):
                 Note: The string must contain at least WFS_BUFFER_SIZE
                 (256) elements (char(WFS_BUFFER_SIZE)).
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetInstrumentInfo(self.instrument_handle,
                                                self.manufacturer_name,
                                                self.instrument_name_wfs,
@@ -982,7 +949,7 @@ class WFS(object):
         return (status, self.manufacturer_name.value, self.instrument_name_wfs.value,
                 self.serial_number_wfs.value, self.serial_number_camera.value)
 
-    def _configure_cam(self, cam_resolution_index=None, pixel_format=None, instrument_handle=None):
+    def _configure_cam(self, cam_resolution_index=None, pixel_format=None):
         """Configure the WFS camera resolution and max spots in X and Y
 
         This function configures the WFS instrument's camera resolution
@@ -1054,10 +1021,6 @@ class WFS(object):
                 bit width per pixel of the returned camera image.
                 Thorlabs WFS instruments currently support only 8 bit
                 format.
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1082,11 +1045,6 @@ class WFS(object):
                 self.pixel_format = Vi.int32(pixel_format)
             except TypeError:
                 self.pixel_format = pixel_format
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_ConfigureCam(self.instrument_handle,
                                           self.pixel_format,
                                           self.cam_resolution_index,
@@ -1108,7 +1066,7 @@ class WFS(object):
         return status, self.spots_x.value, self.spots_y.value
 
     def _set_highspeed_mode(self, highspeed_mode=None, adapt_centroids=None, subtract_offset=None,
-                            allow_auto_exposure=None, instrument_handle=None):
+                            allow_auto_exposure=None):
         """Set the WFS to use Highspeed mode
 
         This function activates/deactivates the camera's Highspeed Mode
@@ -1144,10 +1102,6 @@ class WFS(object):
                 _take_spotfield_image_auto_exposure() instead of
                 _take_spotfield_image(). This option leads to a
                 somewhat reduced measurement speed when enabled.
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1174,11 +1128,6 @@ class WFS(object):
                 self.allow_auto_exposure = Vi.int32(allow_auto_exposure)
             except TypeError:
                 self.allow_auto_exposure = allow_auto_exposure
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetHighspeedMode(self.instrument_handle,
                                               self.highspeed_mode,
                                               self.adapt_centroids,
@@ -1192,7 +1141,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_highspeed_windows(self, instrument_handle=None):
+    def _get_highspeed_windows(self):
         """Get the data from spot detection in Highspeed Mode
 
         This function returns data of the spot detection windows valid
@@ -1200,12 +1149,6 @@ class WFS(object):
         passed to function _set_highspeed_mode().
         Note: This function is only available when Highspeed Mode is
         activated!
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1230,11 +1173,6 @@ class WFS(object):
                 The required array size is MAX_SPOTS_Y.
                 Note: Window Stop Y = Windows Start Y + Windows Size Y
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetHighspeedWindows(self.instrument_handle,
                                                  ctypes.byref(self.window_count_x),
                                                  ctypes.byref(self.window_count_y),
@@ -1255,7 +1193,7 @@ class WFS(object):
         return (status, self.window_count_x.value, self.window_count_y.value, self.window_size_x.value,
                 self.window_size_y.value, self.window_start_position_x, self.window_start_position_y)
 
-    def _check_highspeed_centroids(self, instrument_handle=None):
+    def _check_highspeed_centroids(self):
         """Check if measured spots are in calculation in Highspeed Mode
 
         This function checks if the actual measured spot centroid
@@ -1267,39 +1205,22 @@ class WFS(object):
         Note: This function is only available when Highspeed Mode is
         activated!
 
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
-
         Returns:
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CheckHighspeedCentroids(self.instrument_handle)
         log_wfs.debug(f'Check Highspeed Centroids: {self.instrument_handle.value}')
         self._error_message(status)
         return status
 
-    def _get_exposure_time_range(self, instrument_handle=None):
+    def _get_exposure_time_range(self):
         """Get the exposure time range in ms based on camera resolution
 
         This function returns the available exposure range of the WFS
         camera in ms. The range may depend on the camera resolution
         set by function _configure_cam.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1315,11 +1236,6 @@ class WFS(object):
                 returns the smallest possible increment of the
                 exposure time in ms.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetExposureTimeRange(self.instrument_handle,
                                                   ctypes.byref(self.exposure_time_min),
                                                   ctypes.byref(self.exposure_time_max),
@@ -1332,7 +1248,7 @@ class WFS(object):
         return (status, self.exposure_time_min.value, self.exposure_time_max.value,
                 self.exposure_time_increment.value)
 
-    def _set_exposure_time(self, exposure_time_set=None, instrument_handle=None):
+    def _set_exposure_time(self, exposure_time_set=None):
         """Set the target exposure time in ms and get actual value
 
         This function sets the target exposure time for the WFS camera
@@ -1341,10 +1257,6 @@ class WFS(object):
         Args:
             exposure_time_set (Vi.real64(float)): This parameter sets
                 the target exposure time for the WFS camera in ms.
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1359,11 +1271,6 @@ class WFS(object):
                 self.exposure_time_set = Vi.real64(exposure_time_set)
             except TypeError:
                 self.exposure_time_set = exposure_time_set
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetExposureTime(self.instrument_handle,
                                              self.exposure_time_set,
                                              ctypes.byref(self.exposure_time_actual))
@@ -1373,17 +1280,11 @@ class WFS(object):
         self._error_message(status)
         return status, self.exposure_time_actual.value
 
-    def _get_exposure_time(self, instrument_handle=None):
+    def _get_exposure_time(self):
         """Get the actual exposure time in ms
 
         This function returns the actual exposure time of the WFS
         camera in ms.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1393,11 +1294,6 @@ class WFS(object):
                 returns the actual exposure time of the WFS camera in
                 ms.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetExposureTime(self.instrument_handle,
                                              ctypes.byref(self.exposure_time_actual))
         log_wfs.debug(f'Get Exposure Time (ms): {self.instrument_handle.value}')
@@ -1405,7 +1301,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.exposure_time_actual.value
 
-    def _get_master_gain_range(self, instrument_handle=None):
+    def _get_master_gain_range(self):
         """Get the available linear master gain range
 
         This function returns the available linear master gain range
@@ -1413,12 +1309,6 @@ class WFS(object):
         Use higher exposure time to set the WFS camera more sensitive.
         Lowest master gain of WFS10 camera is 1.5.
         Master gain of WFS20 camera is fixed to 1.0.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1429,11 +1319,6 @@ class WFS(object):
             master_gain_max (Vi.real64(float)): This parameter returns
                 the maximal linear master gain value of the WFS camera.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetMasterGainRange(self.instrument_handle,
                                                 ctypes.byref(self.master_gain_min),
                                                 ctypes.byref(self.master_gain_max))
@@ -1443,7 +1328,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.master_gain_min.value, self.master_gain_max.value
 
-    def _set_master_gain(self, master_gain_set=None, instrument_handle=None):
+    def _set_master_gain(self, master_gain_set=None):
         """Set the target linear master gain
 
         This function sets the target linear master gain for the WFS
@@ -1454,10 +1339,6 @@ class WFS(object):
             master_gain_set (Vi.real64(float)): This parameter accepts
                 the Instrument Handle returned by the _init() function
                 to select the desired instrument driver session.
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1472,11 +1353,6 @@ class WFS(object):
                 self.master_gain_set = Vi.real64(master_gain_set)
             except TypeError:
                 self.master_gain_set = master_gain_set
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetMasterGain(self.instrument_handle,
                                            self.master_gain_set,
                                            ctypes.byref(self.master_gain_actual))
@@ -1486,16 +1362,10 @@ class WFS(object):
         self._error_message(status)
         return status, self.master_gain_actual.value
 
-    def _get_master_gain(self, instrument_handle=None):
+    def _get_master_gain(self):
         """Get the actual linear master gain
 
         This function returns the actual set linear master gain.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1505,11 +1375,6 @@ class WFS(object):
                 returns the actual linear master gain of the WFS
                 camera.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetMasterGain(self.instrument_handle,
                                            ctypes.byref(self.master_gain_actual))
         log_wfs.debug(f'Get Exposure Time: {self.instrument_handle.value}')
@@ -1517,7 +1382,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.master_gain_actual.value
 
-    def _set_black_level_offset(self, black_level_offset_set=None, instrument_handle=None):
+    def _set_black_level_offset(self, black_level_offset_set=None):
         """Set the black level offset
 
         This function sets the black offset level of the WFS camera. A
@@ -1529,10 +1394,6 @@ class WFS(object):
                 sets the black offset value of the WFS camera. A
                 higher black level will increase the intensity level
                 of a dark camera image. Valid range: 0 ... 255
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1544,11 +1405,6 @@ class WFS(object):
                 self.black_level_offset_set = Vi.int32(black_level_offset_set)
             except TypeError:
                 self.black_level_offset_set = black_level_offset_set
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetBlackLevelOffset(self.instrument_handle,
                                                  self.black_level_offset_set)
         log_wfs.debug(f'Set Black Level Offset: {self.instrument_handle.value}')
@@ -1556,16 +1412,10 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_black_level_offset(self, instrument_handle=None):
+    def _get_black_level_offset(self):
         """Get the black level offset
 
         This function returns the black offset level of the WFS camera.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1574,11 +1424,6 @@ class WFS(object):
             black_level_offset_set (Vi.int32(int)): This parameter
                 returns the black offset value of the WFS camera.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetBlackLevelOffset(self.instrument_handle,
                                                  ctypes.byref(self.black_level_offset_actual))
         log_wfs.debug(f'Get Black Level Offset: {self.instrument_handle.value}')
@@ -1586,7 +1431,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.black_level_offset_actual.value
 
-    def _set_trigger_mode(self, trigger_mode=None, instrument_handle=None):
+    def _set_trigger_mode(self, trigger_mode=None):
         """Set the hardware trigger mode
 
         This function sets the hardware trigger mode. When the trigger
@@ -1604,10 +1449,6 @@ class WFS(object):
                 WFS_HW_TRIGGER_OFF - Trigger input disabled
                 WFS_HW_TRIGGER_HL - Trigger on high->low edge
                 WFS_HW_TRIGGER_LH - Trigger on low->high edge
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1619,11 +1460,6 @@ class WFS(object):
                 self.trigger_mode = Vi.int32(trigger_mode)
             except TypeError:
                 self.trigger_mode = trigger_mode
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetTriggerMode(self.instrument_handle,
                                             self.trigger_mode)
         log_wfs.debug(f'Set Trigger Mode: {self.instrument_handle.value}')
@@ -1631,16 +1467,10 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_trigger_mode(self, instrument_handle=None):
+    def _get_trigger_mode(self):
         """Get the hardware trigger mode
 
         This function returns the actual hardware trigger mode.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1652,11 +1482,6 @@ class WFS(object):
                 WFS_HW_TRIGGER_HL - Trigger on high->low edge
                 WFS_HW_TRIGGER_LH - Trigger on low->high edge
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetTriggerMode(self.instrument_handle,
                                             ctypes.byref(self.trigger_mode))
         log_wfs.debug(f'Get Trigger Mode: {self.instrument_handle.value}')
@@ -1664,7 +1489,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.trigger_mode.value
 
-    def _set_trigger_delay(self, trigger_delay_set=None, instrument_handle=None):
+    def _set_trigger_delay(self, trigger_delay_set=None):
         """Set a target trigger delay for a hardware trigger mode
 
         This function sets an additional trigger delay for a hardware
@@ -1675,10 +1500,6 @@ class WFS(object):
                 the target trigger delay in µs. Use function
                 _get_trigger_delay_range() to read out the accepted
                 limits.
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1693,11 +1514,6 @@ class WFS(object):
                 self.trigger_delay_set = Vi.int32(trigger_delay_set)
             except TypeError:
                 self.trigger_delay_set = trigger_delay_set
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetTriggerDelay(self.instrument_handle,
                                              self.trigger_delay_set,
                                              ctypes.byref(self.trigger_delay_actual))
@@ -1707,17 +1523,11 @@ class WFS(object):
         self._error_message(status)
         return status, self.trigger_delay_actual.value
 
-    def _get_trigger_delay_range(self, instrument_handle=None):
+    def _get_trigger_delay_range(self):
         """Get the allowed time range in µs for hardware trigger delays
 
         This function returns the allowed range for the trigger delay
         setting in function _set_trigger_delay().
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1731,11 +1541,6 @@ class WFS(object):
                 returns the accepted minimum increment of the trigger
                 delay in µs.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetTriggerDelayRange(self.instrument_handle,
                                                   ctypes.byref(self.trigger_delay_min),
                                                   ctypes.byref(self.trigger_delay_max),
@@ -1747,16 +1552,10 @@ class WFS(object):
         self._error_message(status)
         return status, self.trigger_delay_min.value, self.trigger_delay_max.value, self.trigger_delay_increment.value
 
-    def _get_mla_count(self, instrument_handle=None):
+    def _get_mla_count(self):
         """Get the index of calibrated Microlens Arrays
 
         This function returns the number of calibrated Microlens Arrays.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1765,11 +1564,6 @@ class WFS(object):
             mla_index (Vi.int32(int)): This parameter returns the
                 index of calibrated Microlens Arrays.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetMlaCount(self.instrument_handle,
                                          ctypes.byref(self.mla_count))
         self.mla_index = Vi.int32(self.mla_count.value - 1)
@@ -1779,7 +1573,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.mla_index.value
 
-    def _get_mla_data(self, mla_index=None, instrument_handle=None):
+    def _get_mla_data(self, mla_index=None):
         """Get the calibration data of the Microlens Array index
 
         This function returns calibration data of the desired
@@ -1791,10 +1585,6 @@ class WFS(object):
             mla_index (Vi.int32(int)): This parameter defines the
                 index of a removable microlens array.
                 Valid range: 0 ... mla_count-1
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1827,11 +1617,6 @@ class WFS(object):
                 self.mla_index = Vi.int32(mla_index)
             except TypeError:
                 self.mla_index = mla_index
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetMlaData(self.instrument_handle,
                                         self.mla_index,
                                         self.mla_name,
@@ -1857,7 +1642,7 @@ class WFS(object):
                 self.spot_offset_x.value, self.spot_offset_y.value, self.lenslet_focal_length_um.value,
                 self.grid_correction_0.value, self.grid_correction_45.value)
 
-    def _get_mla_data2(self, mla_index=None, instrument_handle=None):
+    def _get_mla_data2(self, mla_index=None):
         """Get the calibration data of the Microlens Array index
 
         This function returns more calibration data of the desired
@@ -1869,10 +1654,6 @@ class WFS(object):
             mla_index (Vi.int32(int)): This parameter defines the
                 index of a removable microlens array.
                 Valid range: 0 ... mla_count-1
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1914,11 +1695,6 @@ class WFS(object):
                 self.mla_index = Vi.int32(mla_index)
             except TypeError:
                 self.mla_index = mla_index
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetMlaData2(self.instrument_handle,
                                          self.mla_index,
                                          self.mla_name,
@@ -1949,7 +1725,7 @@ class WFS(object):
                 self.grid_correction_0.value, self.grid_correction_45.value, self.grid_correction_rotation.value,
                 self.grid_correction_pitch.value)
 
-    def _select_mla(self, mla_index=None, instrument_handle=None):
+    def _select_mla(self, mla_index=None):
         """Select the microlens array by index
 
         This function selects one of the removable microlens arrays by
@@ -1960,10 +1736,6 @@ class WFS(object):
             mla_index (Vi.int32(int)): This parameter defines the
                 index of a removable microlens array to be selected.
                 Valid range: 0 ... Number of calibrated MLAs-1
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -1975,11 +1747,6 @@ class WFS(object):
                 self.mla_index = Vi.int32(mla_index)
             except TypeError:
                 self.mla_index = mla_index
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SelectMla(self.instrument_handle,
                                        self.mla_index)
         log_wfs.debug(f'Select MLA: {self.instrument_handle.value}')
@@ -1988,7 +1755,7 @@ class WFS(object):
         return status
 
     def _set_aoi(self, aoi_center_x_mm=None, aoi_center_y_mm=None,
-                 aoi_size_x_mm=None, aoi_size_y_mm=None, instrument_handle=None):
+                 aoi_size_x_mm=None, aoi_size_y_mm=None):
         """Set the area of interest position and size
 
         This function defines the area of interest (AOI) within the
@@ -2018,10 +1785,6 @@ class WFS(object):
                 active camera area defined by function _configure_cam.
                 Note: The parameter must fit to the selected camera
                 area.
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2048,11 +1811,6 @@ class WFS(object):
                 self.aoi_size_y_mm = Vi.real64(aoi_size_y_mm)
             except TypeError:
                 self.aoi_size_y_mm = aoi_size_y_mm
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if 0 < self.aoi_size_x_mm.value < self.PUPIL_DIA_MIN_MM:
             log_wfs.debug(f'Set AoI: {self.instrument_handle.value}')
             status = self.WFS_ERROR_PARAMETER4
@@ -2076,19 +1834,13 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_aoi(self, instrument_handle=None):
+    def _get_aoi(self):
         """Get the area of interest position and size
 
         This function returns the actual the area of interest (AOI)
         position and size. All spots outside this area are ignored for
         Beam View display as well as for Zernike and wavefront
         calculations.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2103,11 +1855,6 @@ class WFS(object):
             aoi_size_y_mm (Vi.real64(int)): This parameter returns the
                 AOI Y size in mm.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetAoi(self.instrument_handle,
                                     ctypes.byref(self.aoi_center_x_mm),
                                     ctypes.byref(self.aoi_center_y_mm),
@@ -2123,7 +1870,7 @@ class WFS(object):
                 self.aoi_size_x_mm.value, self.aoi_size_y_mm.value)
 
     def _set_pupil(self, pupil_center_x_mm=None, pupil_center_y_mm=None,
-                   pupil_diameter_x_mm=None, pupil_diameter_y_mm=None, instrument_handle=None):
+                   pupil_diameter_x_mm=None, pupil_diameter_y_mm=None):
         """Set the pupil position and size in mm
 
         This function defines the pupil in position and size.
@@ -2149,10 +1896,6 @@ class WFS(object):
                 needs to be within the active camera area defined by
                 function _configure_cam.
                 Valid range: 0.1 ... +10.0 mm
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2179,11 +1922,6 @@ class WFS(object):
                 self.pupil_diameter_y_mm = Vi.real64(pupil_diameter_y_mm)
             except TypeError:
                 self.pupil_diameter_y_mm = pupil_diameter_y_mm
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetPupil(self.instrument_handle,
                                       self.pupil_center_x_mm,
                                       self.pupil_center_y_mm,
@@ -2197,16 +1935,10 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_pupil(self, instrument_handle=None):
+    def _get_pupil(self):
         """Get the actual pupil position and size
 
         This function returns the actual the pupil position and size.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2221,11 +1953,6 @@ class WFS(object):
             pupil_diameter_y_mm (Vi.real64(int)): This parameter
                 returns the pupil Y diameter in mm.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetPupil(self.instrument_handle,
                                       ctypes.byref(self.pupil_center_x_mm),
                                       ctypes.byref(self.pupil_center_y_mm),
@@ -2240,7 +1967,7 @@ class WFS(object):
         return (status, self.pupil_center_x_mm.value, self.pupil_center_y_mm.value,
                 self.pupil_diameter_x_mm.value, self.pupil_diameter_y_mm.value)
 
-    def _set_reference_plane(self, reference_index=None, instrument_handle=None):
+    def _set_reference_plane(self, reference_index=None):
         """Set the reference plane to either Internal or User Defined
 
         This function defines the WFS Reference Plane to either
@@ -2260,10 +1987,6 @@ class WFS(object):
                 resolution. A default User Reference file containing a
                 copy of internal reference data can be created by
                 function _create_default_user_reference.
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2275,11 +1998,6 @@ class WFS(object):
                 self.reference_index = Vi.int32(reference_index)
             except TypeError:
                 self.reference_index = reference_index
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetReferencePlane(self.instrument_handle,
                                                self.reference_index)
         log_wfs.debug(f'Set Reference Plane: {self.instrument_handle.value}')
@@ -2287,17 +2005,11 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_reference_plane(self, instrument_handle=None):
+    def _get_reference_plane(self):
         """Get the reference plane of the WFS Instrument
 
         This function returns the Reference Plane setting of the WFS
         instrument.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2309,11 +2021,6 @@ class WFS(object):
                 0 - WFS_REF_INTERNAL
                 1 - WFS_REF_USER
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetReferencePlane(self.instrument_handle,
                                                ctypes.byref(self.reference_index))
         log_wfs.debug(f'Get Reference Plane: {self.instrument_handle.value}')
@@ -2322,7 +2029,7 @@ class WFS(object):
         return status, self.reference_index.value
 
     # Data Functions
-    def _take_spotfield_image(self, instrument_handle=None):
+    def _take_spotfield_image(self):
         """Take a spotfield image from the WFS and load into buffer
 
         This function receives a spotfield image from the WFS camera
@@ -2348,28 +2055,17 @@ class WFS(object):
         function until this error and status bit WFS_STATBIT_ATR
         disappear.
 
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
-
         Returns:
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_TakeSpotfieldImage(self.instrument_handle)
         log_wfs.debug(f'Take Spotfield Image: {self.instrument_handle.value}')
         self._error_message(status)
         return status
 
-    def _take_spotfield_image_auto_exposure(self, instrument_handle=None):
+    def _take_spotfield_image_auto_exposure(self):
         """Take a spotfield image with auto-exposure and load to buffer
 
         This function tries to find optimal exposure and gain settings
@@ -2396,12 +2092,6 @@ class WFS(object):
         status bit WFS_STATBIT_ATR disappear.
         Note: This function is not available in Highspeed Mode!
 
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
-
         Returns:
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
@@ -2413,11 +2103,6 @@ class WFS(object):
                 returns the automatically selected actual master gain
                 the camera image was taken with.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_TakeSpotfieldImageAutoExpos(self.instrument_handle,
                                                          ctypes.byref(self.exposure_time_actual),
                                                          ctypes.byref(self.master_gain_actual))
@@ -2427,7 +2112,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.exposure_time_actual.value, self.master_gain_actual.value
 
-    def _get_spotfield_image(self, instrument_handle=None):
+    def _get_spotfield_image(self):
         """Get the reference to a spotfield image
 
         This function returns the reference to a spotfield image taken
@@ -2435,12 +2120,6 @@ class WFS(object):
         _take_spotfield_image_auto_exposure(). It returns also the
         image size.
         Note: This function is not available in Highspeed Mode!
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2456,11 +2135,6 @@ class WFS(object):
             spotfield_columns (Vi.int32(int)): This parameter returns
                 the image width (columns) in pixels.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetSpotfieldImage(self.instrument_handle,
                                                ctypes.byref(self.array_image_buffer_ref),
                                                ctypes.byref(self.spotfield_rows),
@@ -2473,7 +2147,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.array_image_buffer_ref, self.spotfield_rows.value, self.spotfield_columns.value
 
-    def _get_spotfield_image_copy(self, instrument_handle=None):
+    def _get_spotfield_image_copy(self):
         """Get a copy of the spotfield image as an array
 
         This function returns a copy of the spotfield image taken by
@@ -2481,12 +2155,6 @@ class WFS(object):
         _take_spotfield_image_auto_exposure() into the user provided
         buffer array_image_buffer. It returns also the image size.
         Note: This function is not available in Highspeed Mode!
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2501,11 +2169,6 @@ class WFS(object):
             spotfield_columns (Vi.int32(int)): This parameter returns
                 the image width (columns) in pixels.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetSpotfieldImageCopy(self.instrument_handle,
                                                    self.array_image_buffer,
                                                    ctypes.byref(self.spotfield_rows),
@@ -2518,7 +2181,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.array_image_buffer, self.spotfield_rows.value, self.spotfield_columns.value
 
-    def _average_image(self, average_count=None, instrument_handle=None):
+    def _average_image(self, average_count=None):
         """Generate an averaged image from a number of images in buffer
 
         This function generates an averaged image from a number of
@@ -2534,10 +2197,6 @@ class WFS(object):
         Args:
             average_count (Vi.int32(int)): This parameter defines the
                 number of averages. Valid range: 1 ... 256
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2552,11 +2211,6 @@ class WFS(object):
                 self.average_count = Vi.int32(average_count)
             except TypeError:
                 self.average_count = average_count
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_AverageImage(self.instrument_handle,
                                           self.average_count,
                                           ctypes.byref(self.average_data_ready))
@@ -2566,7 +2220,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.average_data_ready.value
 
-    def _average_image_rolling(self, average_count=None, rolling_reset=None, instrument_handle=None):
+    def _average_image_rolling(self, average_count=None, rolling_reset=None):
         """Generate a rolling averaged image from a number of images
 
         This function generates a rolling averaged image based on all
@@ -2585,10 +2239,6 @@ class WFS(object):
                 number of averages. Valid range: 1 ... 256
             rolling_reset (Vi.int32(int)): This parameter resets the
                 rolling averaging process for Reset != 0.
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2605,11 +2255,6 @@ class WFS(object):
                 self.rolling_reset = Vi.int32(rolling_reset)
             except TypeError:
                 self.rolling_reset = rolling_reset
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_AverageImageRolling(self.instrument_handle,
                                                  self.average_count,
                                                  self.rolling_reset)
@@ -2619,7 +2264,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _cut_image_noise_floor(self, intensity_limit=None, instrument_handle=None):
+    def _cut_image_noise_floor(self, intensity_limit=None):
         """Set all pixels under an intensity limit to zero
 
         This function sets all pixels with intensities < Limit to zero
@@ -2632,10 +2277,6 @@ class WFS(object):
                 < Limit are set to zero. Valid range: 1 ... 256
                 Note: The limit must not be set too high to clear the
                 spots within the WFS camera image.
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2647,11 +2288,6 @@ class WFS(object):
                 self.intensity_limit = Vi.int32(intensity_limit)
             except TypeError:
                 self.intensity_limit = intensity_limit
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CutImageNoiseFloor(self.instrument_handle,
                                                 self.intensity_limit)
         log_wfs.debug(f'Cut Image Noise Floor: {self.instrument_handle.value}')
@@ -2659,19 +2295,13 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _calc_image_min_max(self, instrument_handle=None):
+    def _calc_image_min_max(self):
         """Calculate the min and max pixel intensity and saturation
 
         This function returns minimum and maximum pixel intensities in
         image_buffer as well as the number of saturated pixels in
         percent.
         Note: This function is not available in Highspeed Mode!
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2685,11 +2315,6 @@ class WFS(object):
                 parameter returns the percentage of saturated pixels
                 within image_buffer.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CalcImageMinMax(self.instrument_handle,
                                              ctypes.byref(self.intensity_min),
                                              ctypes.byref(self.intensity_max),
@@ -2701,18 +2326,12 @@ class WFS(object):
         self._error_message(status)
         return status, self.intensity_min.value, self.intensity_max.value, self.saturated_pixels_percent.value
 
-    def _calc_mean_rms_noise(self, instrument_handle=None):
+    def _calc_mean_rms_noise(self):
         """Calculate the mean average and rms of pixel intensities
 
         This function returns the mean average and rms variations of
         the pixel intensities in image_buffer.
         Note: This function is not available in Highspeed Mode!
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2725,11 +2344,6 @@ class WFS(object):
                 the rms variations of the pixel intensities in
                 image_buffer.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CalcMeanRmsNoise(self.instrument_handle,
                                               ctypes.byref(self.intensity_mean),
                                               ctypes.byref(self.intensity_rms))
@@ -2739,7 +2353,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.intensity_mean.value, self.intensity_rms.value
 
-    def _get_line(self, line=None, instrument_handle=None):
+    def _get_line(self, line=None):
         """Get a single horizontal line of the image in a linear array
 
         This function returns a single horizontal line of the image in
@@ -2750,10 +2364,6 @@ class WFS(object):
             line (Vi.int32(int)): This parameter defines the
                 horizontal line to be selected within image_buffer.
                 Valid range: 0 .. columns-1
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2775,11 +2385,6 @@ class WFS(object):
                 self.line = Vi.int32(line)
             except TypeError:
                 self.line = line
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetLine(self.instrument_handle,
                                      self.line,
                                      self.array_line_selected)
@@ -2790,18 +2395,12 @@ class WFS(object):
         self._error_message(status)
         return status, self.array_line_selected
 
-    def _get_line_view(self, instrument_handle=None):
+    def _get_line_view(self):
         """Get the linear arrays with the min and max intensities
 
         This function returns two linear arrays containing the minimum
         and maximum intensities within the image columns, respectively.
         Note: This function is not available in Highspeed Mode!
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2824,11 +2423,6 @@ class WFS(object):
                 max.  640 for WFS10
                 max. 1440 for WFS20
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetLineView(self.instrument_handle,
                                          self.array_line_min,
                                          self.array_line_max)
@@ -2840,7 +2434,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.array_line_min, self.array_line_max
 
-    def _calc_beam_centroid_diameter(self, instrument_handle=None):
+    def _calc_beam_centroid_diameter(self):
         """Calculate the beam centroid and diameter in mm
 
         This function calculates and returns the beam centroid and
@@ -2853,12 +2447,6 @@ class WFS(object):
         the second moment formula. The initial beam is split into many
         spots by the lenslets which reduces accuracy also.
         This function is not available in Highspeed Mode!
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2873,11 +2461,6 @@ class WFS(object):
             beam_diameter_y_mm (Vi.real64(float)): This parameter
                 returns the beam diameter Y in mm.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CalcBeamCentroidDia(self.instrument_handle,
                                                  ctypes.byref(self.beam_centroid_x_mm),
                                                  ctypes.byref(self.beam_centroid_y_mm),
@@ -2892,8 +2475,7 @@ class WFS(object):
         return (status, self.beam_centroid_x_mm.value, self.beam_centroid_y_mm.value,
                 self.beam_diameter_y_mm.value, self.beam_diameter_x_mm.value)
 
-    def _calc_spots_centroid_diameter_intensity(self, dynamic_noise_cut=None, calculate_diameters=None,
-                                                instrument_handle=None):
+    def _calc_spots_centroid_diameter_intensity(self, dynamic_noise_cut=None, calculate_diameters=None):
         """Calculate the spot centroids, diameters, and intensities
 
         This function calculates the centroids, diameters (optional)
@@ -2917,10 +2499,6 @@ class WFS(object):
                 the spot diameters. Only when activated the function
                 _get_spot_diameters can subsequently return valid spot
                 diameters.
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2937,11 +2515,6 @@ class WFS(object):
                 self.calculate_diameters = Vi.int32(calculate_diameters)
             except TypeError:
                 self.calculate_diameters = calculate_diameters
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CalcSpotsCentrDiaIntens(self.instrument_handle,
                                                      self.dynamic_noise_cut,
                                                      self.calculate_diameters)
@@ -2951,7 +2524,7 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_spot_centroids(self, instrument_handle=None):
+    def _get_spot_centroids(self):
         """Get the spot centroids in X and Y in pixels
 
         This function returns two two-dimensional arrays containing the
@@ -2959,12 +2532,6 @@ class WFS(object):
         _calc_spots_centroid_diameter_intensity. Note: Function
         _calc_spots_centroid_diameter_intensity is required to run
         successfully before calculated data can be retrieved.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -2983,11 +2550,6 @@ class WFS(object):
                 Note: First array index is the spot number in Y,
                 second index the spot number in X direction.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetSpotCentroids(self.instrument_handle,
                                               self.array_centroid_x,
                                               self.array_centroid_y)
@@ -2999,7 +2561,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.array_centroid_x, self.array_centroid_y
 
-    def _get_spot_diameters(self, instrument_handle=None):
+    def _get_spot_diameters(self):
         """Get the spot diameters in X and Y in pixels
 
         This function returns two two-dimensional arrays containing the
@@ -3009,12 +2571,6 @@ class WFS(object):
         to run successfully with option calculate_diameters = 1 before
         calculated data can be retrieved.
         This function is not available in Highspeed Mode!
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3033,11 +2589,6 @@ class WFS(object):
                 Note: First array index is the spot number in Y,
                 second index the spot number in X direction.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetSpotDiameters(self.instrument_handle,
                                               self.array_diameter_x,
                                               self.array_diameter_y)
@@ -3049,7 +2600,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.array_diameter_x, self.array_diameter_y
 
-    def _get_spot_diameters_statistics(self, instrument_handle=None):
+    def _get_spot_diameters_statistics(self):
         """Get the calculated statistic parameters of the wavefront
 
         This function calculates statistic parameters of the wavefront
@@ -3057,12 +2608,6 @@ class WFS(object):
         Note: Function _calc_wavefront() is required to run prior to
         this function.
         This function is not available in Highspeed Mode!
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3075,11 +2620,6 @@ class WFS(object):
             diameter_mean (Vi.real64(float)): This parameter returns
                 the Mean average of spot diameters.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetSpotDiaStatistics(self.instrument_handle,
                                                   ctypes.byref(self.diameter_min),
                                                   ctypes.byref(self.diameter_max),
@@ -3091,7 +2631,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.diameter_min.value, self.diameter_max.value, self.diameter_mean.value
 
-    def _get_spot_intensities(self, instrument_handle=None):
+    def _get_spot_intensities(self):
         """Get the spot intensities in X and Y in arbitrary units
 
         This function returns a two-dimensional array containing the
@@ -3099,12 +2639,6 @@ class WFS(object):
         _calc_spots_centroid_diameter_intensity(). Note: Function
         _calc_spots_centroid_diameter_intensity() is required to run
         successfully before calculated data can be retrieved.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3117,11 +2651,6 @@ class WFS(object):
                 Note: First array index is the spot number in Y,
                 second index the spot number in X direction.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetSpotIntensities(self.instrument_handle,
                                                 self.array_intensity)
         log_wfs.debug(f'Get Spot Intensities: {self.instrument_handle.value}')
@@ -3130,7 +2659,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.array_intensity
 
-    def _calc_spot_to_reference_deviations(self, cancel_wavefront_tilt=None, instrument_handle=None):
+    def _calc_spot_to_reference_deviations(self, cancel_wavefront_tilt=None):
         """Calculate reference positions and deviations for all spots
 
         This function calculates reference positions and deviations
@@ -3150,10 +2679,6 @@ class WFS(object):
                 Valid values:
                 0 - calculate deviations normal
                 1 - subtract mean deviation from all spot deviations
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3165,11 +2690,6 @@ class WFS(object):
                 self.cancel_wavefront_tilt = Vi.int32(cancel_wavefront_tilt)
             except TypeError:
                 self.cancel_wavefront_tilt = cancel_wavefront_tilt
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CalcSpotToReferenceDeviations(self.instrument_handle,
                                                            self.cancel_wavefront_tilt)
         log_wfs.debug(f'Calc Spot to Reference Deviations: {self.instrument_handle.value}')
@@ -3177,19 +2697,13 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _get_spot_reference_positions(self, instrument_handle=None):
+    def _get_spot_reference_positions(self):
         """Get the arrays with actual X and Y spot positions in pixels
 
         This function returns two two-dimensional arrays containing
         the actual X and Y reference spot positions in pixels. A prior
         call to function _set_reference_plane() determines whether the
         internal or user defined reference positions are returned.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3208,11 +2722,6 @@ class WFS(object):
                 Note: First array index is the spot number in Y,
                 second index the spot number in X direction.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetSpotReferencePositions(self.instrument_handle,
                                                        self.array_reference_x,
                                                        self.array_reference_y)
@@ -3224,7 +2733,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.array_reference_x, self.array_reference_y
 
-    def _get_spot_deviations(self, instrument_handle=None):
+    def _get_spot_deviations(self):
         """Get the arrays with actual X and Y spot deviations in pixels
 
         This function returns two two-dimensional arrays containing
@@ -3233,12 +2742,6 @@ class WFS(object):
         _calc_spot_to_reference_deviations(). Note: Function
         _calc_spot_to_reference_deviations() needs to run prior to
         this function.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3257,11 +2760,6 @@ class WFS(object):
                 Note: First array index is the spot number in Y,
                 second index the spot number in X direction.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetSpotDeviations(self.instrument_handle,
                                                self.array_deviations_x,
                                                self.array_deviations_y)
@@ -3273,7 +2771,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.array_deviations_x, self.array_deviations_y
 
-    def _zernike_lsf(self, instrument_handle=None):
+    def _zernike_lsf(self):
         """Calculate Zernike coefficients and Radius of Curvature in mm
 
         This function calculates the spot deviations (centroid with
@@ -3282,12 +2780,6 @@ class WFS(object):
         the Zernike coefficients up to the desired number of Zernike
         modes and an array summarizing these coefficients to rms
         amplitudes for each Zernike order.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3327,11 +2819,6 @@ class WFS(object):
                 [MAX_ZERNIKE_ORDERS+1] because indices [1..10] are
                 used instead of [0 .. 9].
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_ZernikeLsf(self.instrument_handle,
                                         ctypes.byref(self.zernike_orders),
                                         self.array_zernike_um,
@@ -3346,8 +2833,7 @@ class WFS(object):
         return (status, self.roc_mm.value, self.zernike_orders.value,
                 self.array_zernike_um, self.array_zernike_orders_um)
 
-    def _calc_fourier_optometric(self, zernike_orders=None, fourier_orders=None,
-                                 instrument_handle=None):
+    def _calc_fourier_optometric(self, zernike_orders=None, fourier_orders=None):
         """Calculate the Fourier and Optometric notations from Zernikes
 
         This function calculates the Fourier and Optometric notations
@@ -3365,10 +2851,6 @@ class WFS(object):
                 Fourier coefficients M, J0 and J45 as well as the
                 Optometric parameters Sphere, Cylinder and Axis.
                 Valid settings: 2, 4 or 6
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3397,11 +2879,6 @@ class WFS(object):
                 self.fourier_orders = Vi.int32(fourier_orders)
             except TypeError:
                 self.fourier_orders = fourier_orders
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CalcFourierOptometric(self.instrument_handle,
                                                    self.zernike_orders,
                                                    self.fourier_orders,
@@ -3425,7 +2902,7 @@ class WFS(object):
                 self.optometric_sphere.value, self.optometric_cylinder.value, self.optometric_axis.value)
 
     def _calc_reconstructed_deviations(self, zernike_orders=None, array_zernike_reconstructed=None,
-                                       do_spherical_reference=None, instrument_handle=None):
+                                       do_spherical_reference=None):
         """Calculate the reconstructed spot deviations from Zernikes
 
         This function calculates the reconstructed spot deviations
@@ -3455,10 +2932,6 @@ class WFS(object):
                 0 - use all Zernike Modes checked in
                     array_zernike_reconstructed
                 1 - use only Z[5] for pure spherical reconstruction
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3481,11 +2954,6 @@ class WFS(object):
                 self.do_spherical_reference = Vi.int32(do_spherical_reference)
             except TypeError:
                 self.do_spherical_reference = do_spherical_reference
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CalcReconstrDeviations(self.instrument_handle,
                                                     self.zernike_orders,
                                                     self.array_zernike_reconstructed,
@@ -3503,7 +2971,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.fit_error_mean.value, self.fit_error_stdev.value
 
-    def _calc_wavefront(self, wavefront_type=None, limit_to_pupil=None, instrument_handle=None):
+    def _calc_wavefront(self, wavefront_type=None, limit_to_pupil=None):
         """Calculate the wavefront based on the spot deviations
 
         This function calculates the wavefront based on the spot deviations.
@@ -3525,10 +2993,6 @@ class WFS(object):
                 Valid settings:
                 0 - Calculate Wavefront for all spots
                 1 - Limit Wavefront to pupil interior
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3554,11 +3018,6 @@ class WFS(object):
                 self.limit_to_pupil = Vi.int32(limit_to_pupil)
             except TypeError:
                 self.limit_to_pupil = limit_to_pupil
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CalcWavefront(self.instrument_handle,
                                            self.wavefront_type,
                                            self.limit_to_pupil,
@@ -3571,19 +3030,13 @@ class WFS(object):
         self._error_message(status)
         return status, self.array_wavefront
 
-    def _calc_wavefront_statistics(self, instrument_handle=None):
+    def _calc_wavefront_statistics(self):
         """Calculate statistic parameters of the wavefront in µm
 
         This function returns statistic parameters of the wavefront
         in µm calculated by function _calc_wavefront().
         Note: Function _calc_wavefront() is required to run prior
         to this function.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3604,11 +3057,6 @@ class WFS(object):
                 returns the weighted RMS value of the wavefront. The
                 weighting is based on the individual spot intensity.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CalcWavefrontStatistics(self.instrument_handle,
                                                      ctypes.byref(self.wavefront_min),
                                                      ctypes.byref(self.wavefront_max),
@@ -3628,17 +3076,11 @@ class WFS(object):
                 self.wavefront_mean.value, self.wavefront_rms.value, self.wavefront_weighted_rms.value)
 
     # Utility Functions
-    def _self_test(self, instrument_handle=None):
+    def _self_test(self):
         """Perform a self-test of the instrument
 
         This function causes the instrument to perform a self-test and
         returns the result of that self-test.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): Operational return status.
@@ -3653,11 +3095,6 @@ class WFS(object):
                 operation, 0 = no error (test passed).
             test_message (Vi.char(int)): Self-test status message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_self_test(self.instrument_handle,
                                        ctypes.byref(self.test_result),
                                        self.test_message)
@@ -3667,14 +3104,8 @@ class WFS(object):
         self._error_message(status)
         return status, self.test_result.value, self.test_message.value
 
-    def _reset(self, instrument_handle=None):
+    def _reset(self):
         """Places the instrument in a default state
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): Operational return status.
@@ -3686,27 +3117,16 @@ class WFS(object):
                 WFS_WARN_NSUP_RESET - Reset operation not supported
                 For Status Codes see function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_reset(self.instrument_handle)
         log_wfs.debug(f'Reset: {self.instrument_handle.value}')
         self._error_message(status)
         return status
 
-    def _revision_query(self, instrument_handle=None):
+    def _revision_query(self):
         """Queries the instrument for driver and firmware revisions
 
         This function returns the revision of the instrument driver
         and the firmware revision of the instrument being used.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): Operational return status.
@@ -3724,11 +3144,6 @@ class WFS(object):
                 revision. The message buffer has to be initialized
                 with 256 bytes.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_revision_query(self.instrument_handle,
                                             self.instrument_driver_revision,
                                             self.firmware_revision)
@@ -3738,17 +3153,11 @@ class WFS(object):
         self._error_message(status)
         return status, self.instrument_driver_revision.value, self.firmware_revision.value
 
-    def _error_query(self, instrument_handle=None):
+    def _error_query(self):
         """Queries the instrument for specific error information
 
         This function queries the instrument and returns instrument-
         specific error information.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): Operational return status.
@@ -3764,11 +3173,6 @@ class WFS(object):
             error_message (Vi.char(int)): Error message. The message
                 buffer has to be initialized with 256 bytes.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_error_query(self.instrument_handle,
                                          ctypes.byref(self.error_code),
                                          self.error_message)
@@ -3778,7 +3182,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.error_code.value, self.error_message.value
 
-    def _error_message(self, error_code=None, instrument_handle=None):
+    def _error_message(self, error_code=None):
         """Translates an error code into its user-readable message
 
         This function translates the error return value from a
@@ -3787,10 +3191,6 @@ class WFS(object):
 
         Args:
             error_code (Vi.status(int)): Instrument driver error code.
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3805,11 +3205,6 @@ class WFS(object):
                 self.error_code = Vi.status(error_code)
             except TypeError:
                 self.error_code = error_code
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         if self.error_code.value == 0:
             log_wfs.debug(f'No error: {self.error_code.value}')
             self.error_message.value = b'No errors'
@@ -3848,28 +3243,20 @@ class WFS(object):
             instrument_count (Vi.int32(int)): This parameter returns
                 the number of WFS instruments connected to the PC.
         """
-        instrument_handle = Vi.session(Vi.null)
-        status = lib_wfs.WFS_GetInstrumentListLen(instrument_handle,
+        status = lib_wfs.WFS_GetInstrumentListLen(Vi.null,
                                                   ctypes.byref(self.instrument_count))
         self.instrument_index = Vi.int32(self.instrument_count.value - 1)
-        log_wfs.debug(f'Get Instrument List Length: {instrument_handle.value}')
+        log_wfs.debug(f'Get Instrument List Length: {Vi.null}')
         log_wfs.debug(f'Instrument Count: {self.instrument_count.value}')
         log_wfs.info(f'Instrument Index: {self.instrument_index.value}')
         self._error_message(status)
         return status, self.instrument_index.value, self.instrument_count.value
 
-    def _get_instrument_list_info(self, instrument_index=None):
+    def _get_instrument_list_info(self):
         """Get the information about a WFS Instrument based on index
 
         This function returns information about one connected WFS
         instrument selected by Instrument Index.
-
-        Args:
-            instrument_index (Vi.int32(int)): This parameter accepts
-                the index of a WFS instrument of the instrument list
-                generated by function _get_instrument_list_len.
-                Valid range: 0 ... InstrumentCount-1
-                Note: The first instrument has index 0.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3898,20 +3285,14 @@ class WFS(object):
                 format: "USB::0x1313::0x0000::" followed by the device
                 ID.
         """
-        if instrument_index is not None:
-            try:
-                self.instrument_index = Vi.int32(instrument_index)
-            except TypeError:
-                self.instrument_index = instrument_index
-        instrument_handle = Vi.session(Vi.null)
-        status = lib_wfs.WFS_GetInstrumentListInfo(instrument_handle,
+        status = lib_wfs.WFS_GetInstrumentListInfo(Vi.null,
                                                    self.instrument_index,
                                                    ctypes.byref(self.device_id),
                                                    ctypes.byref(self.in_use),
                                                    self.instrument_name_wfs,
                                                    self.serial_number_wfs,
                                                    self.resource_name)
-        log_wfs.debug(f'Get Instrument List Info: {instrument_handle.value}')
+        log_wfs.debug(f'Get Instrument List Info: {Vi.null}')
         log_wfs.info(f'Instrument Index: {self.instrument_index.value}')
         log_wfs.info(f'Device ID: {self.device_id.value}')
         log_wfs.info(f'In Use: {self.in_use.value}')
@@ -3922,19 +3303,13 @@ class WFS(object):
         return (status, self.instrument_index.value, self.device_id.value, self.instrument_name_wfs.value,
                 self.serial_number_wfs.value, self.resource_name.value)
 
-    def _get_xy_scale(self, instrument_handle=None):
+    def _get_xy_scale(self):
         """Get X and Y scales for spot intensity and wavefront in mm
 
         This function returns two one-dimensional arrays containing the
         X and Y axis scales in mm for spot intensity and wavefront
         arrays. The center spot in the image center is denoted
         (0.0, 0.0) mm.
-
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3947,11 +3322,6 @@ class WFS(object):
                 a one-dimensional array containing the Y scale in mm.
                 The required array size is MAX_SPOTS_Y.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_GetXYScale(self.instrument_handle,
                                         self.array_scale_x,
                                         self.array_scale_y)
@@ -3961,7 +3331,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.array_scale_x, self.array_scale_y
 
-    def _convert_wavefront_waves(self, wavelength=None, array_wavefront=None, instrument_handle=None):
+    def _convert_wavefront_waves(self, wavelength=None, array_wavefront=None):
         """Convert wavefront from µm into waves based on wavelength
 
         This function converts the wavefront data array calculated by
@@ -3975,10 +3345,6 @@ class WFS(object):
                 accepts a two-dimensional array of float containing the
                 wavefront data in µm.
                 The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -3996,11 +3362,6 @@ class WFS(object):
                 self.wavelength = wavelength
         if array_wavefront is not None:
             self.array_wavefront = array_wavefront
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_ConvertWavefrontWaves(self.instrument_handle,
                                                    self.wavelength,
                                                    self.array_wavefront,
@@ -4014,7 +3375,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.array_wavefront_wave
 
-    def _flip_2d_array(self, array_wavefront_yx=None, instrument_handle=None):
+    def _flip_2d_array(self, array_wavefront_yx=None):
         """Flip a 2D array YX into another array XY
 
         This function flips a 2-dimensional array of size
@@ -4029,10 +3390,6 @@ class WFS(object):
             array_wavefront_yx (((ctypes.float*X)*Y)()): This parameter
                 accepts a two-dimensional array of float and array size
                 [MAX_SPOTS_Y][MAX_SPOTS_X].
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -4046,11 +3403,6 @@ class WFS(object):
         """
         if array_wavefront_yx is not None:
             self.array_wavefront_yx = array_wavefront_yx
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_Flip2DArray(self.instrument_handle,
                                          self.array_wavefront_yx,
                                          self.array_wavefront_xy)
@@ -4063,36 +3415,25 @@ class WFS(object):
         return status, self.array_wavefront_xy
 
     # Calibration Functions
-    def _set_spots_to_user_reference(self, instrument_handle=None):
+    def _set_spots_to_user_reference(self):
         """Set the measured spot centroid positions to the User Ref
 
         This function copies the measured spot centroid positions to
         the User Reference spot positions. Consequently spot
         deviations become zero resulting in a plane wavefront.
 
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
-
         Returns:
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetSpotsToUserReference(self.instrument_handle)
         log_wfs.debug(f'Set Spots To User Reference: {self.instrument_handle.value}')
         self._error_message(status)
         return status
 
     def _set_calc_spots_to_user_reference(self, spot_ref_type=None, array_reference_x=None,
-                                          array_reference_y=None, instrument_handle=None):
+                                          array_reference_y=None):
         """Set the X and Y user ref spots to calculated spot positions
 
         This function sets the X and Y user reference spot positions in
@@ -4122,10 +3463,6 @@ class WFS(object):
                 The required array size is [MAX_SPOTS_Y][MAX_SPOTS_X].
                 Note: First array index is the spot number in Y, second
                 index the spot number in X direction.
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
 
         Returns:
             status (Vi.status(int)): This value shows the status code
@@ -4141,11 +3478,6 @@ class WFS(object):
             self.array_reference_x = array_reference_x
         if array_reference_y is not None:
             self.array_reference_y = array_reference_y
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SetCalcSpotsToUserReference(self.instrument_handle,
                                                          self.spot_ref_type,
                                                          self.array_reference_x,
@@ -4159,35 +3491,24 @@ class WFS(object):
         self._error_message(status)
         return status
 
-    def _create_default_user_reference(self, instrument_handle=None):
+    def _create_default_user_reference(self):
         """Create a default User Reference identical to Internal Ref
 
         Generates a default User Reference which is identical to the
         Internal Reference. Use function _get_spot_reference_positions
         to get the data arrays.
 
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
-
         Returns:
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_CreateDefaultUserReference(self.instrument_handle)
         log_wfs.debug(f'Create Default User Reference: {self.instrument_handle.value}')
         self._error_message(status)
         return status
 
-    def _save_user_reference_file(self, instrument_handle=None):
+    def _save_user_reference_file(self):
         """Save a User Reference spotfield file for the selected MLA
 
         This function saves a User Reference spotfield file for the
@@ -4205,28 +3526,17 @@ class WFS(object):
         the reference spotfield array because they denote undetected
         spots.
 
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
-
         Returns:
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_SaveUserRefFile(self.instrument_handle)
         log_wfs.debug(f'Save User Reference: {self.instrument_handle.value}')
         self._error_message(status)
         return status
 
-    def _load_user_reference_file(self, instrument_handle=None):
+    def _load_user_reference_file(self):
         """Load a User Reference spotfield file for the selected MLA
 
         This function loads a User Reference spotfield file for the
@@ -4244,28 +3554,17 @@ class WFS(object):
         the reference spotfield array because they denote undetected
         spots.
 
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
-
         Returns:
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_LoadUserRefFile(self.instrument_handle)
         log_wfs.debug(f'Load User Reference: {self.instrument_handle.value}')
         self._error_message(status)
         return status
 
-    def _do_spherical_reference(self, instrument_handle=None):
+    def _do_spherical_reference(self):
         """Calculate spot positions based on a pure spherical wavefront
 
         This function calculates User Reference spot positions based on
@@ -4279,22 +3578,11 @@ class WFS(object):
         Use function _set_reference_plane to activate the performed
         spherical User Reference calibration.
 
-        Args:
-            instrument_handle (Vi.session(int)): This parameter
-                accepts the Instrument Handle returned by the _init()
-                function to select the desired instrument driver
-                session.
-
         Returns:
             status (Vi.status(int)): This value shows the status code
                 returned by the function call. For Status Codes see
                 function _error_message.
         """
-        if instrument_handle is not None:
-            try:
-                self.instrument_handle = Vi.session(instrument_handle)
-            except TypeError:
-                self.instrument_handle = instrument_handle
         status = lib_wfs.WFS_DoSphericalRef(self.instrument_handle)
         log_wfs.debug(f'Do Spherical Reference: {self.instrument_handle.value}')
         self._error_message(status)
@@ -4308,7 +3596,7 @@ class WFS(object):
         if self.in_use.value == 1:
             log_wfs.error('Instrument is being used!')
             # raise IOError
-        if self.instrument_handle.value == 0:
+        if self.instrument_handle.value == Vi.null:
             log_wfs.error('Instrument not found!')
             # raise IOError
         self._revision_query()

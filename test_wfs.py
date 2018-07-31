@@ -283,8 +283,7 @@ class TestWFS(object):
         assert wfs._cut_image_noise_floor() == 0
         assert wfs._cut_image_noise_floor(wfs.NOISE_LEVEL_MIN - 1) == wfs.WFS_ERROR_PARAMETER2
         assert wfs._cut_image_noise_floor(wfs.NOISE_LEVEL_MAX) == 0
-        assert wfs._cut_image_noise_floor(wfs.NOISE_LEVEL_MAX + 1) == 0  # BUG This should fail
-        assert wfs._cut_image_noise_floor(wfs.NOISE_LEVEL_MAX + 2) == wfs.WFS_ERROR_PARAMETER2
+        assert wfs._cut_image_noise_floor(wfs.NOISE_LEVEL_MAX + 1) == wfs.WFS_ERROR_PARAMETER2
         assert wfs._cut_image_noise_floor(wfs.NOISE_LEVEL_MIN) == 0
 
     def test_get_line(self, wfs):
@@ -473,14 +472,14 @@ class TestWFS(object):
     def test_set_spots_to_user_reference(self, wfs):
         assert wfs._set_spots_to_user_reference() == 0
 
-    # def test_set_calc_spots_to_user_reference(self, wfs):
-    #     # TODO
-    #     assert wfs._set_calc_spots_to_user_reference() == 0
+    def test_set_calc_spots_to_user_reference(self, wfs):
+        # TODO
+        assert wfs._set_calc_spots_to_user_reference() == 0
 
     # def test_do_spherical_reference(self, wfs):
     #     # TODO
     #     assert wfs._do_spherical_reference() in (wfs.WFS_ERROR_ROC_RANGE, 0)
 
     def test_close(self, wfs):
-        print('Closing...')
+        print('\nClosing...')
         assert wfs._close() == 0
