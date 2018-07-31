@@ -12,7 +12,7 @@ import os
 
 import yaml
 
-__version__ = '0.2.3'
+__version__ = '0.3.0'
 __author__ = 'David Amrhein'
 __email__ = 'davea50@gmail.com'
 
@@ -382,7 +382,7 @@ class WFS(object):
     WFS_ERROR_TILT_CALCULATION = WFS_INSTR_ERROR_OFFSET + 0x1d  # -1074001635
 
     # WFS Driver Warning Codes
-    WFS_WARNING = WFS_INSTR_WARNING_OFFSET + 0x00  # 10734819841073740940
+    WFS_WARNING = WFS_INSTR_WARNING_OFFSET + 0x00  # 1073481984
     WFS_WARN_NSUP_ID_QUERY = 0x3FFC0101  # 1073479937
     WFS_WARN_NSUP_RESET = 0x3FFC0102  # 1073479938
     WFS_WARN_NSUP_SELF_TEST = 0x3FFC0103  # 1073479939
