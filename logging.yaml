@@ -36,6 +36,10 @@ loggers:
         level: DEBUG
         handlers: [console]
         propagate: no
+    VI:
+        level: WARNING
+        handlers: [console]
+        propagate: no
     UI:
         level: INFO
         handlers: [console]
