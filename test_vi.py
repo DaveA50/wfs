@@ -77,17 +77,20 @@ class TestVI(object):
     def test_object(self):
         assert Vi.object(0).value == 0
         default = Vi.object('')
+        assert default.value == 0
         assert isinstance(default, type(ctypes.c_ulong(0)))
 
     def test_session(self):
         assert Vi.session(0).value == 0
         assert Vi.session(Vi.NULL).value == 0
         default = Vi.session('')
+        assert default.value == 0
         assert isinstance(default, type(ctypes.c_ulong(0)))
 
     def test_status(self):
         assert Vi.status(0).value == 0
         default = Vi.status('')
+        assert default.value == 0
         assert isinstance(default, type(ctypes.c_long(0)))
 
     def test_string(self):
