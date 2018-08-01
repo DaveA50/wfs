@@ -12,14 +12,16 @@ class TestVI(object):
     def test_array_uint8(self):
         assert Vi.array_uint8(255)
         assert Vi.array_uint8(255, 255)
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError) as e:
             Vi.array_uint8('')
+        Vi.log_vi.error(e)
 
     def test_array_float(self):
         assert Vi.array_float(255)
         assert Vi.array_float(255, 255)
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError) as e:
             Vi.array_float('')
+        Vi.log_vi.error(e)
 
     def test_char(self):
         assert Vi.char(255)
@@ -99,10 +101,13 @@ class TestVI(object):
     def test_rsrc(self):
         assert Vi.rsrc(255, b'abcdefghijklmnopqrstuvwxyz1234567890').value == b'abcdefghijklmnopqrstuvwxyz1234567890'
         assert Vi.rsrc(255, 'abcdefghijklmnopqrstuvwxyz1234567890').value == b'abcdefghijklmnopqrstuvwxyz1234567890'
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError) as e:
             Vi.rsrc(0, b'1')
-        with pytest.raises(ValueError):
+        Vi.log_vi.error(e)
+        with pytest.raises(ValueError) as e:
             # defaults to 512 len char array
             Vi.rsrc('', b'1' * 513)
-        with pytest.raises(TypeError):
+        Vi.log_vi.error(e)
+        with pytest.raises(TypeError) as e:
             Vi.rsrc('', 1)
+        Vi.log_vi.error(e)

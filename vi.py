@@ -9,12 +9,12 @@ __version__ = '0.3.0'
 __author__ = 'David Amrhein'
 __email__ = 'davea50@gmail.com'
 
-setup_logging()
-log_vi = logging.getLogger('VI')
-
 
 class Vi(object):
     """Container for ctypes conversion to Vi."""
+    setup_logging()
+    log_vi = logging.getLogger('VI')
+
     TRUE = 1
     FALSE = 0
     NULL = 0
@@ -47,8 +47,8 @@ class Vi(object):
         else:
             return (ctypes.c_float * int(x))()
 
-    @staticmethod
-    def char(n):
+    @classmethod
+    def char(cls, n):
         """Create a char array of size n with create_string_buffer.
 
         Args:
@@ -57,11 +57,11 @@ class Vi(object):
         try:
             return ctypes.create_string_buffer(int(n))
         except ValueError as e:
-            log_vi.warning(f'Must be an Int, setting to 512: {e}')
+            cls.log_vi.warning(f'Must be an Int, setting to 512: {e}')
             return ctypes.create_string_buffer(512)
 
-    @staticmethod
-    def uint8(n):
+    @classmethod
+    def uint8(cls, n):
         """Create a uint with c_ubyte.
 
         Args:
@@ -70,11 +70,11 @@ class Vi(object):
         try:
             return ctypes.c_ubyte(int(n))
         except ValueError as e:
-            log_vi.warning(f'Must be an Int, setting to 0: {e}')
+            cls.log_vi.warning(f'Must be an Int, setting to 0: {e}')
             return ctypes.c_ubyte(0)
 
-    @staticmethod
-    def int16(n):
+    @classmethod
+    def int16(cls, n):
         """Create a int16 with c_short.
 
         Args:
@@ -83,11 +83,11 @@ class Vi(object):
         try:
             return ctypes.c_short(int(n))
         except ValueError as e:
-            log_vi.warning(f'Must be an Int, setting to 0: {e}')
+            cls.log_vi.warning(f'Must be an Int, setting to 0: {e}')
             return ctypes.c_short(0)
 
-    @staticmethod
-    def uint16(n):
+    @classmethod
+    def uint16(cls, n):
         """Create a uint16 with c_ushort.
 
         Args:
@@ -96,11 +96,11 @@ class Vi(object):
         try:
             return ctypes.c_ushort(int(n))
         except ValueError as e:
-            log_vi.warning(f'Must be an Int, setting to 0: {e}')
+            cls.log_vi.warning(f'Must be an Int, setting to 0: {e}')
             return ctypes.c_ushort(0)
 
-    @staticmethod
-    def int32(n):
+    @classmethod
+    def int32(cls, n):
         """Create a int32 with c_long.
 
         Args:
@@ -109,11 +109,11 @@ class Vi(object):
         try:
             return ctypes.c_long(int(n))
         except ValueError as e:
-            log_vi.warning(f'Must be an Int, setting to 0: {e}')
+            cls.log_vi.warning(f'Must be an Int, setting to 0: {e}')
             return ctypes.c_long(0)
 
-    @staticmethod
-    def uint32(n):
+    @classmethod
+    def uint32(cls, n):
         """Create a uint32 with c_ulong.
 
         Args:
@@ -122,11 +122,11 @@ class Vi(object):
         try:
             return ctypes.c_ulong(int(n))
         except ValueError as e:
-            log_vi.warning(f'Must be an Int, setting to 0: {e}')
+            cls.log_vi.warning(f'Must be an Int, setting to 0: {e}')
             return ctypes.c_ulong(0)
 
-    @staticmethod
-    def real64(n):
+    @classmethod
+    def real64(cls, n):
         """Create a real64 with c_double.
 
         Args:
@@ -135,11 +135,11 @@ class Vi(object):
         try:
             return ctypes.c_double(float(n))
         except ValueError as e:
-            log_vi.warning(f'Must be a float, setting to 0: {e}')
+            cls.log_vi.warning(f'Must be a float, setting to 0: {e}')
             return ctypes.c_double(float(0))
 
-    @staticmethod
-    def boolean(n):
+    @classmethod
+    def boolean(cls, n):
         """Create a boolean with Vi.uint16.
 
         Args:
@@ -155,7 +155,7 @@ class Vi(object):
         try:
             return Vi.uint16(int(n))
         except ValueError as e:
-            log_vi.warning(f'Must be a 0, 1, False, or True. Setting to 0 (False): {e}')
+            cls.log_vi.warning(f'Must be a 0, 1, False, or True. Setting to 0 (False): {e}')
             return Vi.uint16(0)
 
     @staticmethod
