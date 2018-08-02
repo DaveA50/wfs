@@ -330,25 +330,6 @@ class TestWFS(object):
         assert wfs._cut_image_noise_floor(wfs.NOISE_LEVEL_MIN) == 0
         assert wfs._get_status()[0] == 0
 
-    # TODO
-    def test_get_line(self, wfs):
-        y_row = wfs.cam_resolution_y.value
-        assert wfs._get_line()[0] == 0
-        assert len(wfs.array_line_selected) == wfs.cam_resolution_x.value
-        assert wfs._get_line(-1)[0] == wfs.WFS_ERROR_PARAMETER2
-        assert wfs._get_line(y_row - 1)[0] == 0
-        assert wfs._get_line(y_row // 2)[0] == 0
-        assert wfs._get_line(y_row)[0] == wfs.WFS_ERROR_PARAMETER2
-        assert wfs._get_status()[0] == 0
-
-    # TODO
-    def test_get_line_view(self, wfs):
-        assert wfs._get_line(wfs.cam_resolution_y.value // 2)[0] == 0
-        assert wfs._get_line_view()[0] == 0
-        assert len(wfs.array_line_min) == wfs.cam_resolution_x.value
-        assert len(wfs.array_line_max) == wfs.cam_resolution_x.value
-        assert wfs._get_status()[0] == 0
-
     def test_calc_spots_centroid_diameter_intensity(self, wfs):
         assert wfs._calc_spots_centroid_diameter_intensity() == 0
         assert wfs._get_status()[0] == 0
@@ -375,7 +356,6 @@ class TestWFS(object):
         assert wfs._calc_beam_centroid_diameter()[0] == 0
         assert wfs._get_status()[0] == 0
 
-    # TODO
     def test_calc_spot_to_reference_deviations(self, wfs):
         assert wfs._calc_spot_to_reference_deviations() == 0
         assert wfs._calc_spot_to_reference_deviations(1) == 0
@@ -383,12 +363,16 @@ class TestWFS(object):
         assert wfs._calc_spot_to_reference_deviations(0) == 0
         assert wfs._get_status()[0] == 0
 
-    # TODO
     def test_calc_reconstructed_deviations(self, wfs):
+        assert wfs._zernike_lsf(4)[0] == 0
         assert wfs._calc_reconstructed_deviations()[0] == 0
+        assert wfs._calc_reconstructed_deviations(array_zernike_reconstructed=wfs.array_zernike_reconstructed,
+                                                  do_spherical_reference=1)[0] == 0
+        assert wfs._calc_reconstructed_deviations(array_zernike_reconstructed=[1, 1, 1, 1, 1, 1, 1, 1],
+                                                  do_spherical_reference=1)[0] == 0
+        assert wfs._calc_reconstructed_deviations(do_spherical_reference=1)[0] == 0
         assert wfs._get_status()[0] == 0
 
-    # TODO
     def test_calc_wavefront(self, wfs):
         assert wfs._calc_wavefront()[0] == 0
         assert wfs._calc_wavefront(0, 0)[0] == 0
@@ -448,8 +432,8 @@ class TestWFS(object):
         assert wfs._zernike_lsf(8)[0] == 0
         assert wfs._zernike_lsf(9)[0] == 0
         assert wfs._zernike_lsf(10)[0] == 0
-        assert wfs._zernike_lsf(1)[0] == wfs.WFS_ERROR_PARAMETER2
-        assert wfs._zernike_lsf(11)[0] == wfs.WFS_ERROR_PARAMETER2
+        assert wfs._zernike_lsf(wfs.MIN_ZERNIKE_ORDERS-1)[0] == wfs.WFS_ERROR_PARAMETER2
+        assert wfs._zernike_lsf(wfs.MAX_ZERNIKE_ORDERS+1)[0] == wfs.WFS_ERROR_PARAMETER2
         assert wfs._zernike_lsf(0)[0] == 0
         assert wfs._zernike_lsf(4)[0] == 0
         assert wfs._get_status()[0] == 0
@@ -464,6 +448,24 @@ class TestWFS(object):
         assert wfs._calc_fourier_optometric(6, 2)[0] == 0
         assert wfs._calc_fourier_optometric(4, 2)[0] == 0
         assert wfs._calc_fourier_optometric(6, 6)[0] == 0
+        assert wfs._get_status()[0] == 0
+
+    def test_get_line(self, wfs):
+        y_row = wfs.cam_resolution_y.value
+        assert wfs._get_line()[0] == 0
+        assert len(wfs.array_line_selected) == wfs.cam_resolution_x.value
+        assert wfs._get_line(-1)[0] == wfs.WFS_ERROR_PARAMETER2
+        assert wfs._get_line(y_row - 1)[0] == 0
+        assert wfs._get_line(200)[0] == 0
+        assert wfs._get_line(y_row // 2)[0] == 0
+        assert wfs._get_line(y_row)[0] == wfs.WFS_ERROR_PARAMETER2
+        assert wfs._get_status()[0] == 0
+
+    def test_get_line_view(self, wfs):
+        assert wfs._get_line(200)[0] == 0
+        assert wfs._get_line_view()[0] == 0
+        assert len(wfs.array_line_min) == wfs.cam_resolution_x.value
+        assert len(wfs.array_line_max) == wfs.cam_resolution_x.value
         assert wfs._get_status()[0] == 0
 
     # Utility Functions
@@ -546,6 +548,7 @@ class TestWFS(object):
 
     def test_flip_2d_array(self, wfs):
         assert wfs._flip_2d_array()[0] == 0
+        assert wfs._flip_2d_array(wfs.array_wavefront)[0] == 0
         assert wfs._get_status()[0] == 0
 
     # Calibration Functions
@@ -554,12 +557,19 @@ class TestWFS(object):
         assert wfs._get_status()[0] == 0
 
     def test_save_user_reference_file(self, wfs):
-        assert wfs._save_user_reference_file() in (wfs.WFS_ERROR_WRITE_FILE, 0)
+        status = wfs._save_user_reference_file()
+        if status == wfs.WFS_ERROR_WRITE_FILE:
+            pytest.xfail()
+        else:
+            assert status == 0
         assert wfs._get_status()[0] == 0
 
     def test_load_user_reference_file(self, wfs):
-        assert wfs._load_user_reference_file() in (wfs.WFS_ERROR_OLD_REF_FILE, wfs.WFS_ERROR_NO_REF_FILE,
-                                                   wfs.WFS_ERROR_CORRUPT_REF_FILE, 0)
+        status = wfs._load_user_reference_file()
+        if status in (wfs.WFS_ERROR_OLD_REF_FILE, wfs.WFS_ERROR_NO_REF_FILE, wfs.WFS_ERROR_CORRUPT_REF_FILE):
+            pytest.xfail()
+        else:
+            assert status == 0
         assert wfs._get_status()[0] == 0
 
     def test_set_spots_to_user_reference(self, wfs):
