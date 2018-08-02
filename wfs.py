@@ -7,7 +7,7 @@ import logging.config
 from log_wfs import setup_logging
 from vi import Vi
 
-__version__ = '0.3.0'
+__version__ = '0.4.0'
 __author__ = 'David Amrhein'
 __email__ = 'davea50@gmail.com'
 
