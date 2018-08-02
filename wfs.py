@@ -366,9 +366,9 @@ class WFS(object):
         self.id_query = Vi.boolean(0)
         self.intensity_limit = Vi.int32(1)
         self.intensity_max = Vi.int32(0)
-        self.intensity_mean = Vi.int32(0)
         self.intensity_min = Vi.int32(0)
-        self.intensity_rms = Vi.int32(0)
+        self.intensity_mean = Vi.real64(0)
+        self.intensity_rms = Vi.real64(0)
         self.in_use = Vi.int32(0)
         self.instrument_count = Vi.int32(0)
         self.instrument_driver_revision = Vi.char(self.WFS_BUFFER_SIZE)
@@ -428,6 +428,7 @@ class WFS(object):
         self.wavefront_weighted_rms = Vi.real64(0)
         self.wavelength = Vi.real64(532)
         self.zernike_orders = Vi.int32(4)  # 0=Auto, 2, 3, 4, 5, 6, 7, 8, 9, 10
+        self.zernike_modes = Vi.int32(15)
         self.window_count_x = Vi.int32(0)
         self.window_count_y = Vi.int32(0)
         self.window_size_x = Vi.int32(0)
@@ -487,6 +488,16 @@ class WFS(object):
                            'WFS20': self.cam_res_WFS20,
                            'WFS30': self.cam_res_WFS30,
                            'WFS40': self.cam_res_WFS40}
+        # Zernike Order: Zernike Modes
+        self.zernike_modes_per_order = {2: 6,
+                                        3: 10,
+                                        4: 15,
+                                        5: 21,
+                                        6: 28,
+                                        7: 36,
+                                        8: 45,
+                                        9: 55,
+                                        10: 66}
 
     def find_wfs_library(self):
         """Find and load the WFS .dll in the system.
@@ -590,14 +601,15 @@ class WFS(object):
                 device status of the Wavefront Sensor instrument.
                 Lower 24 bits are used.
         """
+        self.device_status = ctypes.c_ubyte(0)
         status = self.lib.WFS_GetStatus(self.instrument_handle,
                                         ctypes.byref(self.device_status))
         self.log_wfs.debug(f'Get Status: {self.instrument_handle.value}')
         self.log_wfs.info(f'Device Status: {self.device_status.value}')
         if self.device_status.value in self.WFS_DRIVER_STATUS:
-            self.log_wfs.info(f'Device Status: {self.WFS_DRIVER_STATUS[self.device_status.value]}')
+            self.log_wfs.info(f'Device Status: {self.WFS_DRIVER_STATUS[self.device_status.value].decode()}')
         else:
-            self.log_wfs.info('Device Status: Unknown/OK')
+            self.log_wfs.info('Device Status: OK/Unknown')
         self._error_message(status)
         return status, self.device_status.value
 
@@ -2041,7 +2053,7 @@ class WFS(object):
         self.log_wfs.debug(f'Calc Image Min Max: {self.instrument_handle.value}')
         self.log_wfs.info(f'Intensity Minimum: {self.intensity_min.value}')
         self.log_wfs.info(f'Intensity Maximum: {self.intensity_max.value}')
-        self.log_wfs.info(f'Saturated Pixels Percent: {self.saturated_pixels_percent.value}')
+        self.log_wfs.info(f'Saturated Pixels Percent: {self.saturated_pixels_percent.value:.2f}')
         self._error_message(status)
         return status, self.intensity_min.value, self.intensity_max.value, self.saturated_pixels_percent.value
 
@@ -2067,8 +2079,8 @@ class WFS(object):
                                                ctypes.byref(self.intensity_mean),
                                                ctypes.byref(self.intensity_rms))
         self.log_wfs.debug(f'Calc Mean RMS Noise: {self.instrument_handle.value}')
-        self.log_wfs.info(f'Intensity Mean: {self.intensity_mean.value}')
-        self.log_wfs.info(f'Intensity RMS: {self.intensity_rms.value}')
+        self.log_wfs.info(f'Intensity Mean: {self.intensity_mean.value:.4f}')
+        self.log_wfs.info(f'Intensity RMS: {self.intensity_rms.value:.4f}')
         self._error_message(status)
         return status, self.intensity_mean.value, self.intensity_rms.value
 
@@ -2186,10 +2198,10 @@ class WFS(object):
                                                   ctypes.byref(self.beam_diameter_x_mm),
                                                   ctypes.byref(self.beam_diameter_y_mm))
         self.log_wfs.debug(f'Calc Beam Centroid Diameter: {self.instrument_handle.value}')
-        self.log_wfs.info(f'Beam Centroid X (mm): {self.beam_centroid_x_mm.value}')
-        self.log_wfs.info(f'Beam Centroid Y (mm): {self.beam_centroid_y_mm.value}')
-        self.log_wfs.info(f'Beam Diameter X (mm): {self.beam_diameter_y_mm.value}')
-        self.log_wfs.info(f'Beam Diameter Y (mm): {self.beam_diameter_x_mm.value}')
+        self.log_wfs.info(f'Beam Centroid X (mm): {self.beam_centroid_x_mm.value:.4f}')
+        self.log_wfs.info(f'Beam Centroid Y (mm): {self.beam_centroid_y_mm.value:.4f}')
+        self.log_wfs.info(f'Beam Diameter X (mm): {self.beam_diameter_y_mm.value:.4f}')
+        self.log_wfs.info(f'Beam Diameter Y (mm): {self.beam_diameter_x_mm.value:.4f}')
         self._error_message(status)
         return (status, self.beam_centroid_x_mm.value, self.beam_centroid_y_mm.value,
                 self.beam_diameter_y_mm.value, self.beam_diameter_x_mm.value)
@@ -2348,9 +2360,9 @@ class WFS(object):
                                                    ctypes.byref(self.diameter_max),
                                                    ctypes.byref(self.diameter_mean))
         self.log_wfs.debug(f'Get Spot Diameter Statistics: {self.instrument_handle.value}')
-        self.log_wfs.info(f'Diameter Minimum: {self.diameter_min.value}')
-        self.log_wfs.info(f'Diameter Maximum: {self.diameter_max.value}')
-        self.log_wfs.info(f'Diameter Mean: {self.diameter_mean.value}')
+        self.log_wfs.info(f'Diameter Minimum: {self.diameter_min.value:.4f}')
+        self.log_wfs.info(f'Diameter Maximum: {self.diameter_max.value:.4f}')
+        self.log_wfs.info(f'Diameter Mean: {self.diameter_mean.value:.4f}')
         self._error_message(status)
         return status, self.diameter_min.value, self.diameter_max.value, self.diameter_mean.value
 
@@ -2500,7 +2512,7 @@ class WFS(object):
         self._error_message(status)
         return status, self.array_deviations_x, self.array_deviations_y
 
-    def _zernike_lsf(self):
+    def _zernike_lsf(self, zernike_orders=None):
         """Calculate Zernike coefficients and Radius of Curvature in mm.
 
         This function calculates the spot deviations (centroid with
@@ -2510,13 +2522,7 @@ class WFS(object):
         modes and an array summarizing these coefficients to rms
         amplitudes for each Zernike order.
 
-        Returns:
-            status (Vi.status(int)): This value shows the status code
-                returned by the function call. For Status Codes see
-                function _error_message.
-            roc_mm (Vi.real64(float)): This parameter returns the
-                Radius of Curvature RoC for a spherical wavefront
-                in mm, derived from Zernike coefficient Z[5].
+        Args:
             zernike_orders (Vi.int32(int)): This parameter sets and
                 returns the number of desired Zernike modes to fit.
                 An input value 0 sets the number of calculated modes
@@ -2535,6 +2541,16 @@ class WFS(object):
                 8                     45
                 9                     55
                 10                    66
+
+        Returns:
+            status (Vi.status(int)): This value shows the status code
+                returned by the function call. For Status Codes see
+                function _error_message.
+            roc_mm (Vi.real64(float)): This parameter returns the
+                Radius of Curvature RoC for a spherical wavefront
+                in mm, derived from Zernike coefficient Z[5].
+            zernike_modes (Vi.int32(int)): This parameter returns the
+                number of desired Zernike modes to fit based on order.
             array_zernike_um (Vi.array_float(int)): This
                 parameter returns a one-dimensional array of float
                 containing the calculated Zernike coefficients. The
@@ -2548,16 +2564,32 @@ class WFS(object):
                 [MAX_ZERNIKE_ORDERS+1] because indices [1..10] are
                 used instead of [0 .. 9].
         """
+        if zernike_orders is not None:
+            try:
+                self.zernike_orders = Vi.int32(zernike_orders)
+            except TypeError:
+                self.zernike_orders = zernike_orders
         status = self.lib.WFS_ZernikeLsf(self.instrument_handle,
                                          ctypes.byref(self.zernike_orders),
                                          self.array_zernike_um,
                                          self.array_zernike_orders_um,
                                          ctypes.byref(self.roc_mm))
         self.log_wfs.debug(f'Zernike Least Square Fit: {self.instrument_handle.value}')
-        self.log_wfs.info(f'RoC (mm): {self.roc_mm.value}')
+        try:
+            self.zernike_modes.value = self.zernike_modes_per_order[self.zernike_orders.value]
+        except KeyError:
+            self.zernike_modes.value = self.MAX_ZERNIKE_MODES
+            self.log_wfs.error('Invalid Zernike Order')
+            self._error_message(status)
+            return (status, self.roc_mm.value, self.zernike_orders.value,
+                    self.array_zernike_um, self.array_zernike_orders_um)
+        self.log_wfs.info(f'RoC (mm): {self.roc_mm.value:.4f}')
         self.log_wfs.info(f'Zernike Orders: {self.zernike_orders.value}')
-        self.log_wfs.info('Zernike (µm):' + ' '.join([f'{item:12.11}' for item in self.array_zernike_um]))
-        self.log_wfs.info('Zernike Orders (µm)' + ' '.join([f'{item:12.11}' for item in self.array_zernike_orders_um]))
+        self.log_wfs.info(f'Zernike Modes: {self.zernike_modes.value}')
+        self.log_wfs.info('Zernike (µm): ' + ' '.join(
+            [f'{item:.8f}' for item in self.array_zernike_um[1:self.zernike_modes.value+1]]))
+        self.log_wfs.info('Zernike Orders (µm): ' + ' '.join(
+            [f'{item:.8f}' for item in self.array_zernike_orders_um[1:self.zernike_orders.value+1]]))
         self._error_message(status)
         return (status, self.roc_mm.value, self.zernike_orders.value,
                 self.array_zernike_um, self.array_zernike_orders_um)
@@ -2620,12 +2652,12 @@ class WFS(object):
         self.log_wfs.debug(f'Calc Fourier Optometric: {self.instrument_handle.value}')
         self.log_wfs.info(f'Zernike Orders: {self.zernike_orders.value}')
         self.log_wfs.info(f'Fourier Orders: {self.fourier_orders.value}')
-        self.log_wfs.info(f'Fourier Coefficient M: {self.fourier_m.value}')
-        self.log_wfs.info(f'Fourier Coefficient J0: {self.fourier_j0.value}')
-        self.log_wfs.info(f'Fourier Coefficient J45: {self.fourier_j45.value}')
-        self.log_wfs.info(f'Optometric Parameter Sphere (diopters): {self.optometric_sphere.value}')
-        self.log_wfs.info(f'Optometric Parameter Cylinder (diopters): {self.optometric_cylinder.value}')
-        self.log_wfs.info(f'Optometric Parameter Axis (°): {self.optometric_axis.value}')
+        self.log_wfs.info(f'Fourier Coefficient M: {self.fourier_m.value:.8f}')
+        self.log_wfs.info(f'Fourier Coefficient J0: {self.fourier_j0.value:.8f}')
+        self.log_wfs.info(f'Fourier Coefficient J45: {self.fourier_j45.value:.8f}')
+        self.log_wfs.info(f'Optometric Parameter Sphere (diopters): {self.optometric_sphere.value:.8f}')
+        self.log_wfs.info(f'Optometric Parameter Cylinder (diopters): {self.optometric_cylinder.value:.8f}')
+        self.log_wfs.info(f'Optometric Parameter Axis (°): {self.optometric_axis.value:.8f}')
         self._error_message(status)
         return (status, self.fourier_m.value, self.fourier_j0.value, self.fourier_j45.value,
                 self.optometric_sphere.value, self.optometric_cylinder.value, self.optometric_axis.value)
@@ -2797,12 +2829,12 @@ class WFS(object):
                                                       ctypes.byref(self.wavefront_rms),
                                                       ctypes.byref(self.wavefront_weighted_rms))
         self.log_wfs.debug(f'Calc Wavefront Statistics: {self.instrument_handle.value}')
-        self.log_wfs.info(f'Min: {self.wavefront_min.value}')
-        self.log_wfs.info(f'Max: {self.wavefront_max.value}')
-        self.log_wfs.info(f'Diff: {self.wavefront_diff.value}')
-        self.log_wfs.info(f'Mean: {self.wavefront_mean.value}')
-        self.log_wfs.info(f'RMS: {self.wavefront_rms.value}')
-        self.log_wfs.info(f'Weighted RMS: {self.wavefront_weighted_rms.value}')
+        self.log_wfs.info(f'Min: {self.wavefront_min.value:.4f}')
+        self.log_wfs.info(f'Max: {self.wavefront_max.value:.4f}')
+        self.log_wfs.info(f'Diff: {self.wavefront_diff.value:.4f}')
+        self.log_wfs.info(f'Mean: {self.wavefront_mean.value:.4f}')
+        self.log_wfs.info(f'RMS: {self.wavefront_rms.value:.4f}')
+        self.log_wfs.info(f'Weighted RMS: {self.wavefront_weighted_rms.value:.4f}')
         self._error_message(status)
         return (status, self.wavefront_min.value, self.wavefront_max.value, self.wavefront_diff.value,
                 self.wavefront_mean.value, self.wavefront_rms.value, self.wavefront_weighted_rms.value)
