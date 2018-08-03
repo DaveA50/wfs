@@ -3,13 +3,37 @@
 import ctypes
 from ctypes.util import find_library
 import logging.config
+import os
 
-from log_wfs import setup_logging
+import yaml
+
 from vi import Vi
 
 __version__ = '0.4.0'
 __author__ = 'David Amrhein'
 __email__ = 'davea50@gmail.com'
+
+
+def setup_logging(path='logging.yaml', level=logging.INFO, env_key='LOG_CFG'):
+    """Setup logging configuration.
+
+    Uses logging.yaml for the default configuration.
+
+    Args:
+        path:
+        level:
+        env_key:
+    """
+    path = path
+    value = os.getenv(env_key, None)
+    if value:
+        path = value
+    if os.path.exists(path):
+        with open(path, 'rt') as f:
+            config = yaml.load(f.read())
+        logging.config.dictConfig(config)
+    else:
+        logging.basicConfig(level=level)
 
 
 class WFS(object):
