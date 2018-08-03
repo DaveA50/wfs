@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """Wrapper for interfacing with the Thorlabs Wavefront Sensor (WFS)."""
 import ctypes
-import logging.config
-
-from log_wfs import setup_logging
 
 __version__ = '0.3.0'
 __author__ = 'David Amrhein'
@@ -12,8 +9,6 @@ __email__ = 'davea50@gmail.com'
 
 class Vi(object):
     """Container for ctypes conversion to Vi."""
-    setup_logging()
-    log_vi = logging.getLogger('VI')
 
     TRUE = 1
     FALSE = 0
@@ -47,99 +42,71 @@ class Vi(object):
         else:
             return (ctypes.c_float * int(x))()
 
-    @classmethod
-    def char(cls, n):
+    @staticmethod
+    def char(n):
         """Create a char array of size n with create_string_buffer.
 
         Args:
             n (int): size of char array.
         """
-        try:
-            return ctypes.create_string_buffer(int(n))
-        except ValueError as e:
-            cls.log_vi.warning(f'Must be an Int, setting to 512: {e}')
-            return ctypes.create_string_buffer(512)
+        return ctypes.create_string_buffer(int(n))
 
-    @classmethod
-    def uint8(cls, n):
+    @staticmethod
+    def uint8(n):
         """Create a uint with c_ubyte.
 
         Args:
             n (int): Binary8 unsigned char.
         """
-        try:
-            return ctypes.c_ubyte(int(n))
-        except ValueError as e:
-            cls.log_vi.warning(f'Must be an Int, setting to 0: {e}')
-            return ctypes.c_ubyte(0)
+        return ctypes.c_ubyte(int(n))
 
-    @classmethod
-    def int16(cls, n):
+    @staticmethod
+    def int16(n):
         """Create a int16 with c_short.
 
         Args:
             n (int): Binary16 short int.
         """
-        try:
-            return ctypes.c_short(int(n))
-        except ValueError as e:
-            cls.log_vi.warning(f'Must be an Int, setting to 0: {e}')
-            return ctypes.c_short(0)
+        return ctypes.c_short(int(n))
 
-    @classmethod
-    def uint16(cls, n):
+    @staticmethod
+    def uint16(n):
         """Create a uint16 with c_ushort.
 
         Args:
             n (int): Binary16 unsigned short int.
         """
-        try:
-            return ctypes.c_ushort(int(n))
-        except ValueError as e:
-            cls.log_vi.warning(f'Must be an Int, setting to 0: {e}')
-            return ctypes.c_ushort(0)
+        return ctypes.c_ushort(int(n))
 
-    @classmethod
-    def int32(cls, n):
+    @staticmethod
+    def int32(n):
         """Create a int32 with c_long.
 
         Args:
             n (int): Binary32 long int.
         """
-        try:
-            return ctypes.c_long(int(n))
-        except ValueError as e:
-            cls.log_vi.warning(f'Must be an Int, setting to 0: {e}')
-            return ctypes.c_long(0)
+        return ctypes.c_long(int(n))
 
-    @classmethod
-    def uint32(cls, n):
+    @staticmethod
+    def uint32(n):
         """Create a uint32 with c_ulong.
 
         Args:
             n (int): Binary32 unsigned long int.
         """
-        try:
-            return ctypes.c_ulong(int(n))
-        except ValueError as e:
-            cls.log_vi.warning(f'Must be an Int, setting to 0: {e}')
-            return ctypes.c_ulong(0)
+        return ctypes.c_ulong(int(n))
 
-    @classmethod
-    def real64(cls, n):
+    @staticmethod
+    def real64(n):
         """Create a real64 with c_double.
 
         Args:
             n (float): double, char*.
         """
-        try:
-            return ctypes.c_double(float(n))
-        except ValueError as e:
-            cls.log_vi.warning(f'Must be a float, setting to 0: {e}')
-            return ctypes.c_double(float(0))
+        return ctypes.c_double(float(n))
 
-    @classmethod
-    def boolean(cls, n):
+    @staticmethod
+    def boolean(n):
         """Create a boolean with Vi.uint16.
 
         Args:
@@ -152,11 +119,7 @@ class Vi(object):
             n = Vi.TRUE
         elif n is False:
             n = Vi.FALSE
-        try:
-            return Vi.uint16(int(n))
-        except ValueError as e:
-            cls.log_vi.warning(f'Must be a 0, 1, False, or True. Setting to 0 (False): {e}')
-            return Vi.uint16(0)
+        return Vi.uint16(int(n))
 
     @staticmethod
     def object(n):

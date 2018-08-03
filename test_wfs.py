@@ -23,6 +23,10 @@ class TestWFS(object):
 
     def test_init(self, wfs):
         assert wfs._init()[0] == 0
+        assert wfs._close() == 0
+        assert wfs._init(wfs.resource_name, wfs.id_query, wfs.reset_device)[0] == 0
+        assert wfs._close() == 0
+        assert wfs._init(wfs.resource_name.value, wfs.id_query.value, wfs.reset_device.value)[0] == 0
         assert wfs._get_status()[0] == 0
 
     def test_revision_query(self, wfs):
@@ -39,20 +43,27 @@ class TestWFS(object):
 
     def test_get_mla_data(self, wfs):
         assert wfs._get_mla_data()[0] == 0
+        assert wfs._get_mla_data(wfs.mla_index)[0] == 0
+        assert wfs._get_mla_data(wfs.mla_index.value)[0] == 0
         assert wfs._get_status()[0] == 0
 
     def test_get_mla_data2(self, wfs):
         assert wfs._get_mla_data2()[0] == 0
+        assert wfs._get_mla_data2(wfs.mla_index)[0] == 0
+        assert wfs._get_mla_data2(wfs.mla_index.value)[0] == 0
         assert wfs._get_status()[0] == 0
 
     def test_select_mla(self, wfs):
         assert wfs._select_mla() == 0
+        assert wfs._select_mla(wfs.mla_index) == 0
+        assert wfs._select_mla(wfs.mla_index.value) == 0
         assert wfs._select_mla(1) == wfs.WFS_ERROR_PARAMETER2
-        assert wfs._select_mla(0) == 0
         assert wfs._get_status()[0] == 0
 
     def test_configure_cam(self, wfs):
         assert wfs._configure_cam()[0] == 0
+        assert wfs._configure_cam(wfs.cam_resolution_index, wfs.pixel_format)[0] == 0
+        assert wfs._configure_cam(wfs.cam_resolution_index.value, wfs.pixel_format.value)[0] == 0
         assert wfs._get_status()[0] == 0
 
     def test_get_status(self, wfs):
@@ -73,6 +84,7 @@ class TestWFS(object):
         exposure_too_high = wfs.exposure_time_max.value + wfs.exposure_time_increment.value
         assert wfs._set_exposure_time(exposure_too_high)[0] == wfs.WFS_ERROR_PARAMETER2
         assert wfs._set_exposure_time(1)[0] == 0
+        assert wfs._set_exposure_time(wfs.exposure_time_set)[0] == 0
         assert wfs._get_status()[0] == 0
 
     def test_get_exposure_time(self, wfs):
@@ -90,6 +102,7 @@ class TestWFS(object):
         assert wfs._set_master_gain(wfs.master_gain_max.value)[0] == 0
         assert wfs._set_master_gain(wfs.master_gain_max.value + 0.01)[0] == wfs.WFS_ERROR_PARAMETER2
         assert wfs._set_master_gain(1)[0] == 0
+        assert wfs._set_master_gain(wfs.master_gain_set)[0] == 0
         assert wfs._get_status()[0] == 0
 
     def test_get_master_gain(self, wfs):
@@ -101,6 +114,7 @@ class TestWFS(object):
         assert wfs._set_black_level_offset() == 0
         assert wfs._set_black_level_offset(wfs.BLACK_LEVEL_MIN - 1) == wfs.WFS_ERROR_PARAMETER2
         assert wfs._set_black_level_offset(wfs.BLACK_LEVEL_MIN) == 0
+        assert wfs._set_black_level_offset(wfs.black_level_offset_set) == 0
         assert wfs._set_black_level_offset(wfs.BLACK_LEVEL_MAX) == 0
         assert wfs._set_black_level_offset(wfs.BLACK_LEVEL_MAX + 1) == wfs.WFS_ERROR_PARAMETER2
         assert wfs._set_black_level_offset(wfs.BLACK_LEVEL_WFS20_DEF) == 0
@@ -120,6 +134,7 @@ class TestWFS(object):
         assert wfs._set_trigger_mode(wfs.WFS_TRIGGER_MODE_MAX) == 0
         assert wfs._set_trigger_mode(wfs.WFS_TRIGGER_MODE_MAX + 1) == wfs.WFS_ERROR_PARAMETER2
         assert wfs._set_trigger_mode(wfs.WFS_HW_TRIGGER_OFF) == 0
+        assert wfs._set_trigger_mode(wfs.trigger_mode) == 0
         assert wfs._get_status()[0] == 0
 
     def test_get_trigger_mode(self, wfs):
@@ -138,6 +153,7 @@ class TestWFS(object):
         trigger_delay_too_high = wfs.trigger_delay_max.value + wfs.trigger_delay_increment.value
         assert wfs._set_trigger_delay(trigger_delay_too_high)[0] == wfs.WFS_ERROR_PARAMETER2
         assert wfs._set_trigger_delay(wfs.trigger_delay_min.value)[0] == 0
+        assert wfs._set_trigger_delay(wfs.trigger_delay_set)[0] == 0
         assert wfs._get_status()[0] == 0
 
     def test_set_aoi(self, wfs):
@@ -168,6 +184,7 @@ class TestWFS(object):
         assert wfs._set_aoi(0, ((y_size/2 + pixel) * -1), min_size, min_size) == wfs.WFS_ERROR_PARAMETER3
         assert wfs._set_aoi(0, (y_size/2 + pixel), min_size, min_size) == wfs.WFS_ERROR_PARAMETER3
         assert wfs._set_aoi(0, 0, x_size, y_size) == 0
+        assert wfs._set_aoi(wfs.aoi_center_x_mm, wfs.aoi_center_y_mm, wfs.aoi_size_x_mm, wfs.aoi_size_y_mm) == 0
         assert wfs._get_status()[0] == 0
 
     def test_get_aoi(self, wfs):
@@ -201,6 +218,8 @@ class TestWFS(object):
         assert wfs._set_pupil(0, 0, min_size, min_size) == 0
         assert wfs._set_pupil(0, 0, max_size, max_size) == 0
         assert wfs._set_pupil(0, 0, x_size, y_size) == 0
+        assert wfs._set_pupil(wfs.pupil_center_x_mm, wfs.pupil_center_y_mm,
+                              wfs.pupil_diameter_x_mm, wfs.pupil_diameter_y_mm) == 0
         assert wfs._get_status()[0] == 0
 
     def test_get_pupil(self, wfs):
@@ -210,6 +229,7 @@ class TestWFS(object):
     def test_set_reference_plane(self, wfs):
         assert wfs._set_reference_plane(wfs.WFS_REF_USER) in (0, wfs.WFS_ERROR_NO_USER_REFERENCE)
         assert wfs._set_reference_plane(wfs.WFS_REF_INTERNAL) == 0
+        assert wfs._set_reference_plane(wfs.reference_index) == 0
         assert wfs._get_status()[0] == 0
 
     def test_get_reference_plane(self, wfs):
@@ -239,8 +259,17 @@ class TestWFS(object):
         assert wfs._check_highspeed_centroids() == wfs.WFS_ERROR_HIGHSPEED_NOT_ACTIVE
         assert wfs._get_status()[0] == 0
         assert wfs._set_highspeed_mode(True) == 0
+        assert wfs._set_highspeed_mode(wfs.highspeed_mode,
+                                       wfs.adapt_centroids,
+                                       wfs.subtract_offset,
+                                       wfs.allow_auto_exposure) == 0
+        assert wfs._set_highspeed_mode(True, 1, 1, 1) == 0
+        assert wfs._set_highspeed_mode(True, 2, 1, 1) == wfs.WFS_ERROR_PARAMETER3
+        assert wfs._set_highspeed_mode(True, 1, -1, 1) == wfs.WFS_ERROR_PARAMETER4
+        assert wfs._set_highspeed_mode(True, 1, 256, 1) == wfs.WFS_ERROR_PARAMETER4
+        assert wfs._set_highspeed_mode(True, 1, 1, 2) == wfs.WFS_ERROR_PARAMETER5
         assert wfs._get_status()[0] == 0
-        assert wfs._set_highspeed_mode(False) == 0
+        assert wfs._set_highspeed_mode(False, 1, 1, 1) == 0
         assert wfs._check_highspeed_centroids() == wfs.WFS_ERROR_HIGHSPEED_NOT_ACTIVE
         assert wfs._get_status()[0] == 0
 
@@ -274,12 +303,14 @@ class TestWFS(object):
     def test_average_image(self, wfs):
         assert wfs._take_spotfield_image_auto_exposure()[0] == 0
         assert wfs._average_image()[0] == 0
+        assert wfs._average_image(0)[0] == wfs.WFS_ERROR_PARAMETER2
+        assert wfs._average_image(257)[0] == wfs.WFS_ERROR_PARAMETER2
         assert wfs.average_data_ready.value == 1
         assert wfs._take_spotfield_image_auto_exposure()[0] == 0
         assert wfs._average_image(2)[0] == 0
         assert wfs.average_data_ready.value == 0
         assert wfs._take_spotfield_image_auto_exposure()[0] == 0
-        assert wfs._average_image(2)[0] == 0
+        assert wfs._average_image(wfs.average_count)[0] == 0
         assert wfs.average_data_ready.value == 1
         assert wfs._take_spotfield_image_auto_exposure()[0] == 0
         assert wfs._average_image(2)[0] == 0
@@ -320,6 +351,9 @@ class TestWFS(object):
         assert wfs._take_spotfield_image_auto_exposure()[0] == 0
         assert wfs._take_spotfield_image_auto_exposure()[0] == 0
         assert wfs._average_image_rolling(3) == 0
+        assert wfs._take_spotfield_image_auto_exposure()[0] == 0
+        assert wfs._average_image_rolling(wfs.average_count, wfs.rolling_reset) == 0
+        assert wfs._average_image_rolling(1, 1) == 0
         assert wfs._get_status()[0] == 0
 
     def test_cut_image_noise_floor(self, wfs):
@@ -328,6 +362,7 @@ class TestWFS(object):
         assert wfs._cut_image_noise_floor(wfs.NOISE_LEVEL_MAX) == 0
         assert wfs._cut_image_noise_floor(wfs.NOISE_LEVEL_MAX + 1) == wfs.WFS_ERROR_PARAMETER2
         assert wfs._cut_image_noise_floor(wfs.NOISE_LEVEL_MIN) == 0
+        assert wfs._cut_image_noise_floor(wfs.intensity_limit) == 0
         assert wfs._get_status()[0] == 0
 
     def test_calc_spots_centroid_diameter_intensity(self, wfs):
@@ -342,6 +377,7 @@ class TestWFS(object):
         assert wfs._take_spotfield_image_auto_exposure()[0] == 0
         assert wfs._get_spotfield_image()[0] == 0
         assert wfs._calc_spots_centroid_diameter_intensity(1, 1) == 0
+        assert wfs._calc_spots_centroid_diameter_intensity(wfs.dynamic_noise_cut, wfs.calculate_diameters) == 0
         assert wfs._get_status()[0] == 0
 
     def test_calc_image_min_max(self, wfs):
@@ -361,21 +397,24 @@ class TestWFS(object):
         assert wfs._calc_spot_to_reference_deviations(1) == 0
         assert wfs._get_status()[0] == 0
         assert wfs._calc_spot_to_reference_deviations(0) == 0
+        assert wfs._calc_spot_to_reference_deviations(wfs.cancel_wavefront_tilt) == 0
         assert wfs._get_status()[0] == 0
 
     def test_calc_reconstructed_deviations(self, wfs):
         assert wfs._zernike_lsf(4)[0] == 0
         assert wfs._calc_reconstructed_deviations()[0] == 0
-        assert wfs._calc_reconstructed_deviations(array_zernike_reconstructed=wfs.array_zernike_reconstructed,
-                                                  do_spherical_reference=1)[0] == 0
-        assert wfs._calc_reconstructed_deviations(array_zernike_reconstructed=[1, 1, 1, 1, 1, 1, 1, 1],
-                                                  do_spherical_reference=1)[0] == 0
-        assert wfs._calc_reconstructed_deviations(do_spherical_reference=1)[0] == 0
+        assert wfs._calc_reconstructed_deviations(wfs.zernike_orders,
+                                                  wfs.array_zernike_reconstructed,
+                                                  wfs.do_spherical_reference)[0] == 0
+        assert wfs._calc_reconstructed_deviations(4,
+                                                  [1, 1, 1, 1, 1, 1, 1, 1],
+                                                  1)[0] == 0
         assert wfs._get_status()[0] == 0
 
     def test_calc_wavefront(self, wfs):
         assert wfs._calc_wavefront()[0] == 0
         assert wfs._calc_wavefront(0, 0)[0] == 0
+        assert wfs._calc_wavefront(wfs.wavefront_type, wfs.limit_to_pupil)[0] == 0
         assert wfs._calc_wavefront(0, 1)[0] == 0
         assert wfs._calc_reconstructed_deviations()[0] == 0
         assert wfs._calc_wavefront(1, 0)[0] == 0
@@ -423,7 +462,7 @@ class TestWFS(object):
             pytest.xfail()
         else:
             assert status == 0
-        assert wfs._zernike_lsf(2)[0] == 0
+        assert wfs._zernike_lsf(wfs.zernike_orders)[0] == 0
         assert wfs._zernike_lsf(3)[0] == 0
         assert wfs._zernike_lsf(4)[0] == 0
         assert wfs._zernike_lsf(5)[0] == 0
@@ -440,13 +479,15 @@ class TestWFS(object):
 
     def test_calc_fourier_optometric(self, wfs):
         assert wfs._calc_fourier_optometric()[0] == 0
+        assert wfs._calc_fourier_optometric(wfs.zernike_orders, wfs.fourier_orders)[0] == 0
         assert wfs._calc_fourier_optometric(fourier_orders=2)[0] == 0
         assert wfs._calc_fourier_optometric(fourier_orders=4)[0] == 0
         assert wfs._calc_fourier_optometric(fourier_orders=3)[0] == wfs.WFS_ERROR_PARAMETER3
         assert wfs._calc_fourier_optometric(fourier_orders=6)[0] == wfs.WFS_ERROR_FOURIER_ORDER
         assert wfs._zernike_lsf(6)[0] == 0
+        assert wfs._zernike_lsf(6)[0] == 0
         assert wfs._calc_fourier_optometric(6, 2)[0] == 0
-        assert wfs._calc_fourier_optometric(4, 2)[0] == 0
+        assert wfs._calc_fourier_optometric(4, wfs.fourier_orders)[0] == 0
         assert wfs._calc_fourier_optometric(6, 6)[0] == 0
         assert wfs._get_status()[0] == 0
 
@@ -457,6 +498,7 @@ class TestWFS(object):
         assert wfs._get_line(-1)[0] == wfs.WFS_ERROR_PARAMETER2
         assert wfs._get_line(y_row - 1)[0] == 0
         assert wfs._get_line(200)[0] == 0
+        assert wfs._get_line(wfs.line)[0] == 0
         assert wfs._get_line(y_row // 2)[0] == 0
         assert wfs._get_line(y_row)[0] == wfs.WFS_ERROR_PARAMETER2
         assert wfs._get_status()[0] == 0
@@ -482,6 +524,8 @@ class TestWFS(object):
         assert wfs._get_status()[0] == 0
 
     def test_error_message(self, wfs):
+        assert wfs._error_message(0) == (0, b'No errors')
+        assert wfs._error_message(wfs.error_code) == (0, b'No errors')
         assert wfs._error_message(wfs.WFS_ERROR_PARAMETER1) == (0, b'Parameter 1 out of range!')
         assert wfs._error_message(wfs.WFS_ERROR_PARAMETER2) == (0, b'Parameter 2 out of range!')
         assert wfs._error_message(wfs.WFS_ERROR_PARAMETER3) == (0, b'Parameter 3 out of range!')
@@ -543,6 +587,7 @@ class TestWFS(object):
         wfs.array_wavefront[0][0] = 1
         assert wfs._convert_wavefront_waves()[0] == 0
         assert wfs._convert_wavefront_waves(500)[0] == 0
+        assert wfs._convert_wavefront_waves(wfs.wavelength, wfs.array_wavefront)[0] == 0
         assert wfs.array_wavefront_wave[0][0] == 2
         assert wfs._get_status()[0] == 0
 
@@ -578,6 +623,10 @@ class TestWFS(object):
 
     def test_set_calc_spots_to_user_reference(self, wfs):
         assert wfs._set_calc_spots_to_user_reference() == 0
+        assert wfs._set_calc_spots_to_user_reference(wfs.spot_ref_type,
+                                                     wfs.array_reference_x,
+                                                     wfs.array_reference_y) == 0
+        assert wfs._set_calc_spots_to_user_reference(1) == 0
         assert wfs._get_status()[0] == 0
 
     def test_do_spherical_reference(self, wfs):
@@ -591,4 +640,23 @@ class TestWFS(object):
     def test_close(self, wfs):
         print('\nClosing...')
         assert wfs._close() == 0
+        assert wfs._close() == wfs.WFS_ERROR_INVALID_HANDLE
         assert wfs._get_status()[0] == wfs.WFS_ERROR_INVALID_HANDLE
+
+    def test_connect(self, wfs):
+        assert wfs.connect() == 0
+
+    def test_config(self, wfs):
+        assert wfs.config() == 0
+
+    def test_update(self, wfs):
+        assert wfs.update()
+        assert wfs.update()
+        assert wfs.update()
+        assert wfs.update()
+        assert wfs.update()
+        wfs.allow_auto_exposure.value = 0
+        assert wfs.update()
+
+    def test_disconnect(self, wfs):
+        assert wfs.disconnect() == 0
