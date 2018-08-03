@@ -9,7 +9,7 @@ import yaml
 
 from vi import Vi
 
-__version__ = '0.4.0'
+__version__ = '0.5.0'
 __author__ = 'David Amrhein'
 __email__ = 'davea50@gmail.com'
 
