@@ -1,2 +1,3 @@
-Initial testing of wrapping the WFS C DLL into python
+Wrapping Thorlabs Shack–Hartmann Wavefront Sensor C DLL with python
+
 Uses ctypes to interface
